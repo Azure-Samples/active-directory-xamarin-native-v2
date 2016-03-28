@@ -42,7 +42,7 @@ Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or
 2. Open the `UserDatailsClient\App.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, again in Step 2.
 
-### Step 5:  Run the sample
+### Step 4:  Run the sample
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it.

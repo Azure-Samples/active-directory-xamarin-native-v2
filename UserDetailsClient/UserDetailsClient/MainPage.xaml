@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:local="clr-namespace:UserDetailsClient;assembly=UserDetailsClient"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UserDetailsClient.MainPage">
+  <ContentPage.Content>
+    <StackLayout>
+      <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
+      <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+      <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
+        <Image x:Name="imgPhoto"></Image>
+        <Label x:Name="lblDisplayName" />
+        <Label x:Name="lblGivenName" />
+        <Label x:Name="lblSurname" />
+        <Label x:Name="lblId" />
+        <Label x:Name="lblUserPrincipalName" />
+      </StackLayout>
+      <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+      <Button x:Name="btnSignInSignOut" Text="Sign in" Clicked="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+    </StackLayout>
+  </ContentPage.Content>
+  
+</ContentPage>

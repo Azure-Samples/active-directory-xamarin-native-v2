@@ -29,7 +29,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -1588,7 +1588,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -3237,7 +3237,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -4858,7 +4858,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -6512,7 +6512,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -8133,7 +8133,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -9787,7 +9787,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.0.303251427-alpha": {
+      "Microsoft.Identity.Client/1.0.303282006-alpha": {
         "compile": {
           "lib/netcore45/Microsoft.Identity.Client.dll": {},
           "lib/netcore45/Microsoft.Identity.Client.Platform.dll": {}
@@ -11424,8 +11424,8 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "Microsoft.Identity.Client/1.0.303251427-alpha": {
-      "sha512": "B1hDat/2MBthA5wuqnOl9RYJa38WHTXLFgkF8imkjARTMjGxy3+IrGR6X1jqAkg/DczjtFcEUrxDH6jlQnk36Q==",
+    "Microsoft.Identity.Client/1.0.303282006-alpha": {
+      "sha512": "OD/An0gsO7dCylBU4Puz6uutd2/nriJsQO+yQH8ur4HDA/UQcTCHtk5wQgSE/Ypgwohvsi3fhdzA79t7fGaMMg==",
       "type": "Package",
       "files": [
         "[Content_Types].xml",
@@ -11453,7 +11453,7 @@
         "lib/Xamarin.iOS10/Microsoft.Identity.Client.Platform.xml",
         "lib/Xamarin.iOS10/Microsoft.Identity.Client.xml",
         "Microsoft.Identity.Client.nuspec",
-        "package/services/metadata/core-properties/83d4ca6213334ba792bc00dff8a705f5.psmdcp"
+        "package/services/metadata/core-properties/3af73eb2dd86454fb5b526d56865fc6b.psmdcp"
       ]
     },
     "Microsoft.NETCore/5.0.0": {
@@ -14867,7 +14867,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.Identity.Client >= 1.0.303251427-alpha",
+      "Microsoft.Identity.Client >= 1.0.303282006-alpha",
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "Xamarin.Forms >= 2.1.0.6529"
     ],

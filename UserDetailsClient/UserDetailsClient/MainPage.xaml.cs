@@ -67,11 +67,11 @@ namespace UserDetailsClient
                 JObject user = JObject.Parse(responseString);
 
                 slUser.IsVisible = true;
-                lblDisplayName.Text = "displayName  " + user["displayName"].ToString();
-                lblGivenName.Text = "givenName  " + user["givenName"].ToString();
-                lblId.Text = "id  " + user["id"].ToString();               
-                lblSurname.Text = "surname  " + user["surname"].ToString();
-                lblUserPrincipalName.Text = "userPrincipalName  " + user["userPrincipalName"].ToString();
+                lblDisplayName.Text = user["displayName"].ToString();
+                lblGivenName.Text = user["givenName"].ToString();
+                lblId.Text = user["id"].ToString();               
+                lblSurname.Text = user["surname"].ToString();
+                lblUserPrincipalName.Text = user["userPrincipalName"].ToString();
 
                 // just in case
                 btnSignInSignOut.Text = "Sign out";

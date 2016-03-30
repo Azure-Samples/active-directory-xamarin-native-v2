@@ -53,11 +53,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Identity.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Identity.Client.1.0.303251427-alpha\lib\MonoAndroid10\Microsoft.Identity.Client.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Identity.Client.1.0.303282006-alpha\lib\MonoAndroid10\Microsoft.Identity.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Identity.Client.Platform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Identity.Client.1.0.303251427-alpha\lib\MonoAndroid10\Microsoft.Identity.Client.Platform.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Identity.Client.1.0.303282006-alpha\lib\MonoAndroid10\Microsoft.Identity.Client.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Android" />

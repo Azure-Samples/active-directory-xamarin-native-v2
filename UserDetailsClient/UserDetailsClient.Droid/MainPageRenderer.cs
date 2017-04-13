@@ -26,8 +26,7 @@ namespace UserDetailsClient.Droid
         {
             base.OnElementChanged(e);
             page = e.NewElement as MainPage;
-            var activity = this.Context as Activity;
-            page.platformParameters = new PlatformParameters(activity);
+            var activity = this.Context as Activity;           
         }
 
     }

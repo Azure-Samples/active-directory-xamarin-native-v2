@@ -14,9 +14,20 @@ namespace UserDetailsClient
         public static string ClientID = "a7d8cef0-4145-49b2-a91d-95c54051fa3f";
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
+
+        public static UIParent UiParent = null;
+
+      
+
         public App()
         {
-            PCA = new PublicClientApplication(ClientID);
+            PCA = new PublicClientApplication(ClientID)
+            {
+#if __ANDROID__
+                RedirectUri = "vibro://sampledomain/sampleapp",
+#endif
+            };
+                        
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());        
         }
 

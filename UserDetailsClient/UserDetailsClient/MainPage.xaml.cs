@@ -14,20 +14,22 @@ namespace UserDetailsClient
 {
     public partial class MainPage : ContentPage
     {
-        public IPlatformParameters platformParameters { get; set; }
+        
         public MainPage()
         {
             InitializeComponent();
         }
         protected override async void OnAppearing()
         {
-            App.PCA.PlatformParameters = platformParameters;
             // let's see if we have a user in our belly already
             try
             {
-                AuthenticationResult ar = await App.PCA.AcquireTokenSilentAsync(App.Scopes);
-                RefreshUserData(ar.Token);
-                btnSignInSignOut.Text = "Sign out";
+                if (App.PCA.Users.Count() > 0)
+                {
+                    AuthenticationResult ar = await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.First());
+                    RefreshUserData(ar.AccessToken);
+                    btnSignInSignOut.Text = "Sign out";
+                }
             }
             catch
             {
@@ -39,15 +41,19 @@ namespace UserDetailsClient
         {
             if (btnSignInSignOut.Text == "Sign in")
             {
+#if __ANDROID__
+                AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
+#else
                 AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes);
-                RefreshUserData(ar.Token);
+#endif
+                RefreshUserData(ar.AccessToken);
                 btnSignInSignOut.Text = "Sign out";
             }
             else
             {
                 foreach (var user in App.PCA.Users)
                 {
-                    user.SignOut();
+                    App.PCA.Remove(user);
                 }
                 slUser.IsVisible = false;
                 btnSignInSignOut.Text = "Sign in";

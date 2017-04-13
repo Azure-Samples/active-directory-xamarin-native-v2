@@ -21,12 +21,8 @@ namespace UserDetailsClient
 
         public App()
         {
-            PCA = new PublicClientApplication(ClientID)
-            {
-#if __ANDROID__
-                RedirectUri = "vibro://sampledomain/sampleapp",
-#endif
-            };
+            // default redirectURI; each platform specific project will have to override it with its own
+            PCA = new PublicClientApplication(ClientID);
                         
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());        
         }

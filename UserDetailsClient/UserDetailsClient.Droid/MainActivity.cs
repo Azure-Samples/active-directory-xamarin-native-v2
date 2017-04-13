@@ -20,6 +20,7 @@ namespace UserDetailsClient.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
+            App.PCA.RedirectUri = "vibro://sampledomain/sampleapp";
             App.UiParent = new UIParent(Xamarin.Forms.Forms.Context as Activity);           
         }
 

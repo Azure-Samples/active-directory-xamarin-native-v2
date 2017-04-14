@@ -29,7 +29,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -1943,7 +1943,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -3714,7 +3714,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -5448,7 +5448,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -7226,7 +7226,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -8960,7 +8960,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -10738,7 +10738,7 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
+      "Microsoft.Identity.Client/1.1.0-alpha0242": {
         "type": "package",
         "compile": {
           "lib/win81/Microsoft.Identity.Client.dll": {}
@@ -12486,10 +12486,10 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "Microsoft.Identity.Client/1.1.0-origin-dev0234": {
-      "sha512": "U5zbiyZc/WD3pxiX0TQQ/xtyJI5RvZB7MCEF2Z3R5+ajafBXXeNnw7Zt/+fMxAlaaN2K959ecaJwAkcyyydLKw==",
+    "Microsoft.Identity.Client/1.1.0-alpha0242": {
+      "sha512": "QoLdVXTjaQftmngAoheW4/HfsJ0LuqsPWGHcYzNBLNHQSOOZ97y4WMjMWoVvLeP3CwcumajLPiBDD8TA4gBXVg==",
       "type": "package",
-      "path": "microsoft.identity.client/1.1.0-origin-dev0234",
+      "path": "microsoft.identity.client/1.1.0-alpha0242",
       "files": [
         "lib/monoandroid70/Microsoft.Identity.Client.dll",
         "lib/monoandroid70/Microsoft.Identity.Client.xml",
@@ -12499,14 +12499,12 @@
         "lib/netstandard1.1/Microsoft.Identity.Client.xml",
         "lib/netstandard1.3/Microsoft.Identity.Client.dll",
         "lib/netstandard1.3/Microsoft.Identity.Client.xml",
-        "lib/portable-net45+win8/Microsoft.Identity.Client.dll",
-        "lib/portable-net45+win8/Microsoft.Identity.Client.xml",
         "lib/win81/Microsoft.Identity.Client.dll",
         "lib/win81/Microsoft.Identity.Client.pri",
         "lib/win81/Microsoft.Identity.Client.xml",
         "lib/xamarinios10/Microsoft.Identity.Client.dll",
         "lib/xamarinios10/Microsoft.Identity.Client.xml",
-        "microsoft.identity.client.1.1.0-origin-dev0234.nupkg.sha512",
+        "microsoft.identity.client.1.1.0-alpha0242.nupkg.sha512",
         "microsoft.identity.client.nuspec"
       ]
     },
@@ -15877,7 +15875,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.Identity.Client >= 1.1.0-origin-dev0234",
+      "Microsoft.Identity.Client >= 1.1.0-alpha0242",
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "Xamarin.Forms >= 2.3.4.224"
     ],
@@ -15904,7 +15902,7 @@
       }
     },
     "dependencies": {
-      "Microsoft.Identity.Client": "1.1.0-origin-dev0234",
+      "Microsoft.Identity.Client": "1.1.0-alpha0242",
       "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
       "Xamarin.Forms": "2.3.4.224"
     },

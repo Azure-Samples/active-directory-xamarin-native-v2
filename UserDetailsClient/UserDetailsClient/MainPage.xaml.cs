@@ -39,24 +39,27 @@ namespace UserDetailsClient
         }
         async void OnSignInSignOut(object sender, EventArgs e)
         {
-            if (btnSignInSignOut.Text == "Sign in")
+            try
             {
-#if __ANDROID__
-                AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
-#else
-                AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes);
-#endif
-                RefreshUserData(ar.AccessToken);
-                btnSignInSignOut.Text = "Sign out";
-            }
-            else
-            {
-                foreach (var user in App.PCA.Users)
+                if (btnSignInSignOut.Text == "Sign in")
                 {
-                    App.PCA.Remove(user);
+                    AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes);
+                    RefreshUserData(ar.AccessToken);
+                    btnSignInSignOut.Text = "Sign out";
                 }
-                slUser.IsVisible = false;
-                btnSignInSignOut.Text = "Sign in";
+                else
+                {
+                    foreach (var user in App.PCA.Users)
+                    {
+                        App.PCA.Remove(user);
+                    }
+                    slUser.IsVisible = false;
+                    btnSignInSignOut.Text = "Sign in";
+                }
+            }
+            catch(Exception ee)
+            {
+
             }
         }
 

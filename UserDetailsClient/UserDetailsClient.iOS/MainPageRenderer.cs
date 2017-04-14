@@ -19,8 +19,7 @@ namespace UserDetailsClient.iOS
         }
         public override void ViewDidLoad()
         {
-            base.ViewDidLoad();
-            page.platformParameters = new PlatformParameters(this);
+            base.ViewDidLoad();           
         }
     }
 }

@@ -43,7 +43,7 @@ namespace UserDetailsClient
             {
                 if (btnSignInSignOut.Text == "Sign in")
                 {
-                    AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes);
+                    AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
                     RefreshUserData(ar.AccessToken);
                     btnSignInSignOut.Text = "Sign out";
                 }

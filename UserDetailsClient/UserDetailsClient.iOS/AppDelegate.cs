@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Microsoft.Identity.Client;
 
 namespace UserDetailsClient.iOS
 {
@@ -27,6 +28,12 @@ namespace UserDetailsClient.iOS
             //App.PCA.RedirectUri = "vibro://sampledomain/sampleapp";
             App.PCA.RedirectUri = "vibro://com.yourcompany.UserDetailsClient";
             return base.FinishedLaunching(app, options);            
+        }
+
+        public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+        {
+            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url, "");
+            return true;
         }
     }
 }

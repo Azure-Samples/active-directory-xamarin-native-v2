@@ -5,8 +5,8 @@ author: vibronet
 ---
 
 # UWP - works #
-# iOS - works, but redirectURI needs revision #
-# Android - works, but redirectURI needs revision #
+# iOS - works#
+# Android - works #
 ----
 
 # Integrate Microsoft identity and the Microsoft Graph into a Xamarin forms app using MSAL

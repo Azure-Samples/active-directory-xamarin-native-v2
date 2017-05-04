@@ -4,10 +4,6 @@ platforms: dotnet, xamarin
 author: vibronet
 ---
 
-# UWP - works #
-# iOS - works#
-# Android - works #
-----
 
 # Integrate Microsoft identity and the Microsoft Graph into a Xamarin forms app using MSAL
 This is a simple Xamarin Forms app showcasing how to use MSAL to authenticate MSA and Azure AD via the converged MSA and Azure AD authentication endpoints, and access the Microsoft Graph with the resulting token.
@@ -18,7 +14,7 @@ For more information about Microsoft Graph, please visit [the Microsoft Graph ho
 ## How To Run This Sample
 
 To run this sample you will need:
-- Visual Studio 2015
+- Visual Studio 2017
 - An Internet connection
 - At least one of the following accounts:
 - - A Microsoft Account
@@ -44,9 +40,50 @@ Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or
 
 ### [OPTIONAL] Step 3:  Configure the Visual Studio project with your app coordinates
 
-1. Open the solution in Visual Studio 2015.
+1. Open the solution in Visual Studio 2017.
 2. Open the `UserDatailsClient\App.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, again in Step 2.
+
+#### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
+1. Open the `UserDetailsClient.iOS\AppDelegate.cs` file.
+2. Locate the `App.PCA.RedirectUri` assignment, and change it to assign the string `"msal<Application Id>://auth"` where `<Application Id>` is the identifier you copied in step 2
+3. Open the `UserDetailsClient.iOS\info.plist` file in a text editor (opening it in Visual Studio won't work for this step as you need to edit the text)
+4. In the URL types, section, add an entry for the authorization schema used in your redirectUri.
+```
+    <key>CFBundleURLTypes</key>
+       <array>
+     <dict>
+       <key>CFBundleTypeRole</key>
+       <string>Editor</string>
+       <key>CFBundleURLName</key>
+       <string>com.yourcompany.UserDetailsClient</string>
+       <key>CFBundleURLSchemes</key>
+       <array>
+     <string>msala[APPLICATIONID]</string>
+       </array>
+     </dict>
+       </array> 
+```
+where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
+#### [OPTIONAL] Step 3b: Configure the Android project with your return URI
+
+1. Open the `UserDetailsClient.Droid\MainActivity.cs` file.
+2. Locate the `App.PCA.RedirectUri` assignment, and change it to assign the string `"msal<Application Id>://auth"` where `<Application Id>` is the identifier you copied in step 2
+3. Open the `UserDetailsClient.Droid\Properties\AndroidManifest.xml`
+4. Add or modify the `<application>` element as in the following
+```
+    <application>
+    <activity android:name="microsoft.identity.client.BrowserTabActivity">
+      <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="msal[APPLICATIONID]" android:host="auth" />
+      </intent-filter>
+    </activity>
+      </application>
+```
+where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 ### Step 4:  Run the sample
 
@@ -61,43 +98,77 @@ Sign out by clicking the Sign out button and confirm that you lose access to the
 Coming soon...
 ## About the code
 The structure of the solution is straightforward. All the application logic and UX reside in UserDetailsClient (portable).
-UserDetailsClient.Droid and UserDetailsClient.iOS both include a MainPageRenderer.cs class, which is used for assigning values at runtime to the PlatformParameters property of the main page. The PlatformParameters construct is used by MSAL for understanding at runtime on which platform it is running  - so that it can select the right authentication UX and token storage. Please note, MSAL does not need PlatformParameters for UWP apps.
-UserDetailsClient.Droid requires one extra line of code to be added in the MainActivity.cs file:
-
-```
-AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
-
-```
-That line is used in `OnActivityResult` to ensure that the control goes back to MSAL once the interactive portion of the authentication flow ended.
-
-The MSAL main primitive, `PublicClientApplication`, is initialized as a static variable in App.cs.
-At application startup, the main page attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performeing that logic:
+MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs.
+At application startup, the main page attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 ```
 protected override async void OnAppearing()
 {
-    App.PCA.PlatformParameters = platformParameters;
     // let's see if we have a user in our belly already
     try
     {
-        AuthenticationResult ar = await App.PCA.AcquireTokenSilentAsync(App.Scopes);
-        RefreshUserData(ar.Token);
+        AuthenticationResult ar = 
+            await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
+        RefreshUserData(ar.AccessToken);
         btnSignInSignOut.Text = "Sign out";
     }
+    catch
+    {
+        // doesn't matter, we go in interactive more
+        btnSignInSignOut.Text = "Sign in";
+    }
+}
+
 ```
-Note that this code is also used for assigning the previously mentioned MSAL's `PlatformParameters ` with the `platformParameters` value, itself assigned by the platform specific PageRenderer as discussed. 
+
 If the attempt to obtain a token silently fails, we do nothing and display the screen with the sign in button.
 When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
 ```
-AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes);
+AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
 ```
+The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested throuhg subsequent web API call (in this sample, encapsulated in `RefreshUserData`). 
+The UiParent is used in Android to tie the authentication flow to the current activity, and is ignored on all other platforms. For more platform specific considerations, please see below.
 
-The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users               
+The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.               
 ```
 foreach (var user in App.PCA.Users)
 {
-    user.SignOut();
+    App.PCA.Remove(user);
 }
 ```
+
+### Android specific considerations
+The platform specific projects require only a couple of extra lines to accommodate for individual platform differences.
+
+UserDetailsClient.Droid requires one two extra lines in the `MainActivity.cs` file.
+In `OnActivityResult`, we need to add
+
+```
+AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+
+```
+That line ensures that the control goes back to MSAL once the interactive portion of the authentication flow ended.
+
+In `OnCreate`, we need to add the following assignment:
+```
+App.UiParent = new UIParent(Xamarin.Forms.Forms.Context as Activity); 
+```
+That code ensures that the authentication flows occur in the context of the current activity.  
+
+
+### iOS specific considerations
+
+UserDetailsClient.iOS only requires one extra line, in AppDelegate.cs.
+You need to ensure that the OpenUrl handler looks as ine snippet below:
+```
+public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+{
+    AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url, "");
+    return true;
+}
+```
+Once again, this logic is meant to ensure that once the interactive portion of the authentication flow is concluded, the flow goes back to MSAL.
+
+
 ## More information
 For more information, please visit the [new documentation homepage for Microsoft identity](http://aka.ms/aaddevv2). 

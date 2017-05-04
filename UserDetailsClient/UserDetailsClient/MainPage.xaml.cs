@@ -24,12 +24,10 @@ namespace UserDetailsClient
             // let's see if we have a user in our belly already
             try
             {
-                if (App.PCA.Users.Count() > 0)
-                {
-                    AuthenticationResult ar = await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.First());
-                    RefreshUserData(ar.AccessToken);
-                    btnSignInSignOut.Text = "Sign out";
-                }
+                AuthenticationResult ar = 
+                    await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
+                RefreshUserData(ar.AccessToken);
+                btnSignInSignOut.Text = "Sign out";
             }
             catch
             {
@@ -57,7 +55,7 @@ namespace UserDetailsClient
                     btnSignInSignOut.Text = "Sign in";
                 }
             }
-            catch(Exception ee)
+            catch (Exception ee)
             {
 
             }

@@ -17,8 +17,8 @@ To run this sample you will need:
 - Visual Studio 2017
 - An Internet connection
 - At least one of the following accounts:
-- - A Microsoft Account
-- - An Azure AD account
+- A Microsoft Account
+- An Azure AD account
 
 You can get a Microsoft Account for free by choosing the Sign up option while visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/). 
 You can get an Office365 office subscription, which will give you an Azure AD account, at [https://products.office.com/en-us/try](https://products.office.com/en-us/try). 

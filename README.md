@@ -92,7 +92,11 @@ Clean the solution, rebuild the solution, and run it.
 Click the sign-in button at the bottom of the application screen. On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience.During the sign in process, you will be prompted to grant various permissions.   
 Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
 Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-Sign out by clicking the Sign out button and confirm that you lose access to the API until the enxt interactive sign in.  
+Sign out by clicking the Sign out button and confirm that you lose access to the API until the enxt interactive sign in.
+
+#### Running in an Android Emulator
+MSAL in Android requires support for Custom Chrome Tabs for displaying authentication prompts.
+Not every meulator image comes with Chrome on board: please refer to [this document](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md) for instructions on how to ensure that your emulator supports the features required by MSAL. 
 
 ## Deploy this sample to Azure
 Coming soon...

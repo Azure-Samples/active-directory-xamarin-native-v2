@@ -60,7 +60,7 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.3.4.224\lib\MonoAndroid10\FormsViewGroup.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Identity.Client, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Identity.Client.1.1.0-alpha0332\lib\monoandroid70\Microsoft.Identity.Client.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Identity.Client.1.1.0-preview\lib\monoandroid70\Microsoft.Identity.Client.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />

@@ -32,7 +32,7 @@ namespace UserDetailsClient.iOS
 
         public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
         {
-            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url, "");
+            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
             return true;
         }
     }

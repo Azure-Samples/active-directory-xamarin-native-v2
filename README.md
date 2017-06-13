@@ -95,11 +95,9 @@ Close the application and reopen it. You will see that the app retains access to
 Sign out by clicking the Sign out button and confirm that you lose access to the API until the enxt interactive sign in.
 
 #### Running in an Android Emulator
-MSAL in Android requires support for Custom Chrome Tabs for displaying authentication prompts.
-Not every meulator image comes with Chrome on board: please refer to [this document](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md) for instructions on how to ensure that your emulator supports the features required by MSAL. 
+MSAL in Android requires support for Chrome Custom Tabs for displaying authentication prompts.
+Not every emulator image comes with Chrome on board: please refer to [this document](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md) for instructions on how to ensure that your emulator supports the features required by MSAL. 
 
-## Deploy this sample to Azure
-Coming soon...
 ## About the code
 The structure of the solution is straightforward. All the application logic and UX reside in UserDetailsClient (portable).
 MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs.

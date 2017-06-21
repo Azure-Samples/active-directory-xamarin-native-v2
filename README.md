@@ -1,7 +1,7 @@
 ---
 services: active-directory
 platforms: dotnet, xamarin
-author: vibronet
+author: jmprieur
 ---
 
 

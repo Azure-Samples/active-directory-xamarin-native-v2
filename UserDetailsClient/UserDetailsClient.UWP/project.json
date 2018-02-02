@@ -1,11 +1,11 @@
 ﻿{
   "dependencies": {
-    "Microsoft.Identity.Client": "1.1.0-preview",
+    "Microsoft.Identity.Client": "1.1.2-preview0008",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
-    "Xamarin.Forms": "2.3.4.224"
+    "Xamarin.Forms": "2.5.0.122203"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10240": {}
   },
   "runtimes": {
     "win10-arm": {},

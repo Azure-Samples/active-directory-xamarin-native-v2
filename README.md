@@ -161,7 +161,7 @@ That line ensures that the control goes back to MSAL once the interactive portio
 
 In `OnCreate`, we need to add the following assignment:
 ```C#
-App.UiParent = new UIParent(Xamarin.Forms.Forms.Context as Activity); 
+App.UiParent = new UIParent(this); 
 ```
 That code ensures that the authentication flows occur in the context of the current activity.  
 

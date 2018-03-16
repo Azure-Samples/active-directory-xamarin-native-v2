@@ -36,7 +36,7 @@
    </array>
 	
     <key>MinimumOSVersion</key>
-    <string>6.0</string>
+    <string>7.0</string>
     <key>CFBundleDisplayName</key>
     <string>UserDetailsClient</string>
     <key>CFBundleIdentifier</key>

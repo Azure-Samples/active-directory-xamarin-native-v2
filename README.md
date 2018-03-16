@@ -9,6 +9,7 @@ endpoint: AAD V2
 ---
 
 # Integrate Microsoft identity and the Microsoft Graph into a Xamarin forms app using MSAL
+## About this sample
 This is a simple [Xamarin Forms](https://www.xamarin.com/visual-studio) app showcasing how to use MSAL.NET to authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) and access the Microsoft Graph with the resulting token.
 
 
@@ -20,7 +21,7 @@ To run this sample you will need:
 - At least one of the following accounts:
   - A Microsoft Account
   - An Azure AD account
- - for UWP, if you want to test the UWP application, you want to add the SDK corresponding to your version of Windows 10 (or all the Windows 10 SDKs). See [Testing UWP applications on Windows 10](#Testing-UWP-applications-on-Windows-10)
+ - For [UWP](https://docs.microsoft.com/en-us/windows/uwp/get-started/whats-a-uwp), if you want to test the UWP application, you will have to add the SDK corresponding to your version of Windows 10 (or all the Windows 10 SDKs). See [Testing UWP applications on Windows 10](#Testing-UWP-applications-on-Windows-10)
 
 You can get a Microsoft Account for free by choosing the Sign up option while visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/). 
 You can get an Office365 office subscription, which will give you an Azure AD account, at [https://products.office.com/en-us/try](https://products.office.com/en-us/try). 
@@ -29,6 +30,8 @@ You can get an Office365 office subscription, which will give you an Azure AD ac
 ### Step 1:  Clone or download this repository
 
 From your shell or command line:
+
+`git clone https://github.com/Azure-Samples/active-directory-xamarin-native-v2.git`
 
 > Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 

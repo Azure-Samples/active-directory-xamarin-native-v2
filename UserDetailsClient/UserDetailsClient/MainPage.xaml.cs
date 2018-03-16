@@ -55,7 +55,7 @@ namespace UserDetailsClient
                     btnSignInSignOut.Text = "Sign in";
                 }
             }
-            catch (Exception ee)
+            catch (Exception)
             {
 
             }
@@ -87,7 +87,7 @@ namespace UserDetailsClient
             }
             else
             {
-                DisplayAlert("Something went wrong with the API call", responseString, "Dismiss");
+                await DisplayAlert("Something went wrong with the API call", responseString, "Dismiss");
             }
         }
     }

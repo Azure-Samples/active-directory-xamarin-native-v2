@@ -20,6 +20,10 @@ namespace UserDetailsClient.Droid
 {
     class MainPageRenderer : PageRenderer
     {
+        public MainPageRenderer(Context context) : base(context)
+        {
+
+        }
         MainPage page;
 
         protected override void OnElementChanged(ElementChangedEventArgs<Page> e)

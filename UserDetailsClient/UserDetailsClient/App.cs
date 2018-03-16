@@ -11,7 +11,7 @@ namespace UserDetailsClient
     public class App : Application
     {
         public static PublicClientApplication PCA = null;
-        public static string ClientID = "a7d8cef0-4145-49b2-a91d-95c54051fa3f";
+        public static string ClientID = "[Enter client ID as obtained from apps.dev.microsoft.com, e.g. a7d8cef0-4145-49b2-a91d-95c54051fa3f]";
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
 

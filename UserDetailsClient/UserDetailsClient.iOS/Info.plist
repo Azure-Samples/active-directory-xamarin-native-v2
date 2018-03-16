@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
@@ -30,7 +30,7 @@
        <string>com.yourcompany.UserDetailsClient</string>
        <key>CFBundleURLSchemes</key>
        <array>
-         <string>msala7d8cef0-4145-49b2-a91d-95c54051fa3f</string>
+         <string>msal[Enter client ID as obtained from apps.dev.microsoft.com, e.g. a7d8cef0-4145-49b2-a91d-95c54051fa3f]</string>
        </array>
      </dict>
    </array>

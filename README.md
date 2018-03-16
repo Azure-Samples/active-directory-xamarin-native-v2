@@ -7,6 +7,7 @@ client: Xamarin
 service: Microsoft Graph 
 endpoint: AAD V2
 ---
+![](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/32/badge)
 
 # Integrate Microsoft identity and the Microsoft Graph into a Xamarin forms app using MSAL
 ## About this sample

@@ -110,7 +110,7 @@ Not every emulator image comes with Chrome on board: please refer to [this docum
 The structure of the solution is straightforward. All the application logic and UX reside in ``UserDetailsClient (portable)`` project.
 - MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 - At application startup, the main page attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
-    ```C#
+  ```C#
     protected override async void OnAppearing()
     {
         // let's see if we have a user in our belly already
@@ -127,8 +127,8 @@ The structure of the solution is straightforward. All the application logic and 
             btnSignInSignOut.Text = "Sign in";
         }
     }
-    
-```
+  ```
+
 - If the attempt to obtain a token silently fails, we do nothing and display the screen with the sign in button (at the bottom of the application).
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 

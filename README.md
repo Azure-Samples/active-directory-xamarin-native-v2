@@ -11,8 +11,13 @@ endpoint: AAD V2
 
 # Integrate Microsoft identity and the Microsoft Graph into a Xamarin forms app using MSAL
 ## About this sample
-This is a simple [Xamarin Forms](https://www.xamarin.com/visual-studio) app showcasing how to use MSAL.NET to authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) and access the Microsoft Graph with the resulting token.
+This is a simple [Xamarin Forms](https://www.xamarin.com/visual-studio) app showcasing how to use MSAL.NET to:
+1. authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) and get an access token to
+2. access the Microsoft Graph.
 
+The Xamarin Forms application is provided for Xamarin.iOS, Xamarin.Android, and Xamarin.UWP
+
+![Topology](./ReadmeFiles/Topology.png)
 
 ## How To Run this Sample
 
@@ -110,7 +115,7 @@ Not every emulator image comes with Chrome on board: please refer to [this docum
 The structure of the solution is straightforward. All the application logic and UX reside in ``UserDetailsClient (portable)`` project.
 - MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 - At application startup, the main page attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
-  ```C#
+  ```CSharp
     protected override async void OnAppearing()
     {
         // let's see if we have a user in our belly already
@@ -132,7 +137,7 @@ The structure of the solution is straightforward. All the application logic and 
 - If the attempt to obtain a token silently fails, we do nothing and display the screen with the sign in button (at the bottom of the application).
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
-```C#
+```CSharp
 AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
 ```
 
@@ -140,7 +145,7 @@ AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiPare
 The `UiParent` is used in Android to tie the authentication flow to the current activity, and is ignored on all other platforms. For more platform specific considerations, please see below.
 
 - The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.               
-    ```C#
+    ```CSharp
     foreach (var user in App.PCA.Users.ToArray())
     {
         App.PCA.Remove(user);
@@ -153,14 +158,14 @@ The platform specific projects require only a couple of extra lines to accommoda
 The `UserDetailsClient.Droid` project requires two extra lines in the `MainActivity.cs` file.
 In `OnActivityResult`, we need to add
 
-```C#
+```CSharp
 AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
 
 ```
 That line ensures that the control goes back to MSAL once the interactive portion of the authentication flow ended.
 
 In `OnCreate`, we need to add the following assignment:
-```C#
+```CSharp
 App.UiParent = new UIParent(this); 
 ```
 That code ensures that the authentication flows occur in the context of the current activity.  
@@ -169,7 +174,7 @@ That code ensures that the authentication flows occur in the context of the curr
 
 The `UserDetailsClient.iOS` project only requires one extra line, in `AppDelegate.cs`.
 You need to ensure that the OpenUrl handler looks as the snippet below:
-```C#
+```CSharp
 public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 {
     AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url, "");

@@ -54,13 +54,13 @@ Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or
 
 1. Open the solution in Visual Studio 2017.
 2. Open the `UserDatailsClient\App.cs` file.
-3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, again in Step 2.
+3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.
 
 #### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
 1. Open the `UserDetailsClient.iOS\AppDelegate.cs` file.
-2. Locate the `App.PCA.RedirectUri` assignment, and change it to assign the string `"msal<Application Id>://auth"` where `<Application Id>` is the identifier you copied in step 2
+2. Locate the `App.PCA.RedirectUri` assignment, and change it to assign the string `"msal<Application Id>://auth"` where `<Application Id>` is the identifier you copied in Step 2.
 3. Open the `UserDetailsClient.iOS\info.plist` file in a text editor (opening it in Visual Studio won't work for this step as you need to edit the text)
-4. In the URL types, section, add an entry for the authorization schema used in your redirectUri.
+4. In the URL types section, add an entry for the authorization schema used in your redirectUri:
 ```Xml
     <key>CFBundleURLTypes</key>
        <array>
@@ -76,14 +76,14 @@ Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or
      </dict>
        </array> 
 ```
-where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
+where `[APPLICATIONID]` is the identifier you copied in Step 2. Save the file.
 
 #### [OPTIONAL] Step 3b: Configure the Android project with your return URI
 
 1. Open the `UserDetailsClient.Droid\MainActivity.cs` file.
-2. Locate the `App.PCA.RedirectUri` assignment, and change it to assign the string `"msal<Application Id>://auth"` where `<Application Id>` is the identifier you copied in step 2
+2. Locate the `App.PCA.RedirectUri` assignment, and change it to assign the string `"msal<Application Id>://auth"` where `<Application Id>` is the identifier you copied in Step 2
 3. Open the `UserDetailsClient.Droid\Properties\AndroidManifest.xml`
-4. Add or modify the `<application>` element as in the following
+4. Add or modify the `<application>` element as in the following:
 ```Xml
     <application>
     <activity android:name="microsoft.identity.client.BrowserTabActivity">
@@ -96,16 +96,16 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
     </activity>
       </application>
 ```
-where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
+where `[APPLICATIONID]` is the identifier you copied in Step 2. Save the file.
 
 ### Step 4:  Run the sample
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
-- Click the sign-in button at the bottom of the application screen. On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data)   
+- Click the sign-in button at the bottom of the application screen. On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).   
 - Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
 - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-- Sign out by clicking the Sign out button and confirm that you lose access to the API until the enxt interactive sign in.
+- Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
 
 #### Running in an Android Emulator
 MSAL.NET in Android requires support for Chrome Custom Tabs for displaying authentication prompts.
@@ -134,7 +134,7 @@ The structure of the solution is straightforward. All the application logic and 
     }
   ```
 
-- If the attempt to obtain a token silently fails, we do nothing and display the screen with the sign in button (at the bottom of the application).
+- If the attempt to obtain a token silently fails, we display a screen with the sign in button (at the bottom of the application).
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
 ```CSharp
@@ -152,8 +152,11 @@ The `UiParent` is used in Android to tie the authentication flow to the current 
     }
     ```
 
-### Android specific considerations
+### Platform specific considerations
+
 The platform specific projects require only a couple of extra lines to accommodate for individual platform differences.
+
+### Android specific considerations
 
 The `UserDetailsClient.Droid` project requires two extra lines in the `MainActivity.cs` file.
 In `OnActivityResult`, we need to add
@@ -184,7 +187,7 @@ public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 Once again, this logic is meant to ensure that once the interactive portion of the authentication flow is concluded, the flow goes back to MSAL.
 
 ### UWP specific considerations
-You can set the `UseCorporateNework` boolean to `true` to benefit from windows integrated authentication (and therefore SSO with the user signed-in with the operating system) if this user is signed-in with an account in a federated Azure AD tenant. This leverages WAB (Web Authentication Broker). Setting this property to true assumes that the application developer has enabled Windows Integrated Authentication (WIA) in the application. For this, in the `Package.appxmanifest` for your UWP application, in the Capabilities tab, enable the following capabilities: 
+You can set the `UseCorporateNework` boolean to `true` to benefit from windows integrated authentication (and therefore SSO with the user signed-in with the operating system), if this user is signed-in with an account in a federated Azure AD tenant. This leverages WAB (Web Authentication Broker). Setting this property to true assumes that the application developer has enabled Windows Integrated Authentication (WIA) in the application. For this, in the `Package.appxmanifest` for your UWP application, in the Capabilities tab, enable the following capabilities: 
 - Enterprise Authentication
 - Private Networks (Client & Server)
 - Shared User Certificate
@@ -193,18 +196,18 @@ WIA is not enabled by default because applications requesting the Enterprise Aut
 
 ## Troubleshooting
 ###  Some projects don't load in Visual Studio
-This might be because you have not installed all the required components from Visual Studio. you need'll need to add the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/), in the Visual Studio Installer.
+This might be because you have not installed all the required components from Visual Studio. you'll need to add the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/), in the Visual Studio Installer.
 
 ### The project you want is not built
-you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
+You need to right click on the Visual Studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
 
 ### Testing UWP applications on Windows 10
-- you might want to right click on the `UserDetailsClient.UWP (Universal Windows)` project and, in the **Application** tab, change the Universal Windows **Target** and **Min Version** depending on the SDK you have installed on your machine. 
+- You might want to right click on the `UserDetailsClient.UWP (Universal Windows)` project and, in the **Application** tab, change the Universal Windows **Target** and **Min Version** depending on the SDK you have installed on your machine. 
 - To install more Windows 10 SDKs, run **Visual Studio Installer**, choose your Visual Studio installation, click on **Modify**, and in the **Individual components** tab, in the **SDKs, Libraries, and frameworks** section, make sure you check all the Windows 10 SDK versions that you need.
 
-### On Windows 10 store apps, you cannot sign-in with your windows hello PIN
+### On Windows 10 store apps, you cannot sign-in with your Windows hello PIN
 If sign-in with your work or school account and your organization requires conditional access, you are asked to provide a certificate. 
-- If you did not enabled UWP specific considerations above, you will get this error:
+- If you did not enable UWP specific considerations above, you will get this error:
     ```
     No valid client certificate found in the request. No valid certificates found in the user's certificate store. Please try again choosing a different authentication method. 
     ```
@@ -217,6 +220,6 @@ For more information, please visit:
     - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
     - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
     - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
-- To undestand more about the AAD V2 endpoint see http://aka.ms/aaddevv2 
+- To understand more about the AAD V2 endpoint see http://aka.ms/aaddevv2 
 - For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
 - For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)

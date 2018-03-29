@@ -25,8 +25,7 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-            //App.PCA.RedirectUri = "vibro://sampledomain/sampleapp";
-            App.PCA.RedirectUri = "msala7d8cef0-4145-49b2-a91d-95c54051fa3f://auth";
+            // App.PCA.RedirectUri = "msala7d8cef0-4145-49b2-a91d-95c54051fa3f://auth";
             return base.FinishedLaunching(app, options);            
         }
 

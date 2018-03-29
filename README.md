@@ -74,7 +74,7 @@ Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or
        <string>com.yourcompany.UserDetailsClient</string>
        <key>CFBundleURLSchemes</key>
        <array>
-     <string>msala[APPLICATIONID]</string>
+     <string>msal[APPLICATIONID]</string>
        </array>
      </dict>
        </array>

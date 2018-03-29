@@ -11,20 +11,28 @@ namespace UserDetailsClient
     public class App : Application
     {
         public static PublicClientApplication PCA = null;
-        public static string ClientID = "a7d8cef0-4145-49b2-a91d-95c54051fa3f";
+		/// <summary>
+		/// The ClientID is the Application ID found in the portal (https://apps.dev.microsoft.com). 
+		/// You can use the below id however if you create an app of your own you should replace the value here.
+		/// </summary>
+		public static string ClientID = "a7d8cef0-4145-49b2-a91d-95c54051fa3f"; 
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
 
         public static UIParent UiParent = null;
 
-      
 
-        public App()
-        {
-            // default redirectURI; each platform specific project will have to override it with its own
-            PCA = new PublicClientApplication(ClientID);
-                        
-            MainPage = new NavigationPage(new UserDetailsClient.MainPage());        
+
+		public App()
+		{
+			// default redirectURI; each platform specific project will have to override it with its own
+			// why not just insert it here?
+			PCA = new PublicClientApplication(ClientID)
+			{
+				RedirectUri = $"masl{App.ClientID}://auth"
+			};
+
+			MainPage = new NavigationPage(new UserDetailsClient.MainPage());        
         }
 
         protected override void OnStart()

@@ -199,6 +199,12 @@ public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 
 Once again, this logic is meant to ensure that once the interactive portion of the authentication flow is concluded, the flow goes back to MSAL.
 
+Also, in order to make the token cache work and have the `AcquireTokenSilentAsync` work multiple steps must be followed :
+
+Enable Keychain access in your Entitlements.plist file and specify in the Keychain Groups your bundle identifier.
+
+In your project options, on iOS Bundle Signing view, select your Entitlements.plist file for the Custom Entitlements field.
+
 ### UWP specific considerations
 
 You can set the `UseCorporateNework` boolean to `true` to benefit from windows integrated authentication (and therefore SSO with the user signed-in with the operating system) if this user is signed-in with an account in a federated Azure AD tenant. This leverages WAB (Web Authentication Broker). Setting this property to true assumes that the application developer has enabled Windows Integrated Authentication (WIA) in the application. For this, in the `Package.appxmanifest` for your UWP application, in the Capabilities tab, enable the following capabilities:

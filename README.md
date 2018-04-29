@@ -201,9 +201,8 @@ Once again, this logic is meant to ensure that once the interactive portion of t
 
 Also, in order to make the token cache work and have the `AcquireTokenSilentAsync` work multiple steps must be followed :
 
-Enable Keychain access in your Entitlements.plist file and specify in the Keychain Groups your bundle identifier.
-
-In your project options, on iOS Bundle Signing view, select your Entitlements.plist file for the Custom Entitlements field.
+1. Enable Keychain access in your `Entitlements.plist` file and specify in the **Keychain Groups** your bundle identifier.
+1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
 
 ### UWP specific considerations
 

@@ -19,14 +19,16 @@ namespace UserDetailsClient
         {
             InitializeComponent();
         }
+#pragma warning disable AvoidAsyncVoid // async methods should return Task, but here this is imposed by Xamarin
         protected override async void OnAppearing()
+#pragma warning restore AvoidAsyncVoid
         {
             // let's see if we have a user in our belly already
             try
             {
                 AuthenticationResult ar = 
                     await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
-                RefreshUserData(ar.AccessToken);
+                await RefreshUserDataAsync(ar.AccessToken);
                 btnSignInSignOut.Text = "Sign out";
             }
             catch
@@ -42,7 +44,7 @@ namespace UserDetailsClient
                 if (btnSignInSignOut.Text == "Sign in")
                 {
                     AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
-                    RefreshUserData(ar.AccessToken);
+                    await RefreshUserDataAsync(ar.AccessToken);
                     btnSignInSignOut.Text = "Sign out";
                 }
                 else
@@ -61,7 +63,7 @@ namespace UserDetailsClient
             }
         }
 
-        public async void RefreshUserData(string token)
+        public async Task RefreshUserDataAsync(string token)
         {
             //get data from API
             HttpClient client = new HttpClient();

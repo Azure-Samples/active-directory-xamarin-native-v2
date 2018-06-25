@@ -27,7 +27,7 @@ namespace UserDetailsClient
 		{
 			PCA = new PublicClientApplication(ClientID)
 			{
-				RedirectUri = $"msal{App.ClientID}://auth"
+				RedirectUri = $"msal{App.ClientID}://auth",
 			};
 
 			MainPage = new NavigationPage(new UserDetailsClient.MainPage());        

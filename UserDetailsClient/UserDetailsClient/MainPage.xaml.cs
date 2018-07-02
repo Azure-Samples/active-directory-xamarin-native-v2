@@ -49,7 +49,7 @@ namespace UserDetailsClient
                 }
                 else
                 {
-                    foreach (var user in App.PCA.Users)
+                    foreach (var user in App.PCA.Users.ToArray())
                     {
                         App.PCA.Remove(user);
                     }

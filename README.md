@@ -203,6 +203,7 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 
 1. Enable Keychain access in your `Entitlements.plist` file and specify in the **Keychain Groups** your bundle identifier.
 1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
+1. When signing a certificate, make sure XCode uses the same Apple Id. 
 
 ### UWP specific considerations
 

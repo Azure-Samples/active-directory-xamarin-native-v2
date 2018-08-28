@@ -26,8 +26,10 @@ namespace UserDetailsClient
             // let's see if we have a user in our belly already
             try
             {
+                IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
+                IAccount firstAccount = accounts.FirstOrDefault();
                 AuthenticationResult ar = 
-                    await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
+                    await App.PCA.AcquireTokenSilentAsync(App.Scopes, firstAccount);
                 await RefreshUserDataAsync(ar.AccessToken);
                 Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
             }
@@ -49,10 +51,10 @@ namespace UserDetailsClient
                 }
                 else
                 {
-                    foreach (var user in App.PCA.Users.ToArray())
-                    {
-                        App.PCA.Remove(user);
-                    }
+                    IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
+                    IAccount firstAccount = accounts.FirstOrDefault();
+                    await App.PCA.RemoveAsync(firstAccount);
+                  
                     slUser.IsVisible = false;
                     Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
                 }

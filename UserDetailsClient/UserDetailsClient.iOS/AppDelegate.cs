@@ -25,6 +25,7 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
+            App.UiParent = new UIParent();
             return base.FinishedLaunching(app, options);            
         }
 

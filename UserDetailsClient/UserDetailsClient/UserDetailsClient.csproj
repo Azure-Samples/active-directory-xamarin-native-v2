@@ -10,7 +10,7 @@
   
   <ItemGroup>
     <PackageReference Include="AsyncUsageAnalyzers" version="1.0.0-alpha003" developmentDependency="true" />
-    <PackageReference Include="Microsoft.Identity.Client" version="2.2.1-preview" />
+    <PackageReference Include="Microsoft.Identity.Client" version="2.3.0-preview" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
     <PackageReference Include="Xamarin.Forms" version="2.5.0.122203" />

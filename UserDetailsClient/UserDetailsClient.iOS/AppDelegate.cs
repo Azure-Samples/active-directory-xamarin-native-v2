@@ -5,6 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Platforms.iOS;
 
 namespace UserDetailsClient.iOS
 {

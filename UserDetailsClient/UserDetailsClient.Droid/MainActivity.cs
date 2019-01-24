@@ -8,6 +8,7 @@ using Android.Widget;
 using Android.OS;
 using Microsoft.Identity.Client;
 using Android.Content;
+using Microsoft.Identity.Client.Platforms.Android;
 
 namespace UserDetailsClient.Droid
 {

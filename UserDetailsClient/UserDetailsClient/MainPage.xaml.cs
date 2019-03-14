@@ -35,7 +35,8 @@ namespace UserDetailsClient
                     }
                     catch (MsalUiRequiredException ex)
                     {
-                        authResult = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
+                        authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, this).ExecuteAsync();
+ 
                         await RefreshUserDataAsync(authResult.AccessToken);
                         Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                     }
@@ -52,7 +53,7 @@ namespace UserDetailsClient
                     Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }

@@ -21,7 +21,7 @@ namespace UserDetailsClient
 		public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
 
-        public static UIParent UiParent { get; set; }
+        public static object UiParent { get; set; }
 
 		public App()
 		{

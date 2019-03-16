@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Microsoft.Identity.Client.AppConfig;
 using Xamarin.Forms;
 
 namespace UserDetailsClient
 {
     public class App : Application
     {
-        public static PublicClientApplication PCA = null;
+        public static IPublicClientApplication PCA = null;
 
 		/// <summary>
 		/// The ClientID is the Application ID found in the portal (https://apps.dev.microsoft.com). 
@@ -21,16 +21,15 @@ namespace UserDetailsClient
 		public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
 
-        public static UIParent UiParent { get; set; }
+        public static object UiParent { get; set; }
 
 		public App()
 		{
-			PCA = new PublicClientApplication(ClientID)
-			{
-				RedirectUri = $"msal{App.ClientID}://auth",
-			};
+            PCA = PublicClientApplicationBuilder.Create(ClientID)
+                .WithRedirectUri($"msal{App.ClientID}://auth")
+                .Build();
 
-			MainPage = new NavigationPage(new UserDetailsClient.MainPage());        
+            MainPage = new NavigationPage(new UserDetailsClient.MainPage());        
         }
 
         protected override void OnStart()

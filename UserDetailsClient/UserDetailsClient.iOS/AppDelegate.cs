@@ -5,6 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Platforms.iOS;
 
 namespace UserDetailsClient.iOS
 {
@@ -25,7 +26,7 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-            App.UiParent = new UIParent();
+            App.UiParent = null; // no UI parent on iOS
             return base.FinishedLaunching(app, options);            
         }
 

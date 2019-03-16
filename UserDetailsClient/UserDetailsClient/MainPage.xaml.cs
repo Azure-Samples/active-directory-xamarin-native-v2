@@ -29,15 +29,25 @@ namespace UserDetailsClient
                     try
                     {
                         IAccount firstAccount = accounts.FirstOrDefault();
-                        authResult = await App.PCA.AcquireTokenSilentAsync(App.Scopes, firstAccount);
+                        authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
+                                              .ExecuteAsync();
                         await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
                         Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                     }
                     catch (MsalUiRequiredException ex)
                     {
-                        authResult = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
-                        await RefreshUserDataAsync(authResult.AccessToken);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
+                        try
+                        {
+                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent)
+                                                      .ExecuteAsync();
+
+                            await RefreshUserDataAsync(authResult.AccessToken);
+                            Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
+                        }
+                        catch(Exception ex2)
+                        {
+
+                        }
                     }
                 }
                 else
@@ -52,7 +62,7 @@ namespace UserDetailsClient
                     Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }

@@ -29,7 +29,8 @@ namespace UserDetailsClient
                     try
                     {
                         IAccount firstAccount = accounts.FirstOrDefault();
-                        authResult = await App.PCA.AcquireTokenSilentAsync(App.Scopes, firstAccount);
+                        authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
+                                              .ExecuteAsync();
                         await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
                         Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                     }
@@ -37,7 +38,8 @@ namespace UserDetailsClient
                     {
                         try
                         {
-                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent).ExecuteAsync();
+                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent)
+                                                      .ExecuteAsync();
 
                             await RefreshUserDataAsync(authResult.AccessToken);
                             Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });

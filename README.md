@@ -47,15 +47,38 @@ From your shell or command line:
 ### [OPTIONAL] Step 2:  Register the sample on the app registration portal
 
 You can run the sample as is with its current settings, or you can optionally register it as a new application under your own developer account.
-Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or follow these [detailed steps](https://azure.microsoft.com/en-us/documentation/articles/active-directory-v2-app-registration/).  Make sure to:
 
-- Copy down the **Application Id** assigned to your app, you'll need it in the next optional step.
-- Add the **Native Application** platform for your app.
+#### Choose the Azure AD tenant where you want to create your applications
+
+As a first step you'll need to:
+
+1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
+1. If your account is present in more than one Azure AD tenant, select `Directory + Subscription` at the top right corner in the menu on top of the page, and switch your portal session to the desired Azure AD tenant.
+1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)**.
+
+#### Register the client app (active-directory-xamarin-native-v2)
+
+1. In **App registrations (Preview)** page, select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `active-directory-xamarin-native-v2`.
+   - In the **Supported account types** section, select **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
+    > Note that if there are more than one redirect URIs, you'd need to add them from the **Authentication** tab later after the app has been created succesfully.
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project in the next optional steps.
+1. In the list of pages for the app, select **Authentication**.
+   - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
+1. Select **Save**.
+1. In the list of pages for the app, select **API permissions**
+   - Click the **Add a permission** button and then,
+   - Ensure that the **Microsoft APIs** tab is selected
+   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+   - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**. Use the search box if necessary.
+   - Select the **Add permissions** button
 
 ### [OPTIONAL] Step 3:  Configure the Visual Studio project with your app coordinates
 
 1. Open the solution in Visual Studio 2017.
-2. Open the `UserDatailsClient\App.cs` file.
+2. Open the `UserDetailsClient\Apps.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.
 
 #### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
@@ -63,6 +86,7 @@ Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or
 1. Open the `UserDetailsClient.iOS\AppDelegate.cs` file.
 2. Open the `UserDetailsClient.iOS\info.plist` file in a text editor (opening it in Visual Studio won't work for this step as you need to edit the text)
 3. In the URL types section, add an entry for the authorization schema used in your redirectUri:
+
 ```Xml
     <key>CFBundleURLTypes</key>
        <array>
@@ -86,6 +110,7 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 1. Open the `UserDetailsClient.Droid\MainActivity.cs` file.
 2. Open the `UserDetailsClient.Droid\Properties\AndroidManifest.xml`
 3. Add or modify the `<application>` element as in the following:
+
 ```Xml
     <application>
     <activity android:name="microsoft.identity.client.BrowserTabActivity">
@@ -105,7 +130,8 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
-- Click the sign-in button at the bottom of the application screen. On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).   
+
+- Click the sign-in button at the bottom of the application screen. On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
 - Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
 - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
 - Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
@@ -121,43 +147,52 @@ The structure of the solution is straightforward. All the application logic and 
 
 - MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
-- At application startup, the main page attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
+  ```CSharp
+  PCA = PublicClientApplicationBuilder.Create(ClientID)
+                                      .WithRedirectUri($"msal{App.ClientID}://auth")
+                                      .Build();
+  ```
+
+- At application startup, the main page (`UserDetailsClient/MainPage.xaml.cs`) attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
   ```CSharp
-    protected override async void OnAppearing()
-    {
-        // let's see if we have a user in our belly already
-        try
-        {
-            AuthenticationResult ar =
-              await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
-            RefreshUserData(ar.AccessToken);
-            btnSignInSignOut.Text = "Sign out";
-        }
-        catch
-        {
-            // doesn't matter, we go in interactive more
-            btnSignInSignOut.Text = "Sign in";
-        }
-    }
+  try
+  {
+   IAccount firstAccount = accounts.FirstOrDefault();
+   authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
+                             .ExecuteAsync();
+   /* display info*/
+  }
+  catch (MsalUiRequiredException ex)
+  {
+   try
+   {
+    authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent)
+                              .ExecuteAsync();
+
+    /* display info*/
+   }
+  }
   ```
 
 - If the attempt to obtain a token silently fails, we display a screen with the sign in button (at the bottom of the application).
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
   ```CSharp
-  AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
+  AuthenticationResult ar = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent);
   ```
 
 - The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call (in this sample, encapsulated in `RefreshUserData`).
 
-The `UiParent` is used in Android to tie the authentication flow to the current activity, and is ignored on all other platforms. For more platform specific considerations, please see below.
+The `UiParent` is used in Android to tie the authentication flow to the current activity, and in UWP to center the window. It is ignored on iOS. For more platform specific considerations, please see below.
 
 - The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.
+
     ```CSharp
-    foreach (var user in App.PCA.Users.ToArray())
+    while (accounts.Any())
     {
-        App.PCA.Remove(user);
+     await App.PCA.RemoveAsync(accounts.FirstOrDefault());
+     accounts = await App.PCA.GetAccountsAsync();
     }
     ```
 
@@ -176,10 +211,10 @@ AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestC
 
 That line ensures that the control goes back to MSAL once the interactive portion of the authentication flow ended.
 
-In `OnCreate`, we need to add the following assignment:
+In `OnCreate`, we need to add the following assignment (the UiParent is the activity)
 
 ```CSharp
-App.UiParent = new UIParent(this);
+App.UiParent = this;
 ```
 
 That code ensures that the authentication flows occur in the context of the current activity.
@@ -192,8 +227,8 @@ You need to ensure that the OpenUrl handler looks as the snippet below:
 ```CSharp
 public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 {
-    AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url, "");
-    return true;
+ AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
+ return true;
 }
 ```
 
@@ -203,7 +238,7 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 
 1. Enable Keychain access in your `Entitlements.plist` file and specify in the **Keychain Groups** your bundle identifier.
 1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
-1. When signing a certificate, make sure XCode uses the same Apple Id. 
+1. When signing a certificate, make sure XCode uses the same Apple Id.
 
 ### UWP specific considerations
 
@@ -235,9 +270,11 @@ you need to right click on the visual studio solution, choose **Configuration Pr
 If sign-in with your work or school account and your organization requires conditional access, you are asked to provide a certificate:
 
 - If you did not enabled UWP specific considerations above, you will get this error:
+
     ```Text
     No valid client certificate found in the request. No valid certificates found in the user's certificate store. Please try again choosing a different authentication method.
     ```
+
 - On Windows 10 desktop UWP application, if you enabled the settings described in [UWP specific considerations](#UWP-specific-considerations), the list of certificates is presented, however if you choose to use your PIN, the PIN window is never presented. This is a known limitation with Web authentication broker in UWP applications running on Windows 10 (this works fine on Windows Phone 10). As a work around, you will need to click on the **sign in with other options** link and then choose **Sign-in with a username and password instead**, provide your password and go through the phone authentication.
 
 ## More information

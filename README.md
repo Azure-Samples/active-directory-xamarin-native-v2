@@ -78,7 +78,7 @@ As a first step you'll need to:
 ### [OPTIONAL] Step 3:  Configure the Visual Studio project with your app coordinates
 
 1. Open the solution in Visual Studio 2017.
-2. Open the `UserDetailsClient\Apps.cs` file.
+2. Open the `UserDetailsClient\App.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.
 
 #### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI

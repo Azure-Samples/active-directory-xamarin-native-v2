@@ -40,7 +40,11 @@ You can get an Office365 office subscription, which will give you an Azure AD ac
 
 From your shell or command line:
 
-`git clone https://github.com/Azure-Samples/active-directory-xamarin-native-v2.git`
+```Shell
+git clone https://github.com/Azure-Samples/active-directory-xamarin-native-v2.git
+```
+
+or download and exact the repository .zip file.
 
 > Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
@@ -53,19 +57,19 @@ You can run the sample as is with its current settings, or you can optionally re
 As a first step you'll need to:
 
 1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
-1. If your account is present in more than one Azure AD tenant, select `Directory + Subscription` at the top right corner in the menu on top of the page, and switch your portal session to the desired Azure AD tenant.
-1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)**.
+1. If your account is present in more than one Azure AD tenant, select your profile at the top right corner in the menu on top of the page, and then **switch directory**.
+   Change your portal session to the desired Azure AD tenant.
 
 #### Register the client app (active-directory-xamarin-native-v2)
 
-1. In **App registrations (Preview)** page, select **New registration**.
+1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
+1. Select **New registration**.
 1. When the **Register an application page** appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `active-directory-xamarin-native-v2`.
    - In the **Supported account types** section, select **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
-    > Note that if there are more than one redirect URIs, you'd need to add them from the **Authentication** tab later after the app has been created succesfully.
 1. Select **Register** to create the application.
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project in the next optional steps.
-1. In the list of pages for the app, select **Authentication**.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. In the list of pages for the app, select **Authentication**..
    - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
 1. Select **Save**.
 1. In the list of pages for the app, select **API permissions**
@@ -77,6 +81,7 @@ As a first step you'll need to:
 
 ### [OPTIONAL] Step 3:  Configure the Visual Studio project with your app coordinates
 
+In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 1. Open the solution in Visual Studio 2017.
 2. Open the `UserDetailsClient\App.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.

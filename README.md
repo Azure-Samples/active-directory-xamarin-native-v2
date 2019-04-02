@@ -172,7 +172,7 @@ The structure of the solution is straightforward. All the application logic and 
   {
    try
    {
-    authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent)
+    authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.ParentWindow)
                               .ExecuteAsync();
 
     /* display info*/
@@ -184,16 +184,17 @@ The structure of the solution is straightforward. All the application logic and 
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
   ```CSharp
-  AuthenticationResult ar = await App.PCA.AcquireTokenInteractive(App.Scopes, App.UiParent);
+  AuthenticationResult ar = await App.PCA.AcquireTokenInteractive(App.Scopes, App.ParentWindow);
   ```
 
 - The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call (in this sample, encapsulated in `RefreshUserData`).
 
-The `UiParent` is used in Android to tie the authentication flow to the current activity, and in UWP to center the window. It is ignored on iOS. For more platform specific considerations, please see below.
+The `parentWindow` is used in Android to tie the authentication flow to the current activity, and in UWP to center the window. It is ignored on iOS. For more platform specific considerations, please see below.
 
 - The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.
 
     ```CSharp
+    var accounts = await App.PCA.GetAccountsAsync();
     while (accounts.Any())
     {
      await App.PCA.RemoveAsync(accounts.FirstOrDefault());
@@ -216,10 +217,10 @@ AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestC
 
 That line ensures that the control goes back to MSAL once the interactive portion of the authentication flow ended.
 
-In `OnCreate`, we need to add the following assignment (the UiParent is the activity)
+In `OnCreate`, we need to add the following assignment (the ParentWindow is the activity)
 
 ```CSharp
-App.UiParent = this;
+App.ParentWindow = this;
 ```
 
 That code ensures that the authentication flows occur in the context of the current activity.

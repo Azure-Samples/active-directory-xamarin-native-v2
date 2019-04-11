@@ -38,7 +38,8 @@ namespace UserDetailsClient
                     {
                         try
                         {
-                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes, App.ParentWindow)
+                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
+                                                      .WithParentActivityOrWindow(App.ParentWindow)
                                                       .ExecuteAsync();
 
                             await RefreshUserDataAsync(authResult.AccessToken);

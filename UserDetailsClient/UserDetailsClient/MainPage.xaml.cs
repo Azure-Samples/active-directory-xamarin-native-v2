@@ -2,14 +2,18 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 
 namespace UserDetailsClient
 {
+    // Learn more about making custom code visible in the Xamarin.Forms previewer
+    // by visiting https://aka.ms/xamarinforms-previewer
+    [DesignTimeVisible(true)]
     public partial class MainPage : ContentPage
     {
         public MainPage()
@@ -67,17 +71,17 @@ namespace UserDetailsClient
             catch (MsalUiRequiredException)
             {
                 // pop the browser for the interactive experience
-                authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)                                          
+                authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
                                           .WithParentActivityOrWindow(App.ParentActivity) // this is required for Android
                                           .ExecuteAsync();
             }
 
             await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
 
-           
+
         }
 
-        public async Task RefreshUserDataAsync(string token)
+        private async Task RefreshUserDataAsync(string token)
         {
             //get data from API
             HttpClient client = new HttpClient();
@@ -89,10 +93,9 @@ namespace UserDetailsClient
             {
                 JObject user = JObject.Parse(responseString);
 
-                slUser.IsVisible = true;
-
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    slUser.IsVisible = true;
 
                     lblDisplayName.Text = user["displayName"].ToString();
                     lblGivenName.Text = user["givenName"].ToString();

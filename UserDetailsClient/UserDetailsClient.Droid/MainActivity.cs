@@ -1,14 +1,8 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Microsoft.Identity.Client;
 using Android.Content;
-using Microsoft.Identity.Client.Platforms.Android;
 
 namespace UserDetailsClient.Droid
 {
@@ -21,7 +15,10 @@ namespace UserDetailsClient.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
-            App.ParentWindow = this;           
+
+            // This is a simplistic way of setting the parent activity since there is only one activity
+            // If you have multiple activities, consider using https://github.com/jamesmontemagno/CurrentActivityPlugin
+            App.ParentActivity = this;           
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

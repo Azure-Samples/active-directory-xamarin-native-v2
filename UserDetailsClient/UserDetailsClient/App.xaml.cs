@@ -11,7 +11,7 @@ namespace UserDetailsClient
 
         /// <summary>
         /// The ClientID is the Application ID found in the portal (https://go.microsoft.com/fwlink/?linkid=2083908). 
-        /// You can use the below id however if you create an app of your own you should replace the value here.
+        /// You can use the below id, however, if you create an app of your own you should replace the value here.
         /// </summary>
         public static string ClientID = "a7d8cef0-4145-49b2-a91d-95c54051fa3f";
 
@@ -20,7 +20,7 @@ namespace UserDetailsClient
 
         /// <summary>
         /// The view, window or activity from where the interactive login happens. This is required in Android 
-        /// to capture authentication result from the browser. 
+        /// to capture the authentication result from the browser. 
         /// </summary>
         /// <remarks>
         /// Since this is a shared project, there is no reference to the Activity type, so keep this as an object.
@@ -30,7 +30,8 @@ namespace UserDetailsClient
         public App()
         {
             PCA = PublicClientApplicationBuilder.Create(ClientID)
-              .WithRedirectUri($"msal{App.ClientID}://auth")
+              .WithRedirectUri($"msal{ClientID}://auth")
+              .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
               .Build();
 
             InitializeComponent();

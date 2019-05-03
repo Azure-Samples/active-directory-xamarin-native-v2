@@ -26,7 +26,7 @@ namespace UserDetailsClient
             // on the UI thread now
             if (btnSignInSignOut.Text == "Sign in")
             {
-                await SingInUserAsync().ConfigureAwait(false);
+                await SignInUserAsync().ConfigureAwait(false);
 
                 // no longer on the UI thread becasuse of the ConfigureAwait(false)
                 Device.BeginInvokeOnMainThread(
@@ -35,7 +35,7 @@ namespace UserDetailsClient
             }
             else
             {
-                await SingOutAllUsersAsync().ConfigureAwait(false);
+                await SignOutAllUsersAsync().ConfigureAwait(false);
 
                 Device.BeginInvokeOnMainThread(
                     () => {
@@ -45,7 +45,7 @@ namespace UserDetailsClient
             }
         }
 
-        private async Task SingOutAllUsersAsync()
+        private async Task SignOutAllUsersAsync()
         {
             IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
 
@@ -56,7 +56,7 @@ namespace UserDetailsClient
             }
         }
 
-        private async Task SingInUserAsync()
+        private async Task SignInUserAsync()
         {
             AuthenticationResult authResult = null;
             IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
@@ -77,8 +77,6 @@ namespace UserDetailsClient
             }
 
             await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
-
-
         }
 
         private async Task RefreshUserDataAsync(string token)

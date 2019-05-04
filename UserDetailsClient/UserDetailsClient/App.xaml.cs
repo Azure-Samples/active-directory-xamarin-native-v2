@@ -31,6 +31,7 @@ namespace UserDetailsClient
         {
             PCA = PublicClientApplicationBuilder.Create(ClientID)
               .WithRedirectUri($"msal{App.ClientID}://auth")
+              .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
               .Build();
 
             InitializeComponent();

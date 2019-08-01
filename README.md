@@ -288,8 +288,8 @@ If sign-in with your work or school account and your organization requires condi
 Samples favour simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
 
 - Consider using [dependency injection](https://xamarinhelp.com/xamarin-forms-dependency-injection/) for the `IPublicClientApplication` 
-- Consider wrapping the contruction of the `IPublicClientApplication` and `` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
-- MSAL will let Http exceptions propagate. Consider using [Xamarin.Essentials](https://docs.microsoft.com/en-us/xamarin/essentials/connectivity?tabs=android) to detect situations where the network is down in order to provide a better error message to the user. 
+- Consider wrapping the contruction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
+- MSAL will generally let HTTP exceptions propagate. Consider using [Xamarin.Essentials](https://docs.microsoft.com/en-us/xamarin/essentials/connectivity?tabs=android) to detect situations where the network is down in order to provide a better error message to the user. 
 
 
 ## More information

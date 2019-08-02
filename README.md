@@ -283,6 +283,15 @@ If sign-in with your work or school account and your organization requires condi
 
 - On Windows 10 desktop UWP application, if you enabled the settings described in [UWP specific considerations](#UWP-specific-considerations), the list of certificates is presented, however if you choose to use your PIN, the PIN window is never presented. This is a known limitation with Web authentication broker in UWP applications running on Windows 10 (this works fine on Windows Phone 10). As a work around, you will need to click on the **sign in with other options** link and then choose **Sign-in with a username and password instead**, provide your password and go through the phone authentication.
 
+## Moving from sample to production
+
+Samples favour simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
+
+- Consider using [dependency injection](https://xamarinhelp.com/xamarin-forms-dependency-injection/) for the `IPublicClientApplication` 
+- Consider wrapping the contruction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
+- MSAL will generally let HTTP exceptions propagate. Consider using [Xamarin.Essentials](https://docs.microsoft.com/en-us/xamarin/essentials/connectivity?tabs=android) to detect situations where the network is down in order to provide a better error message to the user. 
+
+
 ## More information
 
 For more information, please visit:

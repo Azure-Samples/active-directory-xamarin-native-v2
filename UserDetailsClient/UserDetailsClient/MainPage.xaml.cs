@@ -25,14 +25,11 @@ namespace UserDetailsClient
             {
                 if (btnSignInSignOut.Text == "Sign in")
                 {
-                    // let's see if we have a user in our belly already
                     try
                     {
                         IAccount firstAccount = accounts.FirstOrDefault();
                         authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
                                               .ExecuteAsync();
-                        await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                     }
                     catch (MsalUiRequiredException ex)
                     {
@@ -41,14 +38,18 @@ namespace UserDetailsClient
                             authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
                                                       .WithParentActivityOrWindow(App.ParentWindow)
                                                       .ExecuteAsync();
-
-                            await RefreshUserDataAsync(authResult.AccessToken);
-                            Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                         }
                         catch(Exception ex2)
                         {
-
+                            await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
                         }
+                    }
+
+                    if (authResult != null)
+                    {
+                        var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
+                        UpdateUserContent(content);
+                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                     }
                 }
                 else
@@ -65,40 +66,47 @@ namespace UserDetailsClient
             }
             catch (Exception ex)
             {
-
+                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
             }
         }
 
-        public async Task RefreshUserDataAsync(string token)
+        private void UpdateUserContent(string content)
         {
-            //get data from API
-            HttpClient client = new HttpClient();
-            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
-            message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token);
-            HttpResponseMessage response = await client.SendAsync(message);
-            string responseString = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
+            if(!string.IsNullOrEmpty(content))
             {
-                JObject user = JObject.Parse(responseString);
+                JObject user = JObject.Parse(content);
 
                 slUser.IsVisible = true;
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
-
                     lblDisplayName.Text = user["displayName"].ToString();
                     lblGivenName.Text = user["givenName"].ToString();
                     lblId.Text = user["id"].ToString();
                     lblSurname.Text = user["surname"].ToString();
                     lblUserPrincipalName.Text = user["userPrincipalName"].ToString();
 
-                    // just in case
                     btnSignInSignOut.Text = "Sign out";
                 });
             }
-            else
+        }
+
+        public async Task<string> GetHttpContentWithTokenAsync(string token)
+        {
+            try
             {
-                await DisplayAlert("Something went wrong with the API call", responseString, "Dismiss");
+                //get data from API
+                HttpClient client = new HttpClient();
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
+                message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                HttpResponseMessage response = await client.SendAsync(message);
+                string responseString = await response.Content.ReadAsStringAsync();
+                return responseString;
+            }
+            catch(Exception ex)
+            {
+                await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss");
+                return ex.ToString();
             }
         }
     }

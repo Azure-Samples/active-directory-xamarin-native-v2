@@ -246,6 +246,16 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
 1. When signing a certificate, make sure XCode uses the same Apple Id.
 
+#### Broker support
+
+On Android and iOS, brokers enable:
+
+- Single Sign On (SSO). Your users won't need to sign-in to each application.
+- Device identification. By accessing the device certificate which was created on the device when it was workplace joined.
+- Application identification verification. When an application calls the broker, it passes its redirect url, and the broker verifies it.
+
+You can learn how to have your application support the broker on iOS in [Leveraging the broker on iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS)
+
 ### UWP specific considerations
 
 You can set the `UseCorporateNework` boolean to `true` to benefit from windows integrated authentication (and therefore SSO with the user signed-in with the operating system) if this user is signed-in with an account in a federated Azure AD tenant. This leverages WAB (Web Authentication Broker). Setting this property to true assumes that the application developer has enabled Windows Integrated Authentication (WIA) in the application. For this, in the `Package.appxmanifest` for your UWP application, in the Capabilities tab, enable the following capabilities:

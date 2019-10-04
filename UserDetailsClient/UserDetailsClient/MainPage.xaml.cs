@@ -17,62 +17,14 @@ namespace UserDetailsClient
             InitializeComponent();
         }
 
-        async void OnSignInSignOut(object sender, EventArgs e)
+        private void OnSignInSignOut(object sender, EventArgs e)
         {
-            AuthenticationResult authResult = null;
-            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
-            try
-            {
-                if (btnSignInSignOut.Text == "Sign in")
-                {
-                    try
-                    {
-                        IAccount firstAccount = accounts.FirstOrDefault();
-                        authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
-                                              .ExecuteAsync();
-                    }
-                    catch (MsalUiRequiredException ex)
-                    {
-                        try
-                        {
-                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
-                                                      .WithParentActivityOrWindow(App.ParentWindow)
-                                                      .ExecuteAsync();
-                        }
-                        catch(Exception ex2)
-                        {
-                            await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
-                        }
-                    }
-
-                    if (authResult != null)
-                    {
-                        var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
-                        UpdateUserContent(content);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
-                    }
-                }
-                else
-                {
-                    while (accounts.Any())
-                    {
-                        await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-                        accounts = await App.PCA.GetAccountsAsync();
-                    }
-
-                    slUser.IsVisible = false;
-                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
-                }
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
-            }
+            AcquireTokenAsync().ConfigureAwait(false);
         }
 
         private void UpdateUserContent(string content)
         {
-            if(!string.IsNullOrEmpty(content))
+            if (!string.IsNullOrEmpty(content))
             {
                 JObject user = JObject.Parse(content);
 
@@ -103,10 +55,76 @@ namespace UserDetailsClient
                 string responseString = await response.Content.ReadAsStringAsync();
                 return responseString;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss");
                 return ex.ToString();
+            }
+        }
+
+        private void btnSignInSignOutWithBroker_Clicked(object sender, EventArgs e)
+        {
+            string brokerClientId = "5a434691-ccb2-4fd1-b97b-b64bcfbc03fc";
+            App.PCA = PublicClientApplicationBuilder.Create(brokerClientId)
+               .WithRedirectUri($"msal{brokerClientId}://auth")
+               .WithBroker()
+               .WithRedirectUri(App.BrokerRedirectUriOnIos)
+               .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
+               .Build();
+            AcquireTokenAsync().ConfigureAwait(false);
+        }
+
+        private async Task AcquireTokenAsync()
+        {
+            AuthenticationResult authResult = null;
+            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
+            try
+            {
+                if (btnSignInSignOut.Text == "Sign in")
+                {
+                    try
+                    {
+                        IAccount firstAccount = accounts.FirstOrDefault();
+                        authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
+                                              .ExecuteAsync();
+                    }
+                    catch (MsalUiRequiredException ex)
+                    {
+                        try
+                        {
+                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
+                                                      .WithParentActivityOrWindow(App.ParentWindow)
+                                                      .WithUseEmbeddedWebView(true)
+                                                      .ExecuteAsync();
+                        }
+                        catch (Exception ex2)
+                        {
+                            await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
+                        }
+                    }
+
+                    if (authResult != null)
+                    {
+                        var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
+                        UpdateUserContent(content);
+                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
+                    }
+                }
+                else
+                {
+                    while (accounts.Any())
+                    {
+                        await App.PCA.RemoveAsync(accounts.FirstOrDefault());
+                        accounts = await App.PCA.GetAccountsAsync();
+                    }
+
+                    slUser.IsVisible = false;
+                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
             }
         }
     }

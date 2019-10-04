@@ -26,13 +26,29 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-            App.ParentWindow = null; // no UI parent on iOS
-            return base.FinishedLaunching(app, options);            
+            App.ParentWindow = new UIViewController(); // iOS broker requires a view controller
+            return base.FinishedLaunching(app, options);
         }
 
         public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
         {
             AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
+            return true;
+        }
+
+        public override bool OpenUrl(UIApplication app, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            if (AuthenticationContinuationHelper.IsBrokerResponse(sourceApplication))
+            {
+                AuthenticationContinuationHelper.SetBrokerContinuationEventArgs(url);
+                return true;
+            }
+
+            else if (!AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url))
+            {
+                return false;
+            }
+
             return true;
         }
     }

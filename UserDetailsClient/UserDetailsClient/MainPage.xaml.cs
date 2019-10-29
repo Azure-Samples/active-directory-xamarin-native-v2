@@ -2,14 +2,18 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 
 namespace UserDetailsClient
 {
+    // Learn more about making custom code visible in the Xamarin.Forms previewer
+    // by visiting https://aka.ms/xamarinforms-previewer
+    [DesignTimeVisible(true)]
     public partial class MainPage : ContentPage
     {
         public MainPage()
@@ -19,46 +23,65 @@ namespace UserDetailsClient
 
         async void OnSignInSignOut(object sender, EventArgs e)
         {
-            AuthenticationResult authResult = null;
-            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
-            try
+            // on the UI thread now
+            if (btnSignInSignOut.Text == "Sign in")
             {
-                if (btnSignInSignOut.Text == "Sign in")
-                {
-                    // let's see if we have a user in our belly already
-                    try
-                    {
-                        IAccount firstAccount = accounts.FirstOrDefault();
-                        authResult = await App.PCA.AcquireTokenSilentAsync(App.Scopes, firstAccount);
-                        await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
-                    }
-                    catch (MsalUiRequiredException ex)
-                    {
-                        authResult = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
-                        await RefreshUserDataAsync(authResult.AccessToken);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
-                    }
-                }
-                else
-                {
-                    while (accounts.Any())
-                    {
-                        await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-                        accounts = await App.PCA.GetAccountsAsync();
-                    }
+                await SingInUserAsync().ConfigureAwait(false);
 
-                    slUser.IsVisible = false;
-                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
-                }
+                // no longer on the UI thread becasuse of the ConfigureAwait(false)
+                Device.BeginInvokeOnMainThread(
+                    () => { btnSignInSignOut.Text = "Sign out"; });
+
             }
-            catch (Exception)
+            else
             {
+                await SingOutAllUsersAsync().ConfigureAwait(false);
 
+                Device.BeginInvokeOnMainThread(
+                    () => {
+                        slUser.IsVisible = false;
+                        btnSignInSignOut.Text = "Sign in";
+                    });
             }
         }
 
-        public async Task RefreshUserDataAsync(string token)
+        private async Task SingOutAllUsersAsync()
+        {
+            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
+
+            while (accounts.Any())
+            {
+                await App.PCA.RemoveAsync(accounts.FirstOrDefault());
+                accounts = await App.PCA.GetAccountsAsync();
+            }
+        }
+
+        private async Task SingInUserAsync()
+        {
+            AuthenticationResult authResult = null;
+            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
+
+            // let's see if we have a user in our belly already
+            try
+            {
+                IAccount firstAccount = accounts.FirstOrDefault();
+                authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
+                                      .ExecuteAsync();
+            }
+            catch (MsalUiRequiredException)
+            {
+                // pop the browser for the interactive experience
+                authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
+                                          .WithParentActivityOrWindow(App.ParentActivity) // this is required for Android
+                                          .ExecuteAsync();
+            }
+
+            await RefreshUserDataAsync(authResult.AccessToken).ConfigureAwait(false);
+
+
+        }
+
+        private async Task RefreshUserDataAsync(string token)
         {
             //get data from API
             HttpClient client = new HttpClient();
@@ -70,10 +93,9 @@ namespace UserDetailsClient
             {
                 JObject user = JObject.Parse(responseString);
 
-                slUser.IsVisible = true;
-
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    slUser.IsVisible = true;
 
                     lblDisplayName.Text = user["displayName"].ToString();
                     lblGivenName.Text = user["givenName"].ToString();

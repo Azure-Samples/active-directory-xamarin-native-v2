@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
-using UIKit;
 using Microsoft.Identity.Client;
+using UIKit;
 
 namespace UserDetailsClient.iOS
 {
@@ -25,10 +25,11 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-            App.UiParent = new UIParent();
-            return base.FinishedLaunching(app, options);            
+
+            return base.FinishedLaunching(app, options);
         }
 
+        // Needed for auth
         public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
         {
             AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);

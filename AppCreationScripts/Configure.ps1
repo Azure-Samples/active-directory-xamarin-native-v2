@@ -190,7 +190,7 @@ Function ConfigureApplications
    Write-Host "Granted permissions."
 
    # Update config file for 'client'
-   $configFile = $pwd.Path + "\..\UserDetailsClient\UserDetailsClient\App.cs"
+   $configFile = $pwd.Path + "\..\UserDetailsClient\UserDetailsClient\App.xaml.cs"
    Write-Host "Updating the sample code ($configFile)"
    $dictionary = @{ "7d8cef0-4145-49b2-a91d-95c54051fa3f" = $clientAadApplication.AppId };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
@@ -202,7 +202,7 @@ Function ConfigureApplications
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
 
    # Update config file for 'client'
-   $configFile = $pwd.Path + "\..\UserDetailsClient\UserDetailsClient.Droid\Properties\AndroidManifest.xml"
+   $configFile = $pwd.Path + "\..\UserDetailsClient\UserDetailsClient.Android\Properties\AndroidManifest.xml"
    Write-Host "Updating the sample code ($configFile)"
    $dictionary = @{ "7d8cef0-4145-49b2-a91d-95c54051fa3f" = $clientAadApplication.AppId };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary

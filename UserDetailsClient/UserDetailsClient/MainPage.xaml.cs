@@ -12,6 +12,7 @@ namespace UserDetailsClient
 {
     public partial class MainPage : ContentPage
     {
+        private static bool UseBroker { get; set; } = false;
         public MainPage()
         {
             InitializeComponent();
@@ -19,7 +20,27 @@ namespace UserDetailsClient
 
         private void OnSignInSignOut(object sender, EventArgs e)
         {
+            UseBroker = false;
             AcquireTokenAsync().ConfigureAwait(false);
+        }
+
+        public static void CreatePublicClient()
+        {
+            var builder = PublicClientApplicationBuilder
+                .Create(App.ClientID);
+                
+            if (UseBroker)
+            {
+                builder.WithBroker();
+                builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
+                builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
+            }
+            else
+            {
+                builder = builder.WithRedirectUri($"msal{App.ClientID}://auth");
+            }
+
+            App.PCA = builder.Build();
         }
 
         private void UpdateUserContent(string content)
@@ -64,13 +85,9 @@ namespace UserDetailsClient
 
         private void btnSignInSignOutWithBroker_Clicked(object sender, EventArgs e)
         {
-            string brokerClientId = "5a434691-ccb2-4fd1-b97b-b64bcfbc03fc";
-            App.PCA = PublicClientApplicationBuilder.Create(brokerClientId)
-               .WithRedirectUri($"msal{brokerClientId}://auth")
-               .WithBroker()
-               .WithRedirectUri(App.BrokerRedirectUriOnIos)
-               .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-               .Build();
+            UseBroker = true;
+            CreatePublicClient();
+
             AcquireTokenAsync().ConfigureAwait(false);
         }
 

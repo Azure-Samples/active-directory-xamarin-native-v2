@@ -30,12 +30,6 @@ namespace UserDetailsClient.iOS
             return base.FinishedLaunching(app, options);
         }
 
-        public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
-        {
-            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
-            return true;
-        }
-
         public override bool OpenUrl(UIApplication app, NSUrl url, string sourceApplication, NSObject annotation)
         {
             if (AuthenticationContinuationHelper.IsBrokerResponse(sourceApplication))

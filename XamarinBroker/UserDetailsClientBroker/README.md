@@ -375,8 +375,6 @@ This might be because you have not installed all the required components from Vi
 
 you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
 
-### Testing UWP applications on Windows 10
-
 ## More information
 
 For more information, please visit:

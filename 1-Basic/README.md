@@ -42,6 +42,7 @@ From your shell or command line:
 
 ```Shell
 git clone https://github.com/Azure-Samples/active-directory-xamarin-native-v2.git
+cd 1-Basic
 ```
 
 or download and exact the repository .zip file.

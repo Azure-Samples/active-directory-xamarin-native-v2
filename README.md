@@ -25,8 +25,8 @@ This repository contains a progressive tutorial made of two parts:
 
 Sub folder                    | Description
 ----------------------------- | -----------
-[1-Basic](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/1-Basic) | This sample application shows how to use the Microsoft identity platform endpoint to sign-in a user interactively and display their profile </p> ![Topology](./1-Basic/ReadmeFiles/topology.png)
-[2-With-broker](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/2-With-broker)  | This incremental chapter adds support for the broker (Microsoft Authenticator), enabling more scenarios like device related conditional access and SSO. This chapter is only available for Xamarin.iOS for the moment </p>  ![Topology](./2-With-broker/ReadmeFiles/topology.png)
+[1-Basic](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/1-Basic) | This sample application shows how to use the Microsoft identity platform endpoint to sign-in a user interactively and display their profile </p> ![Topology](./1-Basic/ReadmeFiles/Topology.png)
+[2-With-broker](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/2-With-broker)  | This incremental chapter adds support for the broker (Microsoft Authenticator), enabling more scenarios like device related conditional access and SSO. This chapter is only available for Xamarin.iOS for the moment </p>  ![Topology](./2-With-broker/ReadmeFiles/Topology.png)
 
 ## How to run this sample
 

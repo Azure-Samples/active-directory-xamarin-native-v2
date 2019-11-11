@@ -11,7 +11,7 @@ urlFragment: active-directory-xamarin-native-v2
 
 # A Xamarin mobile application using Microsoft identity platform (formerly Azure AD v2.0)
 
-![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/32/badge)
+[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/CI%20of%20Azure-Samples%20--%20xamarin-native-v2)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=32)
 
 ## About this sample
 

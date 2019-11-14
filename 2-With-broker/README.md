@@ -13,6 +13,8 @@ endpoint: AAD V2
 
 ## About this sample
 
+**For the moment, this chapter of the incremental tutorial is only for Xamarin.iOS. Not yet Xamarin.Android**
+
 This is a [Xamarin Forms](https://www.xamarin.com/visual-studio) app showcasing how to use MSAL.NET to:
 
 1. authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) using the Microsoft Authenticator App to get an access token to
@@ -139,8 +141,9 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
-### Step 4: Set up integration with the Authenticator App (iOS broker)
-Follow the steps below to enable your Xamarin.iOS app to talk with the [Microsoft Authenticator](https://itunes.apple.com/us/app/microsoft-authenticator/id983156458) app. 
+### [EXPLANATIONS] Step 4: Set up integration with the Authenticator App (iOS broker)
+
+To build the code in this chapter and therefore enable your Xamarin.iOS app to talk with the [Microsoft Authenticator](https://itunes.apple.com/us/app/microsoft-authenticator/id983156458) app, you would have followed the steps below: 
 
 #### Step 1: Enable broker support
 Broker support is enabled on a per-PublicClientApplication basis. It is disabled by default. You must use the `WithBroker()` parameter (set to true by default) when creating the PublicClientApplication through the PublicClientApplicationBuilder.

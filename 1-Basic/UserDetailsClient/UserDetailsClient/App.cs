@@ -22,7 +22,8 @@ namespace UserDetailsClient
         {
             PCA = PublicClientApplicationBuilder.Create(ClientID)
                 .WithRedirectUri($"msal{ClientID}://auth")
-                .Build();
+				.WithIosKeychainSecurityGroup("com.microsoft.adalcache")
+				.Build();
 
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());
         }

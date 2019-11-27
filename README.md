@@ -32,7 +32,14 @@ Sub folder                    | Description
 
 To run this sample, you'll need:
 
-- [Visual Studio 2019](https://aka.ms/vsdownload) or just the [.NET Core SDK](https://www.microsoft.com/net/learn/get-started)
+- [Visual Studio 2019](https://aka.ms/vsdownload). Install or update Visual Studio with the following workloads:
+  - Universal Windows Platform Development
+  - Mobile Development with .Net
+  
+  Then from the "Individual Components" tab, make sure these additional items are selected:
+  - Android SDK setup (API level 27)
+  - Windows 10 SDK (10.0.17134.0)
+  - Android SDK level 27 (oreo) and 28 (pie), and Android SDK build tools 27.0.3 are also required. These are not installed through the VS Installer, so instead use the Android SDK Manager (Visual Studio > Tools > Android > Android SDK Manager…)
 - An Internet connection
 - A Windows machine (necessary if you want to run the app on Windows)
 - An OS X machine (necessary if you want to run the app on Mac)

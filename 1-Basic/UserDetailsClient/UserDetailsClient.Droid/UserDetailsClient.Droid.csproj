@@ -214,6 +214,7 @@
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainPageRenderer.cs" />
+    <Compile Include="MsalActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

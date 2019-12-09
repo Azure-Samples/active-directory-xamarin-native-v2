@@ -82,9 +82,10 @@ As a first step you'll need to:
    - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**. Use the search box if necessary.
    - Select the **Add permissions** button
 
-### [OPTIONAL] Step 3:  Configure the Visual Studio project with your app coordinates
+### [OPTIONAL] Step 3: Configure the Visual Studio project with your app coordinates
 
 In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+
 1. Open the solution in Visual Studio 2017.
 2. Open the `UserDetailsClient\App.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.
@@ -115,24 +116,20 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 #### [OPTIONAL] Step 3b: Configure the Android project with your return URI
 
-1. Open the `UserDetailsClient.Droid\MainActivity.cs` file.
-2. Open the `UserDetailsClient.Droid\Properties\AndroidManifest.xml`
-3. Add or modify the `<application>` element as in the following:
+1. Open the `UserDetailsClient.Droid\MsalActivity.cs` file.
+1. Replace `[APPLICATIONID]` with the identifier you copied in step 2.
+1. Save the file.
 
-```Xml
-    <application>
-    <activity android:name="microsoft.identity.client.BrowserTabActivity">
-      <intent-filter>
-    <action android:name="android.intent.action.VIEW" />
-    <category android:name="android.intent.category.DEFAULT" />
-    <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="msal[APPLICATIONID]" android:host="auth" />
-      </intent-filter>
-    </activity>
-      </application>
+```csharp
+  [Activity]
+  [IntentFilter(new[] { Intent.ActionView },
+        Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
+        DataHost = "auth",
+        DataScheme = "msal[APPLICATIONID]")]
+  public class MsalActivity : BrowserTabActivity
+  {
+  }
 ```
-
-where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 ### Step 4:  Run the sample
 
@@ -153,13 +150,15 @@ Not every emulator image comes with Chrome on board: please refer to [this docum
 
 The structure of the solution is straightforward. All the application logic and UX reside in ``UserDetailsClient (portable)`` project.
 
-- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
+- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `App.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
   ```CSharp
   PCA = PublicClientApplicationBuilder.Create(ClientID)
                                       .WithRedirectUri($"msal{App.ClientID}://auth")
                                       .Build();
   ```
+
+- For single-tenant apps, you must include `.WithTenantId(<tenantId>)` in the application builder.
 
 - At application startup, the main page (`UserDetailsClient/MainPage.xaml.cs`) attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
@@ -273,7 +272,7 @@ WIA is not enabled by default because applications requesting the Enterprise Aut
 
 ### Some projects don't load in Visual Studio
 
-This might be because you have not installed all the required components from Visual Studio. you need'll need to add the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/), in the Visual Studio Installer.
+This might be because you have not installed all the required components from Visual Studio. You need to add the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/), in the Visual Studio Installer.
 
 ### The project you want is not built
 
@@ -298,12 +297,11 @@ If sign-in with your work or school account and your organization requires condi
 
 ## Moving from sample to production
 
-Samples favour simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
+Samples favor simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
 
 - Consider using [dependency injection](https://xamarinhelp.com/xamarin-forms-dependency-injection/) for the `IPublicClientApplication` 
-- Consider wrapping the contruction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
+- Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
 - MSAL will generally let HTTP exceptions propagate. Consider using [Xamarin.Essentials](https://docs.microsoft.com/en-us/xamarin/essentials/connectivity?tabs=android) to detect situations where the network is down in order to provide a better error message to the user. 
-
 
 ## More information
 
@@ -313,6 +311,6 @@ For more information, please visit:
   - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
   - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
   - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
-- To undestand more about the Microsoft identity platform endpoint see http://aka.ms/aaddevv2
+- To understand more about the Microsoft identity platform endpoint see http://aka.ms/aaddevv2
 - For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Microsoft identity platform](http://go.microsoft.com/fwlink/?LinkId=394414).
 - For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)

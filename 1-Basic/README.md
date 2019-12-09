@@ -106,18 +106,18 @@ In the steps below, "ClientID" is the same as "Application ID" or "AppId".
        <string>com.yourcompany.UserDetailsClient</string>
        <key>CFBundleURLSchemes</key>
        <array>
-     <string>msal[APPLICATIONID]</string>
+     <string>msal[ClientID]</string>
        </array>
      </dict>
        </array>
 ```
 
-where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
+where `[ClientID]` is the identifier you copied in step 2. Save the file.
 
 #### [OPTIONAL] Step 3b: Configure the Android project with your return URI
 
 1. Open the `UserDetailsClient.Droid\MsalActivity.cs` file.
-1. Replace `[APPLICATIONID]` with the identifier you copied in step 2.
+1. Replace `[ClientID]` with the identifier you copied in step 2.
 1. Save the file.
 
 ```csharp
@@ -125,7 +125,7 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
   [IntentFilter(new[] { Intent.ActionView },
         Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
         DataHost = "auth",
-        DataScheme = "msal[APPLICATIONID]")]
+        DataScheme = "msal[ClientID]")]
   public class MsalActivity : BrowserTabActivity
   {
   }

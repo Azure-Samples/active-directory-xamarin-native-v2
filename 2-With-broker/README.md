@@ -124,24 +124,20 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 #### [OPTIONAL] Step 3b: Configure the Android project with your return URI
 
-1. Open the `UserDetailsClient.Droid\MainActivity.cs` file.
-2. Open the `UserDetailsClient.Droid\Properties\AndroidManifest.xml`
-3. Add or modify the `<application>` element as in the following:
+1. Open the `UserDetailsClient.Droid\MsalActivity.cs` file.
+1. Replace `[ClientID]` with the identifier you copied in step 2.
+1. Save the file.
 
-```Xml
-    <application>
-    <activity android:name="microsoft.identity.client.BrowserTabActivity">
-      <intent-filter>
-    <action android:name="android.intent.action.VIEW" />
-    <category android:name="android.intent.category.DEFAULT" />
-    <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="msal[APPLICATIONID]" android:host="auth" />
-      </intent-filter>
-    </activity>
-      </application>
+```csharp
+  [Activity]
+  [IntentFilter(new[] { Intent.ActionView },
+        Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
+        DataHost = "auth",
+        DataScheme = "msal[ClientID]")]
+  public class MsalActivity : BrowserTabActivity
+  {
+  }
 ```
-
-where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
 ### [EXPLANATIONS] Step 4: Set up integration with the Authenticator App (iOS broker)
 
@@ -292,6 +288,8 @@ The structure of the solution is straightforward. All the application logic and 
                                       .Build();
   ```
 
+- For single-tenant apps, you must include `.WithTenantId(<tenantId>)` in the application builder.
+
 - At application startup, the main page (`UserDetailsClient/MainPage.xaml.cs`) attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
   ```CSharp
@@ -375,7 +373,7 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 
 ### Some projects don't load in Visual Studio
 
-This might be because you have not installed all the required components from Visual Studio. you need'll need to add the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/), in the Visual Studio Installer.
+This might be because you have not installed all the required components from Visual Studio. You need to add the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/), in the Visual Studio Installer.
 
 ### The project you want is not built
 
@@ -391,6 +389,6 @@ For more information, please visit:
   - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
   - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
   - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
-- To undestand more about the AAD V2 endpoint see http://aka.ms/aaddevv2
+- To understand more about the AAD V2 endpoint see http://aka.ms/aaddevv2
 - For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
 - For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)

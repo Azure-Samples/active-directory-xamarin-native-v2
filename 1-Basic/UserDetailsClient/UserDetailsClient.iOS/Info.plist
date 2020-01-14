@@ -29,7 +29,7 @@
 			<string>com.yourcompany.UserDetailsClient</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>msal[ClientID]</string>
+				<string>msala7d8cef0-4145-49b2-a91d-95c54051fa3f</string>
 			</array>
 		</dict>
 	</array>

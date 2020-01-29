@@ -21,7 +21,12 @@ namespace UserDetailsClient.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new UserDetailsClient.App());
+            // To get SSO with a UWP app, you'll need to register the following
+            // redirect URI for your application
+            Uri redirectURI = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+            
+            // Then use the following:
+            LoadApplication(new UserDetailsClient.App(new Uri("https://sso")));
         }
     }
 }

@@ -12,7 +12,7 @@ namespace UserDetailsClient
         /// The ClientID is the Application ID found in the portal (https://go.microsoft.com/fwlink/?linkid=2083908). 
         /// You can use the below id however if you create an app of your own you should replace the value here.
         /// </summary>
-        public static string ClientID = "4a1aa1d5-c567-49d0-ad0b-cd957a47f842";
+        public static string ClientID = "4a1aa1d5-c567-49d0-ad0b-cd957a47f842"; //msidentity-samples-testing tenant
 
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;

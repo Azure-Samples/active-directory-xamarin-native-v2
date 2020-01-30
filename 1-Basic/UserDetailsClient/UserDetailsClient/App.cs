@@ -19,12 +19,10 @@ namespace UserDetailsClient
 
         public static object ParentWindow { get; set; }
 
-        public App(Uri specialRedirectUri)
+        public App(string specialRedirectUri = null)
         {
             PCA = PublicClientApplicationBuilder.Create(ClientID)
-                .WithRedirectUri(specialRedirectUri!=null 
-                                 ? specialRedirectUri.AbsoluteUri 
-                                 : $"msal{ClientID}://auth")
+                .WithRedirectUri(specialRedirectUri?? $"msal{ClientID}://auth")
                 .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                 .Build();
 

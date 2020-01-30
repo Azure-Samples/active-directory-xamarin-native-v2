@@ -26,7 +26,7 @@ namespace UserDetailsClient.UWP
             Uri redirectURI = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
             
             // Then use the following:
-            LoadApplication(new UserDetailsClient.App(new Uri("https://sso")));
+            LoadApplication(new UserDetailsClient.App(redirectURI.AbsoluteUri));
         }
     }
 }

@@ -81,8 +81,10 @@ As a first step you'll need to:
    - In the **Supported account types** section, select **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
 1. Select **Register** to create the application.
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
-1. In the list of pages for the app, select **Authentication**..
+1. In the list of pages for the app, select **Authentication**.
    - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
+   - If you have the new expirence, Select **Add a platform** under the **Platform Configurations** section, click on **Mobile and desktop applications** and add **msal&lt;clientId&gt;://auth** as a redirect URI.
+
 1. Select **Save**.
 1. In the list of pages for the app, select **API permissions**
    - Click the **Add a permission** button and then,
@@ -139,9 +141,9 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
   }
 ```
 
-### [EXPLANATIONS] Step 4: Set up integration with the Authenticator App (iOS broker)
+### [EXPLANATIONS] Step 4: Set up integration with the Authenticator App (iOS/Android broker)
 
-To build the code in this chapter and therefore enable your Xamarin.iOS app to talk with the [Microsoft Authenticator](https://itunes.apple.com/us/app/microsoft-authenticator/id983156458) app, you would have followed the steps below: 
+To build the code in this chapter and therefore enable your Xamarin.iOS or Xamarin.Android app to talk with the [Microsoft Authenticator](https://itunes.apple.com/us/app/microsoft-authenticator/id983156458) app (Android can also use the [Intune Company Portal](https://play.google.com/store/apps/details?id=com.microsoft.windowsintune.companyportal&hl=en_US) as a broker), you will need follow the steps 1 - 6 below: 
 
 #### Step 1: Enable broker support
 Broker support is enabled on a per-PublicClientApplication basis. It is disabled by default. You must use the `WithBroker()` parameter (set to true by default) when creating the PublicClientApplication through the PublicClientApplicationBuilder.
@@ -150,7 +152,8 @@ Broker support is enabled on a per-PublicClientApplication basis. It is disabled
 var app = PublicClientApplicationBuilder
                 .Create(ClientId)
                 .WithBroker()
-                .WithReplyUri(redirectUriOnIos) // $"msauth.{Bundle.Id}://auth" (see step 6 below)
+                // Android: iOS: $"msauth.{Bundle.Id}://auth" (see step 6 below)
+                .WithReplyUri("Redirect URI for android or iOS") 
                 .Build();
 ```
 
@@ -248,24 +251,51 @@ MSAL uses `canOpenURL:` to check if the broker is installed on the device. In 
 
 #### Step 6: Register your RedirectUri in the application portal
 Using the broker adds an extra requirement on your redirectUri. The redirectUri _**must**_ have the following format:
+
+**For iOS:**
 ```CSharp
 $"msauth.{BundleId}://auth"
 ```
-**For example:**
+**Example for iOS:**
 ```CSharp
 public static string redirectUriOnIos = "msauth.com.yourcompany.XForms://auth"; 
 ```
-**You'll notice the RedirectUri matches the `CFBundleURLSchemes` name you included in the `Info.plist` file.**
+**You'll notice the iOS RedirectUri matches the `CFBundleURLSchemes` name you included in the `Info.plist` file.**
 
-#### Step 7: make sure the redirect URI is registered with your app
+**For Android:**
+```CSharp
+$"msauth://{Package Name}/{Signature Hash}"
+```
+**Example for Android:**
+```CSharp
+public static string redirectUriOnIAndroid = "msauth://UserDetailsClient.Droid/hgbUYHVBYUTvuvT&Y6tr554365466="; 
+```
+The redirect uri on Android will need to be created based on the signature of the .APK used to sign it. This means that it will be different depending on where this sample is run because visual studio creates a unique signing key for debugging purposes on every machine. You can figure out what that signature will be by running the following commands
 
-This Redirect URI needs to be registered on the app registration portal (https://portal.azure.com) as a valid redirect URI for your application. 
+- For Windows: `keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64`
+- For Mac: `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
+
+More information on the [keytool here](https://docs.oracle.com/cd/E82085_01/140/rib_security_guide/appendixB.htm)
+
+Once you have your signature, simply use the `msauth://"Package Name"/"Signature Hash"` format as shown above to create your redirect URI.
+
+Once you have created your redirect URI, you can register it by navigating to the **Authentication** tab; under the **Redirect URIs** section, select **Public client/native (mobile & desktop)** entry from the dropdown box and paste in your android broker redirect URI next to it. Click on save at the top of the page to save changes.
+
+**If you have the new expirence**
+
+- **Android:** Select **Add a platform** under the **Platform Configurations** section, click on **Android** and add your package name and the signature hash.
+
+- **iOS:** Select **Add a platform** under the **Platform Configurations** section, click on **iOS** and add your iOS bundle id.
+
+NOTE: You also have the option of acquiring your redirect URI with code see [Brokered Authentication for Android](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS#brokered-authentication-for-android) for more details
+
+Once you have the proper redirect URI, update the `BrokerRedirectUriOnIos` and the `BrokerRedirectUriOnAndroid` fields in the App.cs file with the values.
 
 Time to run the app!
 
 ### Step 5:  Run the sample
 
-Since you configured the iOS broker above, choose ioS as the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that iOS is marked for build and deploy in the Configuration Manager.
+If you configured the iOS broker above, choose ioS as the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that iOS is marked for build and deploy in the Configuration Manager. You can also do this to switch to android.
 Clean the solution, rebuild the solution, and run it:
 
 - Click the sign-in with broker button at the bottom of the application screen. 
@@ -368,6 +398,17 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 1. Enable Keychain access in your `Entitlements.plist` file and specify in the **Keychain Groups** your bundle identifier.
 1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
 1. When signing a certificate, make sure XCode uses the same Apple Id.
+
+### Android specific considerations
+Similar to iOS, MSAL needs a way of ensuring that it is able to capture the authentication result from the interactive activity. This is done by overriding the `OnActivityResult` method in `MainActivity.cs`. 
+
+```csharp
+protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+{
+  base.OnActivityResult(requestCode, resultCode, data);
+  AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+}
+```
 
 ## Troubleshooting
 

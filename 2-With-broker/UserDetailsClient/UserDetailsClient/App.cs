@@ -13,6 +13,7 @@ namespace UserDetailsClient
         /// </summary>
         public static string ClientID = "4a1aa1d5-c567-49d0-ad0b-cd957a47f842";
         public const string BrokerRedirectUriOnIos = "msauth.com.yourcompany.UserDetailsClient://auth";
+        public const string BrokerRedirectUriOnAndroid = "msauth://UserDetailsClient.Droid/{Your package signature}";
 
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;

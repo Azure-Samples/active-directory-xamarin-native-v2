@@ -83,7 +83,7 @@ As a first step you'll need to:
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. In the list of pages for the app, select **Authentication**.
    - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
-   - If you have the new expirence, Select **Add a platform** under the **Platform Configurations** section, click on **Mobile and desktop applications** and add **msal&lt;clientId&gt;://auth** as a redirect URI.
+   - If you have the new experience, Select **Add a platform** under the **Platform Configurations** section, click on **Mobile and desktop applications** and add **msal&lt;clientId&gt;://auth** as a redirect URI.
 
 1. Select **Save**.
 1. In the list of pages for the app, select **API permissions**
@@ -149,6 +149,17 @@ To build the code in this chapter and therefore enable your Xamarin.iOS or Xamar
 Broker support is enabled on a per-PublicClientApplication basis. It is disabled by default. You must use the `WithBroker()` parameter (set to true by default) when creating the PublicClientApplication through the PublicClientApplicationBuilder.
 
 ```CSharp
+string mobileRedirectUri;
+switch (Device.RuntimePlatform)
+{
+    case Device.Android:
+        mobileRedirectUri = App.BrokerRedirectUriOnAndroid;
+        break;
+    case Device.iOS:
+        mobileRedirectUri = App.BrokerRedirectUriOniOS;
+        break;
+}
+
 var app = PublicClientApplicationBuilder
                 .Create(ClientId)
                 .WithBroker()
@@ -270,7 +281,20 @@ $"msauth://{Package Name}/{Signature Hash}"
 ```CSharp
 public static string redirectUriOnIAndroid = "msauth://UserDetailsClient.Droid/hgbUYHVBYUTvuvT&Y6tr554365466="; 
 ```
-The redirect uri on Android will need to be created based on the signature of the .APK used to sign it. This means that it will be different depending on where this sample is run because visual studio creates a unique signing key for debugging purposes on every machine. You can figure out what that signature will be by running the following commands
+
+Once you have created your redirect URI, you can register it by navigating to the **Authentication** tab; under the **Redirect URIs** section, select **Public client/native (mobile & desktop)** entry from the dropdown box and paste in your redirect URI next to it. Click on save at the top of the page to save changes.
+
+**If you have the new experience**
+
+- **Android:** Select **Add a platform** under the **Platform Configurations** section, click on **Android** and add your package name and the signature hash.
+
+- **iOS:** Select **Add a platform** under the **Platform Configurations** section, click on **iOS** and add your iOS bundle id.
+
+Once you have the proper redirect URI, update the `BrokerRedirectUriOnIos` and the `BrokerRedirectUriOnAndroid` fields in the App.cs file with the values.
+
+#### Android Specific Redirect URI Configuration
+
+The redirect uri on Android will need to be created based on the signature of the .APK used to sign it. This means that it will be different depending on where this sample is run because Visual Studio creates a unique signing key for debugging purposes on every machine. You can figure out what that signature will be by running the following commands
 
 - For Windows: `keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64`
 - For Mac: `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
@@ -279,23 +303,14 @@ More information on the [keytool here](https://docs.oracle.com/cd/E82085_01/140/
 
 Once you have your signature, simply use the `msauth://"Package Name"/"Signature Hash"` format as shown above to create your redirect URI.
 
-Once you have created your redirect URI, you can register it by navigating to the **Authentication** tab; under the **Redirect URIs** section, select **Public client/native (mobile & desktop)** entry from the dropdown box and paste in your android broker redirect URI next to it. Click on save at the top of the page to save changes.
+NOTE: You also have the option of acquiring your redirect URI with code. see [Brokered Authentication for Android](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-use-brokers-with-xamarin-apps) for more details
 
-**If you have the new expirence**
-
-- **Android:** Select **Add a platform** under the **Platform Configurations** section, click on **Android** and add your package name and the signature hash.
-
-- **iOS:** Select **Add a platform** under the **Platform Configurations** section, click on **iOS** and add your iOS bundle id.
-
-NOTE: You also have the option of acquiring your redirect URI with code see [Brokered Authentication for Android](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS#brokered-authentication-for-android) for more details
-
-Once you have the proper redirect URI, update the `BrokerRedirectUriOnIos` and the `BrokerRedirectUriOnAndroid` fields in the App.cs file with the values.
 
 Time to run the app!
 
 ### Step 5:  Run the sample
 
-If you configured the iOS broker above, choose ioS as the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that iOS is marked for build and deploy in the Configuration Manager. You can also do this to switch to android.
+If you configured the iOS broker above, choose iOS as the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that iOS is marked for build and deploy in the Configuration Manager. Alternatively, if you are using the Android broker you can follow the same steps to make Android the platform you choose to work on.
 Clean the solution, rebuild the solution, and run it:
 
 - Click the sign-in with broker button at the bottom of the application screen. 

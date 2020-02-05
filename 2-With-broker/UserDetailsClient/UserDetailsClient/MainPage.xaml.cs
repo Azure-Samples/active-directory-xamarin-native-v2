@@ -32,7 +32,6 @@ namespace UserDetailsClient
             if (UseBroker)
             {
                 builder.WithBroker();
-                builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
                 
                 switch (Device.RuntimePlatform)
                 {
@@ -40,7 +39,7 @@ namespace UserDetailsClient
                         builder = builder.WithRedirectUri(App.BrokerRedirectUriOnAndroid);
                         break;
                     case Device.iOS:
-                    default:
+                        builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
                         builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
                         break;
                 }

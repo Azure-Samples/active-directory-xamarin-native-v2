@@ -17,7 +17,7 @@ namespace UserDetailsClient.Droid
     [IntentFilter(new[] { Intent.ActionView },
         Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
         DataHost = "auth",
-        DataScheme = "msala7d8cef0-4145-49b2-a91d-95c54051fa3f")]
+        DataScheme = "msal4a1aa1d5-c567-49d0-ad0b-cd957a47f842")]
     public class MsalActivity : BrowserTabActivity
     {
     }

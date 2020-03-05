@@ -47,6 +47,8 @@ To run this sample you will need:
 You can get a Microsoft Account for free by choosing the Sign up option while visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
 You can get an Office365 office subscription, which will give you an Azure AD account, at [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
 
+NOTE: If you want to run tha android broker scenario, steps 2-4 below are not optional because you will need to create an app inorder to properly configure the android broker redirect URI.
+
 ### Step 1:  Clone or download this repository
 
 From your shell or command line:
@@ -83,7 +85,6 @@ As a first step you'll need to:
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. In the list of pages for the app, select **Authentication**.
    - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
-   - If you have the new experience, Select **Add a platform** under the **Platform Configurations** section, click on **Mobile and desktop applications** and add **msal&lt;clientId&gt;://auth** as a redirect URI.
 
 1. Select **Save**.
 1. In the list of pages for the app, select **API permissions**
@@ -163,8 +164,7 @@ switch (Device.RuntimePlatform)
 var app = PublicClientApplicationBuilder
                 .Create(ClientId)
                 .WithBroker()
-                // Android: iOS: $"msauth.{Bundle.Id}://auth" (see step 6 below)
-                .WithReplyUri("Redirect URI for android or iOS") 
+                .WithReplyUri(mobileRedirectURI) 
                 .Build();
 ```
 

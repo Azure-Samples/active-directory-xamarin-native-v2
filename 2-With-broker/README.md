@@ -43,6 +43,7 @@ To run this sample you will need:
 - At least one of the following accounts:
   - A Microsoft Account
   - An Azure AD account
+- Setup [Xamarin.iOS for Visual Studio](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/introduction-to-xamarin-ios-for-visual-studio) (if you want to run the iOS app)
 
 You can get a Microsoft Account for free by choosing the Sign up option while visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
 You can get an Office365 office subscription, which will give you an Azure AD account, at [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
@@ -310,7 +311,7 @@ Time to run the app!
 
 ### Step 5:  Run the sample
 
-If you configured the iOS broker above, choose iOS as the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that iOS is marked for build and deploy in the Configuration Manager. Alternatively, if you are using the Android broker you can follow the same steps to make Android the platform you choose to work on.
+Since you configured the iOS broker above, choose iOS as the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that iOS is marked for build and deploy in the Configuration Manager. Alternatively, if you are using the Android broker you can follow the same steps to make Android the platform you choose to work on.
 Clean the solution, rebuild the solution, and run it:
 
 - Click the sign-in with broker button at the bottom of the application screen. 
@@ -325,7 +326,7 @@ Clean the solution, rebuild the solution, and run it:
 
 The structure of the solution is straightforward. All the application logic and UX reside in ``UserDetailsClient (portable)`` project.
 
-- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in App.cs (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
+- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `App.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
   ```CSharp
   PCA = PublicClientApplicationBuilder.Create(ClientID)

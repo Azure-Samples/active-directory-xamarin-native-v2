@@ -1,6 +1,6 @@
 ---
 services: active-directory
-platforms: dotnet, xamarin.iOS, xamarin.Android, UWP
+platforms: dotnet, xamarin.iOS, xamarin.Android
 author: jennyf19
 level:  300
 client: Xamarin 
@@ -13,26 +13,24 @@ endpoint: AAD V2
 
 ## About this sample
 
-**For the moment, this chapter of the incremental tutorial is only for Xamarin.iOS. Not yet Xamarin.Android**
-
 This is a [Xamarin Forms](https://www.xamarin.com/visual-studio) app showcasing how to use MSAL.NET to:
 
-1. authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) using the Microsoft Authenticator App to get an access token to
-2. access the Microsoft Graph.
+1. Authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) using the broker, Microsoft Authenticator App
+2. Get an access token via the broker to access the Microsoft Graph.
 
-The Xamarin Forms application is provided for Xamarin.iOS and Xamarin.Android
+The Xamarin Forms application is provided for Xamarin.iOS and Xamarin.Android, not UWP.
 
 ![Topology](./ReadmeFiles/Topology.png)
 
-- Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
+- You can learn more about Microsoft Graph with this video: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A).
 
 ## What is the broker?
 
 On Android and iOS, brokers enable:
 
-- Single Sign On (SSO). Your users won't need to sign-in to each application.
-- Device identification. By accessing the device certificate which was created on the device when it was workplace joined.
-- Application identification verification. When an application calls the broker, it passes its redirect url, and the broker verifies it.
+- Single Sign On (SSO) - your users won't need to sign-in to each application.
+- Device identification - by accessing the device certificate which was created on the device when it was workplace joined.
+- Application identification verification - when an application calls the broker, it passes its redirect url, and the broker verifies it.
 
 ## How To Run this Sample
 
@@ -41,14 +39,9 @@ To run this sample you will need:
 - [Visual Studio 2019](https://aka.ms/vsdownload) with the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/):
 - An Internet connection
 - At least one of the following accounts:
-  - A Microsoft Account
-  - An Azure AD account
+  - A Microsoft Account - you can get a free account by visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
+  - An Azure AD account - you can get a free trial Office 365 account by visiting [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
 - Setup [Xamarin.iOS for Visual Studio](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/introduction-to-xamarin-ios-for-visual-studio) (if you want to run the iOS app)
-
-You can get a Microsoft Account for free by choosing the Sign up option while visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
-You can get an Office365 office subscription, which will give you an Azure AD account, at [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
-
-NOTE: If you want to run tha android broker scenario, steps 2-4 below are not optional because you will need to create an app inorder to properly configure the android broker redirect URI.
 
 ### Step 1:  Clone or download this repository
 
@@ -63,9 +56,9 @@ or download and exact the repository .zip file.
 
 > Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
-### [OPTIONAL] Step 2:  Register the sample on the app registration portal
+### Step 2:  Register the sample on the app registration portal
 
-You can run the sample as is with its current settings, or you can optionally register it as a new application under your own developer account.
+These steps are identical to the ones in 1-Basic, so if you've already set-up an app for use there, feel free to reuse it for this example.
 
 #### Choose the Azure AD tenant where you want to create your applications
 
@@ -90,19 +83,20 @@ As a first step you'll need to:
 1. Select **Save**.
 1. In the list of pages for the app, select **API permissions**
    - Click the **Add a permission** button and then,
-   - Ensure that the **Microsoft APIs** tab is selected
+   - Check to see if your app has Microsoft Graph's User.Read permissions. If so, skip to step 3.
+   - Otherwise, Ensure that the **Microsoft APIs** tab is selected
    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
    - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**. Use the search box if necessary.
    - Select the **Add permissions** button
 
-### [OPTIONAL] Step 3:  Configure the Visual Studio project with your app coordinates
+### Step 3:  Configure the Visual Studio project with your app coordinates
 
-In the steps below, "ClientID" is the same as "Application ID" or "AppId".
-1. Open the solution in Visual Studio 2017.
+In the steps below, "ClientID" is the same as "Application ID" or "AppId". 
+1. Open the solution in Visual Studio 2019.
 2. Open the `UserDetailsClient\App.cs` file.
 3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.
 
-#### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
+#### [iOS specific] Step 3a: Configure the iOS project with your apps' return URI
 
 1. Open the `UserDetailsClient.iOS\AppDelegate.cs` file.
 2. Open the `UserDetailsClient.iOS\info.plist` file in a text editor (opening it in Visual Studio won't work for this step as you need to edit the text)
@@ -126,12 +120,11 @@ In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
 
-#### [OPTIONAL] Step 3b: Configure the Android project with your return URI
+#### [Android specific] Step 3b: Configure the Android project with your return URI
 
 1. Open the `UserDetailsClient.Droid\MsalActivity.cs` file.
-1. Replace `[ClientID]` with the identifier you copied in step 2.
+1. Replace `[ClientID]` as noted in the example below with the identifier you copied in step 2.
 1. Save the file.
-
 ```csharp
   [Activity]
   [IntentFilter(new[] { Intent.ActionView },
@@ -143,11 +136,15 @@ where `[APPLICATIONID]` is the identifier you copied in step 2. Save the file.
   }
 ```
 
-### [EXPLANATIONS] Step 4: Set up integration with the Authenticator App (iOS/Android broker)
+### Step 4: Set up integration with the broker (Microsoft Authenticator app)
 
-To build the code in this chapter and therefore enable your Xamarin.iOS or Xamarin.Android app to talk with the [Microsoft Authenticator](https://itunes.apple.com/us/app/microsoft-authenticator/id983156458) app (Android can also use the [Intune Company Portal](https://play.google.com/store/apps/details?id=com.microsoft.windowsintune.companyportal&hl=en_US) as a broker), you will need follow the steps 1 - 6 below: 
+Steps 4a and 4b are explanation only, steps 4c-4e are iOS only. Both will require step 4f, so you can skip straight there if you're working on configuring Android.
 
-#### Step 1: Enable broker support
+There are different broker apps, based on platform:
+* iOS and Android can use the [Microsoft Authenticator](https://itunes.apple.com/us/app/microsoft-authenticator/id983156458) app
+* Android can use ([Intune Company Portal](https://play.google.com/store/apps/details?id=com.microsoft.windowsintune.companyportal&hl=en_US) as a broker)
+
+#### Step 4a: Enable broker support
 Broker support is enabled on a per-PublicClientApplication basis. It is disabled by default. You must use the `WithBroker()` parameter (set to true by default) when creating the PublicClientApplication through the PublicClientApplicationBuilder.
 
 ```CSharp
@@ -170,8 +167,8 @@ var app = PublicClientApplicationBuilder
 ```
 This step has already been completed in the code [here.](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/blob/3d877ba0ded3e644610654f6ad1ca7abb30f9e5b/2-With-broker/UserDetailsClient/UserDetailsClient/MainPage.xaml.cs#L34)
 
-#### Step 2: Configure application to handle the authentication callback
-When MSAL.NET calls the broker on iOS, the broker will, in turn, call back to your application through the `OpenUrl` method of the `AppDelegate` class. Since MSAL will wait for the response from the broker, your application needs to cooperate to call MSAL.NET back. You do this by updating the `AppDelegate.cs` file to override the below method. This step is already completed [here.](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/blob/3d877ba0ded3e644610654f6ad1ca7abb30f9e5b/2-With-broker/UserDetailsClient/UserDetailsClient.iOS/AppDelegate.cs#L33)
+#### Step 4b: Configure application to handle the authentication callback
+When MSAL.NET calls the broker on iOS, the broker will, in turn, call back to your application through the `OpenUrl` method of the `AppDelegate` class. Since MSAL will wait for the response from the broker, your application needs to cooperate to call MSAL.NET back. You do this by updating the `AppDelegate.cs` file to override the below method. This step is already completed in the AppDelegate.cs file, [found here.](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/blob/3d877ba0ded3e644610654f6ad1ca7abb30f9e5b/2-With-broker/UserDetailsClient/UserDetailsClient.iOS/AppDelegate.cs#L33)
 
 ```CSharp
 public override bool OpenUrl(UIApplication app, NSUrl url, 
@@ -185,15 +182,15 @@ public override bool OpenUrl(UIApplication app, NSUrl url,
     }
     
     else if (!AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url))
-    {	            
-         return false;	              
+    {                
+         return false;                  
     }
-	
-    return true;	 
-}	        
+    
+    return true;     
+}            
 ```
 
-Similar to iOS, Android needs a way of ensuring that it is able to capture the authentication result from the interactive activity. This is done by overriding the `OnActivityResult` method in `MainActivity.cs`. (This step is already completed [here](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/blob/3d877ba0ded3e644610654f6ad1ca7abb30f9e5b/2-With-broker/UserDetailsClient/UserDetailsClient.Droid/MainActivity.cs#L27))
+Similar to iOS, Android needs a way of ensuring that it is able to capture the authentication result from the interactive activity. This is done by overriding the `OnActivityResult` method in `MainActivity.cs`. (This step is already completed [in MainActivity.cs](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/blob/3d877ba0ded3e644610654f6ad1ca7abb30f9e5b/2-With-broker/UserDetailsClient/UserDetailsClient.Droid/MainActivity.cs#L27))
 
 ```csharp
 protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -205,7 +202,7 @@ protected override void OnActivityResult(int requestCode, Result resultCode, Int
 
 This method is invoked every time the application is launched and is used as an opportunity to process the response from the broker and complete the authentication process initiated by MSAL.NET.
 
-#### Step 3: Set a UIViewController() (iOS Only)
+#### [iOS only] Step 4c: Set a UIViewController()
 Still in `AppDelegate.cs`, you will need to set an object window. Normally, with Xamarin iOS, you do not need to set the object window, but in order to send and receive responses from broker, you will need an object window. 
 
 To do this, you will need to do two things. 
@@ -231,7 +228,7 @@ result = await app.AcquireTokenInteractive(scopes)
              .ExecuteAsync();
 ```
 
-#### Step 4: Register a URL Scheme (iOS Only)
+#### [iOS only] Step 4d: Register a URL Scheme
 MSAL.NET uses URLs to invoke the broker and then return the broker response back to your app. To finish the round trip, you need to register a URL scheme for your app in the `Info.plist` file.
 
 The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by your `CFBundleURLName`.
@@ -259,7 +256,7 @@ The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by yo
     </array>
 ```
 
-#### Step 5: LSApplicationQueriesSchemes (iOS only)
+#### [iOS only] Step 4e: LSApplicationQueriesSchemes
 MSAL uses `canOpenURL:` to check if the broker is installed on the device. In iOS 9, Apple locked down what schemes an application can query for. 
 
 **Add** **`msauthv2`** to the `LSApplicationQueriesSchemes` section of the `Info.plist` file.
@@ -272,7 +269,7 @@ MSAL uses `canOpenURL:` to check if the broker is installed on the device. In 
     </array>
 ```
 
-#### Step 6: Register your RedirectUri in the application portal
+#### Step 4f: Register your RedirectUri in the application portal
 Using the broker adds an extra requirement on your redirectUri. The redirectUri _**must**_ have the following format:
 
 **For iOS:**
@@ -294,9 +291,7 @@ $"msauth://{Package Name}/{Signature Hash}"
 public static string redirectUriOnIAndroid = "msauth://UserDetailsClient.Droid/hgbUYHVBYUTvuvT&Y6tr554365466="; 
 ```
 
-Once you have created your redirect URI, you can register it by navigating to the **Authentication** tab; under the **Redirect URIs** section, select **Public client/native (mobile & desktop)** entry from the dropdown box and paste in your redirect URI next to it. Click on save at the top of the page to save changes.
-
-**If you have the new experience**
+Once you have created your redirect URI, you can register it by navigating to the **Authentication** tab.
 
 - **Android:** Select **Add a platform** under the **Platform Configurations** section, click on **Android** and add your package name and the signature hash.
 
@@ -311,18 +306,15 @@ The redirect uri on Android will need to be created based on the signature of th
 - For Windows: `keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64`
 - For Mac: `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
 
-More information on the [keytool here](https://docs.oracle.com/cd/E82085_01/140/rib_security_guide/appendixB.htm)
+Keytool is part of the standard Java distribution. You may need to the add the jdk to your path, and you can normally find the jdk in `C:\Program Files\Java\jdk1.8.0_251\bin`. Keytool is typically used for managing keys and certifications you can sign things with with. More information on the [keytool here](https://docs.oracle.com/cd/E82085_01/140/rib_security_guide/appendixB.htm). Keytool also relies on OpenSSL, so you may also need to [install it from this website](https://www.openssl.org/).
 
-Once you have your signature, simply use the `msauth://"Package Name"/"Signature Hash"` format as shown above to create your redirect URI.
+Once you have your signature, simply use the `msauth://{Package Name}/{Signature Hash}` format as shown above to create your redirect URI.
 
 NOTE: You also have the option of acquiring your redirect URI with code. see [Brokered Authentication for Android](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-use-brokers-with-xamarin-apps) for more details
 
+#### [Android only, optional] Step 4g: System Browser configuration with Android Broker redirect URI
 
-Time to run the app!
-
-#### Step 7: System Browser configuration with Android Broker redirect URI (Android Only) (Optional)
-
-If you are using the system browser for interactive authntication, is possible to run into the scenario where you have configured your application to use brokered authentication but the device does not have broker installed. In this scenario, MSAL will try to authenticate using the default system browser in the device. This will fail out of the box because the redirect URI is configured for broker and the system browser would know how to use it to navigate back to MSAL. To resolve this, you can configure what's know as an intent filter with the broker redirect URI that you used in step four. You will need to modify your application's manifest to add the intent filter as shown below.
+If you are using the system browser for interactive authentication, it is possible you will have configured your application to use brokered authentication when the device does not have broker installed. In this scenario, MSAL will try to authenticate using the default system browser in the device. This will fail out of the box because the redirect URI is configured for broker and the system browser would know how to use it to navigate back to MSAL. To resolve this, you can configure what is known as an intent filter with the broker redirect URI that you used in step four. You will need to modify your application's manifest to add the intent filter as shown below.
 
 ```
 //NOTE: the slash before your signature value added to the path attribute
@@ -345,9 +337,10 @@ for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testAp
 ```
 **Please be sure to add a / in front of the signature in the "android:path" value**
 
-### Run the sample!
+### Step 5: Run the sample!
 
-If you configured you application to use the iOS broker, choose iOS as the platform you want to work on by setting the startup project in the Solution Explorer to the xamarin iOS project. Make sure that iOS is marked for build and deploy in the Configuration Manager. Alternatively, if you are using the Android broker you can follow the same steps to make Android the platform you choose to work on.
+Make sure the platform you configured is the same one you mark for build and deployment.
+
 Clean the solution, build and run it:
 
 - Click the sign-in with broker button at the bottom of the application screen. 
@@ -435,12 +428,12 @@ public override bool OpenUrl(UIApplication app, NSUrl url,
     }
     
     else if (!AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url))
-    {	            
-         return false;	              
+    {                
+         return false;                  
     }
-	
-    return true;	 
-}	        
+    
+    return true;     
+}            
 ```
 
 Once again, this logic is meant to ensure that once the interactive portion of the authentication flow is concluded by the Authenticator app, the flow goes back to MSAL.

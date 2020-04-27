@@ -21,12 +21,12 @@ You have a mobile application and you want it to consume Microsoft Graph or your
 
 ### Structure of the repository
 
-This repository contains a progressive tutorial made of two parts:
+This repository contains a two-part tutorial sample app:
 
 Sub folder                    | Description
 ----------------------------- | -----------
-[1-Basic](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/1-Basic) | This sample application shows how to use the Microsoft identity platform endpoint to sign-in a user interactively and display their profile </p> ![Topology](./1-Basic/ReadmeFiles/Topology.png)
-[2-With-broker](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/2-With-broker)  | This incremental chapter adds support for the broker (Microsoft Authenticator), enabling more scenarios like device related conditional access and SSO. **This chapter is only available for Xamarin.iOS for the moment, not Xamarin.Android yet** </p>  ![Topology](./2-With-broker/ReadmeFiles/Topology.png)
+[1-Basic](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/1-Basic) | This sample app shows how to use the Microsoft identity platform endpoint to sign-in a user interactively and display their profile </p> ![Topology](./1-Basic/ReadmeFiles/Topology.png)
+[2-With-broker](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/2-With-broker)  | This chapter adds additional support for the broker (Microsoft Authenticator), which enables more complex scenarios, like device related conditional access and SSO. </p>  ![Topology](./2-With-broker/ReadmeFiles/Topology.png)
 
 ## How to run this sample
 
@@ -41,9 +41,7 @@ To run this sample, you'll need:
   - Windows 10 SDK (10.0.17134.0)
   - Android SDK level 27 (oreo) and 28 (pie), and Android SDK build tools 27.0.3 are also required. These are not installed through the VS Installer, so instead use the Android SDK Manager (Visual Studio > Tools > Android > Android SDK Manager…)
 - An Internet connection
-- A Windows machine (necessary if you want to run the app on Windows)
-- An OS X machine (necessary if you want to run the app on Mac)
-- A Linux machine (necessary if you want to run the app on Linux)
+- A Windows, OS X, or Linux machine (necessary if you want to run the app on their respective platforms)
 - An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
 - A user account in your Azure AD tenant. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 - Setup [Xamarin.iOS for Visual Studio](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/introduction-to-xamarin-ios-for-visual-studio) (if you want to run the iOS app)

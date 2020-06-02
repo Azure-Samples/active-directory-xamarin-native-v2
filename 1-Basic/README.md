@@ -15,30 +15,27 @@ endpoint: Microsoft identity platform
 
 This is a simple [Xamarin Forms](https://www.xamarin.com/visual-studio) app showcasing how to use MSAL.NET to:
 
-1. authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA) and get an access token to
-2. access the Microsoft Graph.
+1. Authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA)
+2. Get an access token for Microsoft Graph
 
 The Xamarin Forms application is provided for Xamarin.iOS, Xamarin.Android, and Xamarin.UWP
 
 ![Topology](./ReadmeFiles/Topology.png)
 
-- Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
+- You can learn more about Microsoft Graph with this video: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A).
 
 ## How To Run this Sample
 
 To run this sample you will need:
 
-- [Visual Studio 2017](https://aka.ms/vsdownload) with the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/):
+- [Visual Studio 2019](https://aka.ms/vsdownload) with the **Mobile development with .NET** [workload](https://www.visualstudio.com/vs/visual-studio-workloads/):
 - An Internet connection
 - At least one of the following accounts:
-  - A Microsoft Account
-  - An Azure AD account
+  - A Microsoft Account - you can get a free account by visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
+  - An Azure AD account - you can get a free trial Office 365 account by visiting [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
 - For [UWP](https://docs.microsoft.com/en-us/windows/uwp/get-started/whats-a-uwp), if you want to test the UWP application, you will have to add the SDK corresponding to your version of Windows 10 (or all the Windows 10 SDKs). See [Testing UWP applications on Windows 10](#testing-uwp-applications-on-windows-10)
 - Setup [Xamarin.iOS for Visual Studio](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/introduction-to-xamarin-ios-for-visual-studio) (if you want to run the iOS app)
-- For a faster Android Emulator consider [Accelerating with Hyper-V](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows). This might require turning on Virtualization in BIOS settings of your PC.
-
-You can get a Microsoft Account for free by choosing the Sign up option while visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
-You can get an Office365 office subscription, which will give you an Azure AD account, at [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
+- For a faster Android emulator, consider [using with Hyper-V](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows). This might require turning on Virtualization in BIOS settings of your PC.
 
 ### Step 1:  Clone or download this repository
 

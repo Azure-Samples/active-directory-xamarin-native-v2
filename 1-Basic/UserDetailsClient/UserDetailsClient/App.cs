@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using System;
 using Xamarin.Forms;
 
 namespace UserDetailsClient
@@ -18,10 +19,10 @@ namespace UserDetailsClient
 
         public static object ParentWindow { get; set; }
 
-        public App()
+        public App(string specialRedirectUri = null)
         {
             PCA = PublicClientApplicationBuilder.Create(ClientID)
-                .WithRedirectUri($"msal{ClientID}://auth")
+                .WithRedirectUri(specialRedirectUri?? $"msal{ClientID}://auth")
                 .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                 .Build();
 

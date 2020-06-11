@@ -17,11 +17,11 @@ urlFragment: active-directory-xamarin-native-v2
 
 ### Scenario
 
-You have a mobile application and you want it to consume Microsoft Graph or your own Web Api using **Microsoft Identity Platform** to acquire tokens.
+You have a mobile application and you want it to consume either Microsoft Graph or your own Web API using the **Microsoft Identity Platform** to acquire tokens.
 
 ### Structure of the repository
 
-This repository contains a two-part tutorial sample app:
+This repository contains a two-part tutorial - a basic scenario and a more advanced with broker scenario. Choose the one that best suits your scenario, or go through both to understand the differences between the implementations.
 
 Sub folder                    | Description
 ----------------------------- | -----------

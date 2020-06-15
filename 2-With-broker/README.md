@@ -343,13 +343,13 @@ Make sure the platform you configured is the same one you mark for build and dep
 
 Clean the solution, build and run it:
 
-- Click the sign-in with broker button at the bottom of the application screen. Depending on whether or not there are conditional access policies applied to the user signing in, there will be two different experiences:
-- If there are conditional access policies applied to the user signing in, the Authenticator App will open, or ask you to install it from the App Store. 
-- In the Authenticator App, either select an already existing account, or add a new one.
-- If adding a new one, on the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The authenticator app works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
-- Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
-- Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-- Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
+- Click the sign-in with broker button at the bottom of the application screen. Depending on whether or not there are conditional access policies applied to the user signing in, there will be two different experiences. If there are conditional access policies applied to the user signing in:
+    - The Authenticator App will open, or ask you to install it from the App Store. 
+    - In the Authenticator App, either select an already existing account, or add a new one.
+    - If adding a new one, on the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The authenticator app works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
+    - Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
+    - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
+    - Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
 - If there are no conditional access policies applied to the user signing in, signing in with a broker is not required, so you will see the typical sign-in UI flow.
 
 ## About the code

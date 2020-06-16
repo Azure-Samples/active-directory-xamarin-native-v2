@@ -310,6 +310,8 @@ Keytool is part of the standard Java distribution. You may need to the add the j
 
 Once you have your signature, simply use the `msauth://{Package Name}/{Signature Hash}` format as shown above to create your redirect URI.
 
+NOTE: if you are still having trouble calculating the correct redirect URI for the broker, MSAL will thrown an exception with the correct broker redirect URI in the error message. if you see this exception, simply update your redirect URI in the code and portal with the one acquired fromt the exception as shown above.
+
 NOTE: You also have the option of acquiring your redirect URI with code. see [Brokered Authentication for Android](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-use-brokers-with-xamarin-apps) for more details
 
 #### [Android only, optional] Step 4g: System Browser configuration with Android Broker redirect URI
@@ -319,21 +321,31 @@ If you are using the system browser for interactive authentication, it is possib
 ```
 //NOTE: the slash before your signature value added to the path attribute
 //This uses the base64 encoded signature produced above.
-<intent-filter>
-      <data android:scheme="msauth"
-                    android:host="Package Name"
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="msal"Client ID"" android:host="auth" />
+        <data android:scheme="msauth"
+                    android:host="package name"
                     android:path="/Package Signature"/>
+      </intent-filter>
 ```
 
-for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testApp/hgbUYHVBYUTvuvT&Y6tr554365466=` your manifest should look something like 
+for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testApp/hgbUYHVBYUTvuvT&Y6tr554365466=` and a client id of `76hdu2l6-df67-49d0-2d0b-cd95kjny6592` your manifest should look something like 
 
 ```
 //NOTE: the slash before your signature value added to the path attribute
 //This uses the base64 encoded signature produced above.
-<intent-filter>
-      <data android:scheme="msauth"
-                    android:host="com.microsoft.xforms.testApp"
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="msal4a1aa1d5-c567-49d0-ad0b-cd957a47f842" android:host="auth" />
+        <data android:scheme="msauth"
+                    android:host="com.companyname.XamarinDev"
                     android:path="/hgbUYHVBYUTvuvT&Y6tr554365466="/>
+      </intent-filter>
 ```
 **Please be sure to add a / in front of the signature in the "android:path" value**
 

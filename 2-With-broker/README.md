@@ -310,6 +310,8 @@ Keytool is part of the standard Java distribution. You may need to the add the j
 
 Once you have your signature, simply use the `msauth://{Package Name}/{Signature Hash}` format as shown above to create your redirect URI.
 
+NOTE: if you are still having trouble calculating the correct redirect URI for the broker, MSAL will thrown an exception with the correct broker redirect URI in the error message. if you see this exception, simply update your redirect URI in the code and portal with the one acquired fromt the exception as shown above.
+
 NOTE: You also have the option of acquiring your redirect URI with code. see [Brokered Authentication for Android](https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-use-brokers-with-xamarin-apps) for more details
 
 #### [Android only, optional] Step 4g: System Browser configuration with Android Broker redirect URI
@@ -319,21 +321,31 @@ If you are using the system browser for interactive authentication, it is possib
 ```
 //NOTE: the slash before your signature value added to the path attribute
 //This uses the base64 encoded signature produced above.
-<intent-filter>
-      <data android:scheme="msauth"
-                    android:host="Package Name"
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="msal"Client ID"" android:host="auth" />
+        <data android:scheme="msauth"
+                    android:host="package name"
                     android:path="/Package Signature"/>
+      </intent-filter>
 ```
 
-for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testApp/hgbUYHVBYUTvuvT&Y6tr554365466=` your manifest should look something like 
+for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testApp/hgbUYHVBYUTvuvT&Y6tr554365466=` and a client id of `76hdu2l6-df67-49d0-2d0b-cd95kjny6592` your manifest should look something like 
 
 ```
 //NOTE: the slash before your signature value added to the path attribute
 //This uses the base64 encoded signature produced above.
-<intent-filter>
-      <data android:scheme="msauth"
-                    android:host="com.microsoft.xforms.testApp"
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="msal4a1aa1d5-c567-49d0-ad0b-cd957a47f842" android:host="auth" />
+        <data android:scheme="msauth"
+                    android:host="com.companyname.XamarinDev"
                     android:path="/hgbUYHVBYUTvuvT&Y6tr554365466="/>
+      </intent-filter>
 ```
 **Please be sure to add a / in front of the signature in the "android:path" value**
 
@@ -343,13 +355,14 @@ Make sure the platform you configured is the same one you mark for build and dep
 
 Clean the solution, build and run it:
 
-- Click the sign-in with broker button at the bottom of the application screen. 
-- The Authenticator App will open, or ask you to install it from the App Store. 
-- In the Authenticator App, either select an already existing account, or add a new one.
-- If adding a new one, on the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The authenticator app works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
-- Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
-- Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-- Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
+- Click the sign-in with broker button at the bottom of the application screen. Depending on whether or not there are conditional access policies applied to the user signing in, there will be two different experiences. If there are conditional access policies applied to the user signing in:
+    - The Authenticator App will open, or ask you to install it from the App Store. 
+    - In the Authenticator App, either select an already existing account, or add a new one.
+    - If adding a new one, on the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The authenticator app works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
+    - Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
+    - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
+    - Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
+- If there are no conditional access policies applied to the user signing in, signing in with a broker is not required, so you will see the typical sign-in UI flow.
 
 ## About the code
 

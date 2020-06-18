@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿
 using Foundation;
-using UIKit;
 using Microsoft.Identity.Client;
-using Microsoft.Identity.Client.Platforms.iOS;
+using UIKit;
 
 namespace UserDetailsClient.iOS
 {

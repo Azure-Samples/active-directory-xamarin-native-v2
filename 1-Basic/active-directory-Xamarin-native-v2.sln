@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDetailsClient.Droid", "UserDetailsClient\UserDetailsClient.Droid\UserDetailsClient.Droid.csproj", "{DD942D28-518D-4C06-A0D9-A7D8AB3F54E7}"
 EndProject
@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDetailsClient.iOS", "Us
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDetailsClient.UWP", "UserDetailsClient\UserDetailsClient.UWP\UserDetailsClient.UWP.csproj", "{CB126428-9739-4C4E-9CBB-F09C03080415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDetailsClient", "UserDetailsClient\UserDetailsClient\UserDetailsClient.csproj", "{CF72088B-E0A5-401C-A795-531A81E05248}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserDetailsClient", "UserDetailsClient\UserDetailsClient\UserDetailsClient.csproj", "{CF72088B-E0A5-401C-A795-531A81E05248}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{36FE7FD1-5D6E-4733-8B43-D3A14A3D5539}"
 	ProjectSection(SolutionItems) = preProject

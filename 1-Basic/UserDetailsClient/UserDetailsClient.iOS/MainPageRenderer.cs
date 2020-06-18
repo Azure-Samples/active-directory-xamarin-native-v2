@@ -1,8 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UserDetailsClient;
+﻿using UserDetailsClient;
 using UserDetailsClient.iOS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;

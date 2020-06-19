@@ -106,6 +106,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UserDetailsClient\UserDetailsClient.csproj">
       <Name>UserDetailsClient</Name>
+      <Project>{CF72088B-E0A5-401C-A795-531A81E05248}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -127,8 +128,11 @@
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="Microsoft.Identity.Client"  Version="4.14.0"/>
-   <PackageReference Include="Newtonsoft.Json"  Version="11.0.2"/>
+  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+   <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+   <PackageReference Include="Xamarin.Forms">
+     <Version>4.7.0.968</Version>
+   </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

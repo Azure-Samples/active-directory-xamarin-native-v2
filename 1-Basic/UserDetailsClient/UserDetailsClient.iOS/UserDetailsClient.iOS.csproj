@@ -128,11 +128,11 @@
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
-   <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-   <PackageReference Include="Xamarin.Forms">
-     <Version>4.7.0.968</Version>
-   </PackageReference>
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.19.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Xamarin.Forms">
+      <Version>4.8.0.1451</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

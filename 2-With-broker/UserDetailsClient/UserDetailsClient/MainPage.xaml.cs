@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 
 namespace UserDetailsClient
@@ -30,9 +29,7 @@ namespace UserDetailsClient
                 .Create(App.ClientID);
                 
             if (UseBroker)
-            {
-                builder.WithBroker();
-                
+            {                
                 switch (Device.RuntimePlatform)
                 {
                     case Device.Android:
@@ -42,7 +39,18 @@ namespace UserDetailsClient
                         builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
                         builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
                         break;
+                    case Device.UWP:
+                        builder = builder.WithExperimentalFeatures();
+
+                        // See also UserDetailsClient.UWP project in MainPage.xml.cs
+                        // To get the redirect URI that you need to register in your app
+                        // registration of a shape similar to:
+                        // ms-appx-web://microsoft.aad.brokerplugin/S-1-15-2-3163378744-4254380357-4090943427-3442740072-2185909759-2930900273-1603380124
+                        builder.WithDefaultRedirectUri();
+                        break;
                 }
+
+                builder.WithBroker();
             }
             else
             {

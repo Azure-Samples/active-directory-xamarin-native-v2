@@ -23,10 +23,14 @@ namespace UserDetailsClient.UWP
 
             // To get SSO with a UWP app, you'll need to register the following
             // redirect URI for your application
-            Uri redirectURI = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
-            
+            Uri redirectURIForSsoWithoutBroker = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+
+            // To have WAM working you need to register the following redirect URI for your application
+            string sid = redirectURIForSsoWithoutBroker.Host.ToUpper();
+            string redirectUriWithWAM = $"ms-appx-web://microsoft.aad.brokerplugin/{sid}";
+
             // Then use the following:
-            LoadApplication(new UserDetailsClient.App(redirectURI.AbsoluteUri));
+            LoadApplication(new UserDetailsClient.App(redirectURIForSsoWithoutBroker.AbsoluteUri));
         }
     }
 }

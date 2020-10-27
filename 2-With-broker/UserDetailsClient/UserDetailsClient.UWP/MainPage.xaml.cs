@@ -21,6 +21,13 @@ namespace UserDetailsClient.UWP
         {
             this.InitializeComponent();
 
+            // To have WAM working you need to register the following redirect URI for your application
+            string sid = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri()
+                .Host
+                .ToUpper();
+            string redirectUriWithWAM = $"ms-appx-web://microsoft.aad.brokerplugin/{sid}";
+
+            // Then use the following:
             LoadApplication(new UserDetailsClient.App());
         }
     }

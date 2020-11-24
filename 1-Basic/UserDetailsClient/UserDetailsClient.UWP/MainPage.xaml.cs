@@ -27,6 +27,8 @@ namespace UserDetailsClient.UWP
 
             // To have WAM working you need to register the following redirect URI for your application
             string sid = redirectURIForSsoWithoutBroker.Host.ToUpper();
+            
+            // only used in the .WithBroker scenario.
             string redirectUriWithWAM = $"ms-appx-web://microsoft.aad.brokerplugin/{sid}";
 
             // Then use the following:

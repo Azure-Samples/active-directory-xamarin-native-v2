@@ -119,6 +119,9 @@ namespace UserDetailsClient
                     try
                     {
                         IAccount firstAccount = accounts.FirstOrDefault();
+
+                        // On UWP, you can set firstAccount = PublicClientApplication.OperatingSystemAccount if you
+                        // want to sign-in THE account signed-in with Windows 
                         authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
                                               .ExecuteAsync();
                     }

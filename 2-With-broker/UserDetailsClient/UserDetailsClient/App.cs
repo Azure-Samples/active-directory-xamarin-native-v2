@@ -20,7 +20,7 @@ namespace UserDetailsClient
         //- For Windows: `keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64`
         //- For Mac: `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
         //For more details, please visit https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-use-brokers-with-xamarin-apps
-        public const string BrokerRedirectUriOnAndroid = "msauth://UserDetailsClient.Droid//{Your package signature}";
+        public const string BrokerRedirectUriOnAndroid = "msauth://UserDetailsClient.Droid/{Your package signature}";
 
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;

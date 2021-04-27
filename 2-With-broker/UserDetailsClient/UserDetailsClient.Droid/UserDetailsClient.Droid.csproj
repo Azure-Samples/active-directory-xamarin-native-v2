@@ -191,7 +191,7 @@
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties TriggeredFromHotReload="False" XamarinHotReloadXFormsNugetUpgradeInfoBarUserDetailsClientDroidHideInfoBar="True" />
-        <UserProperties XamarinHotReloadXFormsNugetUpgradeInfoBarUserDetailsClientDroidHideInfoBar="True" TriggeredFromHotReload="False" />
+       <UserProperties XamarinHotReloadXFormsNugetUpgradeInfoBarUserDetailsClientDroidHideInfoBar="True" TriggeredFromHotReload="False" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

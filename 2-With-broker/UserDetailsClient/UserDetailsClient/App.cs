@@ -11,7 +11,7 @@ namespace UserDetailsClient
         /// The ClientID is the Application ID found in the portal (https://go.microsoft.com/fwlink/?linkid=2083908). 
         /// You can use the below id however if you create an app of your own you should replace the value here.
         /// </summary>
-        public static string ClientID = "16dab2ba-145d-4b1b-8569-bf4b9aed4dc8"; // ms-identity-samples-testing
+        public static string ClientID = "4a1aa1d5-c567-49d0-ad0b-cd957a47f842"; // ms-identity-samples-testing
         public const string BrokerRedirectUriOnIos = "msauth.com.yourcompany.UserDetailsClient://auth";
 
         //The redirect uri on Android will need to be created based on the signature of the .APK used to sign it. 
@@ -20,7 +20,7 @@ namespace UserDetailsClient
         //- For Windows: `keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64`
         //- For Mac: `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
         //For more details, please visit https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-use-brokers-with-xamarin-apps
-        public const string BrokerRedirectUriOnAndroid = "msauth://UserDetailsClient.Droid/i0gj9MxJ7ABJtkaIyUBW4Xszw9Q=";
+        public const string BrokerRedirectUriOnAndroid = "msauth://UserDetailsClient.Droid/{Your package signature}";
 
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;

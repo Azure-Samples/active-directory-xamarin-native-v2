@@ -35,9 +35,14 @@ namespace UserDetailsClient
                     {
                         try
                         {
+                            // Hide the privacy prompt
+                            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
+                                                                            { iOSHidePrivacyPrompt = true, };
+
                             authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
-                                                      .WithParentActivityOrWindow(App.ParentWindow)
-                                                      .ExecuteAsync();
+                                                                       .WithParentActivityOrWindow(App.ParentWindow)
+                                                                       .WithSystemWebViewOptions(systemWebViewOptions)
+                                                                       .ExecuteAsync();
                         }
                         catch(Exception ex2)
                         {

@@ -46,6 +46,8 @@
                      HorizontalOptions="FillAndExpand" />
             <Button x:Name="btnSignInSignOut"
                     Text="Sign in"
+                    FontSize="Medium"
+                    Margin="20"
                     Clicked="OnSignInSignOut"
                     VerticalOptions="End"
                     HorizontalOptions="FillAndExpand" />

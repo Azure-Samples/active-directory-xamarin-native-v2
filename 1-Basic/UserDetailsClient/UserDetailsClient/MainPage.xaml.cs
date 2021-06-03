@@ -31,20 +31,28 @@ namespace UserDetailsClient
                         authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
                                               .ExecuteAsync();
                     }
-                    catch (MsalUiRequiredException ex)
+                    catch (MsalUiRequiredException)
                     {
                         try
-                        {
-                            // Hide the privacy prompt
-                            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
-                                                                            { iOSHidePrivacyPrompt = true, };
+                        { 
+                            var builder = App.PCA.AcquireTokenInteractive(App.Scopes)
+                                                                       .WithParentActivityOrWindow(App.ParentWindow);
 
-                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
-                                                                       .WithParentActivityOrWindow(App.ParentWindow)
-                                                                       .WithSystemWebViewOptions(systemWebViewOptions)
-                                                                       .ExecuteAsync();
+                            if (Device.RuntimePlatform != "UWP")
+                            {
+                                // on Android and iOS, prefer to use the system browser, which does not exist on UWP
+                                SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
+                                {                            
+                                    iOSHidePrivacyPrompt = true,
+                                };
+
+                                builder.WithSystemWebViewOptions(systemWebViewOptions);
+                                builder.WithUseEmbeddedWebView(false);
+                            }
+
+                            authResult = await builder.ExecuteAsync();
                         }
-                        catch(Exception ex2)
+                        catch (Exception ex2)
                         {
                             await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
                         }

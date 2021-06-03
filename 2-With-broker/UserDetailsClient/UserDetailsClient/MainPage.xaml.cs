@@ -10,25 +10,24 @@ using Xamarin.Forms;
 namespace UserDetailsClient
 {
     public partial class MainPage : ContentPage
-    {
-        private static bool UseBroker { get; set; } = false;
+    {        
         public MainPage()
         {
             InitializeComponent();
         }
 
         private void OnSignInSignOut(object sender, EventArgs e)
-        {
-            UseBroker = false;
+        {            
+            CreatePublicClient(false);
             AcquireTokenAsync().ConfigureAwait(false);
         }
 
-        public static void CreatePublicClient()
+        public static void CreatePublicClient(bool useBroker)
         {
             var builder = PublicClientApplicationBuilder
                 .Create(App.ClientID);
                 
-            if (UseBroker)
+            if (useBroker)
             {                
                 switch (Device.RuntimePlatform)
                 {
@@ -101,9 +100,8 @@ namespace UserDetailsClient
         }
 
         private void btnSignInSignOutWithBroker_Clicked(object sender, EventArgs e)
-        {
-            UseBroker = true;
-            CreatePublicClient();
+        {            
+            CreatePublicClient(true);
 
             AcquireTokenAsync().ConfigureAwait(false);
         }

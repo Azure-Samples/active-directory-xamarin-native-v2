@@ -20,7 +20,7 @@ namespace UserDetailsClient
         async void OnSignInSignOut(object sender, EventArgs e)
         {
             AuthenticationResult authResult = null;
-            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
+            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
             try
             {
                 if (btnSignInSignOut.Text == "Sign in")
@@ -29,7 +29,8 @@ namespace UserDetailsClient
                     {
                         IAccount firstAccount = accounts.FirstOrDefault();
                         authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
-                                              .ExecuteAsync();
+                                              .ExecuteAsync()
+                                              .ConfigureAwait(false);
                     }
                     catch (MsalUiRequiredException)
                     {
@@ -50,7 +51,7 @@ namespace UserDetailsClient
                                 builder.WithUseEmbeddedWebView(false);
                             }
 
-                            authResult = await builder.ExecuteAsync();
+                            authResult = await builder.ExecuteAsync().ConfigureAwait(false);
                         }
                         catch (Exception ex2)
                         {
@@ -62,19 +63,22 @@ namespace UserDetailsClient
                     {
                         var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
                         UpdateUserContent(content);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
                     }
                 }
                 else
                 {
                     while (accounts.Any())
                     {
-                        await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-                        accounts = await App.PCA.GetAccountsAsync();
+                        await App.PCA.RemoveAsync(accounts.FirstOrDefault()).ConfigureAwait(false);
+                        accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
                     }
 
-                    slUser.IsVisible = false;
-                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
+                    
+                    Device.BeginInvokeOnMainThread(() => 
+                    {
+                        slUser.IsVisible = false;
+                        btnSignInSignOut.Text = "Sign in"; 
+                    });
                 }
             }
             catch (Exception ex)
@@ -89,10 +93,10 @@ namespace UserDetailsClient
             {
                 JObject user = JObject.Parse(content);
 
-                slUser.IsVisible = true;
-
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    slUser.IsVisible = true;
+
                     lblDisplayName.Text = user["displayName"].ToString();
                     lblGivenName.Text = user["givenName"].ToString();
                     lblId.Text = user["id"].ToString();
@@ -112,13 +116,13 @@ namespace UserDetailsClient
                 HttpClient client = new HttpClient();
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
                 message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                HttpResponseMessage response = await client.SendAsync(message);
-                string responseString = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.SendAsync(message).ConfigureAwait(false);
+                string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return responseString;
             }
             catch(Exception ex)
             {
-                await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss");
+                await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss").ConfigureAwait(false);
                 return ex.ToString();
             }
         }

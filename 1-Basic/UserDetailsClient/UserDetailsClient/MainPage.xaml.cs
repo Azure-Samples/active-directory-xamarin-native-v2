@@ -1,4 +1,4 @@
-﻿using Microsoft.Identity.Client;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

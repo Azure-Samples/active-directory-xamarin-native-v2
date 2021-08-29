@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Helper;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,53 +11,33 @@ using Xamarin.Forms;
 namespace UserDetailsClient
 {
     public partial class MainPage : ContentPage
-    {        
+    {
         public MainPage()
         {
             InitializeComponent();
+            CreatePublicClient();
         }
 
-        private void OnSignInSignOut(object sender, EventArgs e)
-        {            
-            CreatePublicClient(false);
-            AcquireTokenAsync().ConfigureAwait(false);
-        }
-
-        public static void CreatePublicClient(bool useBroker)
+        public static void CreatePublicClient()
         {
-            var builder = PublicClientApplicationBuilder
-                .Create(App.ClientID);
-                
-            if (useBroker)
-            {                
-                switch (Device.RuntimePlatform)
-                {
-                    case Device.Android:
-                        builder = builder.WithRedirectUri(App.BrokerRedirectUriOnAndroid);
-                        break;
-                    case Device.iOS:
-                        builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
-                        builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
-                        break;
-                    case Device.UWP:
-                        builder = builder.WithExperimentalFeatures();
-
-                        // See also UserDetailsClient.UWP project in MainPage.xml.cs
-                        // To get the redirect URI that you need to register in your app
-                        // registration of a shape similar to:
-                        // ms-appx-web://microsoft.aad.brokerplugin/S-1-15-2-3163378744-4254380357-4090943427-3442740072-2185909759-2930900273-1603380124
-                        builder.WithDefaultRedirectUri();
-                        break;
-                }
-
-                builder.WithBroker();
-            }
-            else
+            string redirectUri = null;
+            switch (Device.RuntimePlatform)
             {
-                builder = builder.WithRedirectUri($"msal{App.ClientID}://auth");
+                case Device.Android:
+                    redirectUri = App.BrokerRedirectUriOnAndroid;
+                    break;
+                case Device.iOS:
+                    redirectUri = App.BrokerRedirectUriOnIos;
+                    break;
             }
 
-            App.PCA = builder.Build();
+            PCAHelper.Init(App.ClientID, App.Scopes, redirectUri);
+            if (Device.RuntimePlatform == Device.UWP)
+            {
+                PCAHelper.Instance.PCABuilder.WithExperimentalFeatures();
+                PCAHelper.Instance.PCABuilder.WithDefaultRedirectUri();
+            }
+            PCAHelper.Instance.PCABuilder.WithBroker();
         }
 
         private void UpdateUserContent(string content)
@@ -99,62 +80,32 @@ namespace UserDetailsClient
             }
         }
 
-        private void btnSignInSignOutWithBroker_Clicked(object sender, EventArgs e)
-        {            
-            CreatePublicClient(true);
-
-            AcquireTokenAsync().ConfigureAwait(false);
-        }
-
-        private async Task AcquireTokenAsync()
+        private async void btnSignInSignOutWithBroker_Clicked(object sender, EventArgs e)
         {
             AuthenticationResult authResult = null;
-            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
+            IEnumerable<IAccount> accounts = await PCAHelper.Instance.PCA.GetAccountsAsync();
             try
             {
-                if (btnSignInSignOut.Text == "Sign in")
+                if (PCAHelper.Instance.AuthResult == null)
                 {
-                    try
-                    {
-                        IAccount firstAccount = accounts.FirstOrDefault();
-
-                        // On UWP, you can set firstAccount = PublicClientApplication.OperatingSystemAccount if you
-                        // want to sign-in THE account signed-in with Windows 
-                        authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
-                                              .ExecuteAsync();
-                    }
-                    catch (MsalUiRequiredException ex)
-                    {
-                        try
-                        {
-                            authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
-                                                      .WithParentActivityOrWindow(App.ParentWindow)
-                                                      .WithUseEmbeddedWebView(true)
-                                                      .ExecuteAsync();
-                        }
-                        catch (Exception ex2)
-                        {
-                            await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
-                        }
-                    }
+                    authResult = await PCAHelper.Instance.EnsureAuthenticatedAsync(account: accounts.FirstOrDefault());
 
                     if (authResult != null)
                     {
                         var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
                         UpdateUserContent(content);
-                        Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign out"; });
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            btnSignInSignOut.Text = "Sign out";
+                        });
                     }
                 }
                 else
                 {
-                    while (accounts.Any())
-                    {
-                        await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-                        accounts = await App.PCA.GetAccountsAsync();
-                    }
+                    await PCAHelper.Instance.SignOutAsync();
 
                     slUser.IsVisible = false;
-                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in"; });
+                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in with Broker"; });
                 }
             }
             catch (Exception ex)

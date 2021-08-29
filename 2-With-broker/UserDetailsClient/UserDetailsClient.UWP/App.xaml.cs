@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Identity.Client.Helper;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace UserDetailsClient.UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            PCAHelper.IsUWP = true;
         }
 
         /// <summary>

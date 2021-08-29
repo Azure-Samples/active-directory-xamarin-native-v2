@@ -30,8 +30,7 @@
                 </StackLayout>
             </StackLayout>
             <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-            <Button x:Name="btnSignInSignOut" Text="Sign in" Clicked="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
-            <Button x:Name="btnSignInSignOutWithBroker" Text="Sign in with broker" Clicked="btnSignInSignOutWithBroker_Clicked" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="btnSignInSignOut" Text="Sign in with broker" Clicked="btnSignInSignOutWithBroker_Clicked" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 

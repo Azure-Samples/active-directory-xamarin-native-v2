@@ -46,8 +46,6 @@ namespace UserDetailsClient
             {
                 JObject user = JObject.Parse(content);
 
-                slUser.IsVisible = true;
-
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     lblDisplayName.Text = user["displayName"].ToString();
@@ -56,21 +54,23 @@ namespace UserDetailsClient
                     lblSurname.Text = user["surname"].ToString();
                     lblUserPrincipalName.Text = user["userPrincipalName"].ToString();
 
+                    slUser.IsVisible = true;
+
                     btnSignInSignOut.Text = "Sign out";
                 });
             }
         }
 
-        public async Task<string> GetHttpContentWithTokenAsync(string token)
+        public async Task<string> GetHttpContentWithTokenAsync()
         {
             try
             {
                 //get data from API
                 HttpClient client = new HttpClient();
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
-                message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                HttpResponseMessage response = await client.SendAsync(message);
-                string responseString = await response.Content.ReadAsStringAsync();
+                PCAHelper.Instance.AddAuthenticationBearerToken(message);
+                HttpResponseMessage response = await client.SendAsync(message).ConfigureAwait(false);
+                string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return responseString;
             }
             catch (Exception ex)
@@ -82,35 +82,38 @@ namespace UserDetailsClient
 
         private async void btnSignInSignOutWithBroker_Clicked(object sender, EventArgs e)
         {
-            AuthenticationResult authResult = null;
-            IEnumerable<IAccount> accounts = await PCAHelper.Instance.PCA.GetAccountsAsync();
             try
             {
                 if (PCAHelper.Instance.AuthResult == null)
                 {
-                    authResult = await PCAHelper.Instance.EnsureAuthenticatedAsync(account: accounts.FirstOrDefault());
+                    IEnumerable<IAccount> accounts = await PCAHelper.Instance.PCA.GetAccountsAsync().ConfigureAwait(false); ;
+                    await PCAHelper.Instance.EnsureAuthenticatedAsync(account: accounts.FirstOrDefault()).ConfigureAwait(false);
 
-                    if (authResult != null)
+                    if (PCAHelper.Instance.AuthResult != null)
                     {
-                        var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
-                        UpdateUserContent(content);
+                        var content = await GetHttpContentWithTokenAsync().ConfigureAwait(false);
                         Device.BeginInvokeOnMainThread(() =>
                         {
+                            UpdateUserContent(content);
                             btnSignInSignOut.Text = "Sign out";
                         });
                     }
                 }
                 else
                 {
-                    await PCAHelper.Instance.SignOutAsync();
+                    await PCAHelper.Instance.SignOutAsync().ConfigureAwait(false);
 
-                    slUser.IsVisible = false;
-                    Device.BeginInvokeOnMainThread(() => { btnSignInSignOut.Text = "Sign in with Broker"; });
+                    
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        slUser.IsVisible = false;
+                        btnSignInSignOut.Text = "Sign in with Broker";
+                    });
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
+                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss").ConfigureAwait(false);
             }
         }
     }

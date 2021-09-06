@@ -22,7 +22,6 @@ namespace UserDetailsClient.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
-            App.ParentWindow = this;
             PCAHelper.ParentWindow = this;
         }
 

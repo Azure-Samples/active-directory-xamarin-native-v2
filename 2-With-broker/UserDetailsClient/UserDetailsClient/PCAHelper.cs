@@ -95,64 +95,82 @@ namespace Microsoft.Identity.Client.Helper
         /// Interactive attempt is optional.
         /// If AcquireTokenInteractiveParameterBuilder needs to be cusomized prior to the execution, it provides a delegate.
         /// </summary>
-        /// <param name="silentOnly">If true, does not attempt UI interaction even if silent action fails</param>
+        /// <param name="doSilent">Attempts silent acquire based on the value</param>
+        /// <param name="doInteractive">UI interaction even if silent action fails<</param>
         /// <param name="account">Account to be used. (optional)</param>
         /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder prior to execute</param>
         /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder prior to execute</param>
         /// <returns></returns>
-        public async Task<AuthenticationResult> EnsureAuthenticatedAsync(bool silentOnly = false, IAccount account = null, Action<AcquireTokenSilentParameterBuilder> customizeSilent = null, Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null)
+        public async Task<AuthenticationResult> EnsureAuthenticatedAsync(bool doSilent = true, bool doInteractive = true, IAccount account = null, Action<AcquireTokenSilentParameterBuilder> customizeSilent = null, Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null)
         {
             AuthResult = null;
 
             try
             {
-                // Customize silentBuilder
-                var silentparamsBuilder = PCA.AcquireTokenSilent(_scopes, account);
-                if (customizeSilent != null)
+                if (doSilent)
                 {
-                    customizeSilent(silentparamsBuilder);
+                    // Customize silentBuilder
+                    var silentparamsBuilder = PCA.AcquireTokenSilent(_scopes, account);
+                    if (customizeSilent != null)
+                    {
+                        customizeSilent(silentparamsBuilder);
+                    }
+
+                    AuthResult = await silentparamsBuilder.ExecuteAsync()
+                                          .ConfigureAwait(false);
                 }
-                
-                AuthResult = await silentparamsBuilder.ExecuteAsync()
-                                      .ConfigureAwait(false);
+                else if (doInteractive)
+                {
+                    await AcquireInteractive(customizeInteractive).ConfigureAwait(false);
+                }
+                else
+                {
+                    throw new ArgumentException($"Both doSilent and do Interactive cannot be false");
+                }
             }
             catch (MsalUiRequiredException)
             {
-                if (!silentOnly)
+                if (doInteractive)
                 {
-                    try
-                    {
-                        var builder = PCA.AcquireTokenInteractive(_scopes)
-                                                                   .WithParentActivityOrWindow(ParentWindow);
-
-                        if (!IsUWP)
-                        {
-                            // on Android and iOS, prefer to use the system browser, which does not exist on UWP
-                            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
-                            {
-                                iOSHidePrivacyPrompt = true,
-                            };
-
-                            builder.WithSystemWebViewOptions(systemWebViewOptions);
-                            builder.WithUseEmbeddedWebView(false);
-                        }
-
-                        if (customizeInteractive != null)
-                        {
-                            customizeInteractive(builder);
-                        }
-
-                        AuthResult = await builder.ExecuteAsync().ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                        throw;
-                    }
+                    await AcquireInteractive(customizeInteractive).ConfigureAwait(false);
                 }
             }
 
             return AuthResult;
+        }
+
+        // acquire interactively.
+        private async Task AcquireInteractive(Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive)
+        {
+            try
+            {
+                var builder = PCA.AcquireTokenInteractive(_scopes)
+                                                           .WithParentActivityOrWindow(ParentWindow);
+
+                if (!IsUWP)
+                {
+                    // on Android and iOS, prefer to use the system browser, which does not exist on UWP
+                    SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
+                    {
+                        iOSHidePrivacyPrompt = true,
+                    };
+
+                    builder.WithSystemWebViewOptions(systemWebViewOptions);
+                    builder.WithUseEmbeddedWebView(false);
+                }
+
+                if (customizeInteractive != null)
+                {
+                    customizeInteractive(builder);
+                }
+
+                AuthResult = await builder.ExecuteAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         /// <summary>

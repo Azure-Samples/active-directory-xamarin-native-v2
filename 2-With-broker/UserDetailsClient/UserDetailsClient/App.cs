@@ -23,8 +23,6 @@ namespace UserDetailsClient
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
 
-        public static object ParentWindow { get; set; }
-
         public App()
         {
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());

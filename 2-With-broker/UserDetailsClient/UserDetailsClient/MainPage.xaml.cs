@@ -86,8 +86,7 @@ namespace UserDetailsClient
             {
                 if (PCAHelper.Instance.AuthResult == null)
                 {
-                    IEnumerable<IAccount> accounts = await PCAHelper.Instance.PCA.GetAccountsAsync().ConfigureAwait(false); ;
-                    await PCAHelper.Instance.EnsureAuthenticatedAsync(account: accounts.FirstOrDefault()).ConfigureAwait(false);
+                    await PCAHelper.Instance.EnsureAuthenticatedAsync(preferredAccount:(accounts) => accounts.FirstOrDefault()).ConfigureAwait(false);
 
                     if (PCAHelper.Instance.AuthResult != null)
                     {
@@ -95,7 +94,6 @@ namespace UserDetailsClient
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             UpdateUserContent(content);
-                            btnSignInSignOut.Text = "Sign out";
                         });
                     }
                 }

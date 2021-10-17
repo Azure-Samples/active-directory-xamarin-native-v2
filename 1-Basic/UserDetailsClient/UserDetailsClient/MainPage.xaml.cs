@@ -27,17 +27,17 @@ namespace UserDetailsClient
                     var authResult = await PCAHelper.Instance.EnsureAuthenticatedAsync(customizeInteractive: (builder) =>
                     {
                         builder.WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount);
-                    });
+                    }).ConfigureAwait(false);
 
                     if (authResult != null)
                     {
-                        var content = await GetHttpContentWithTokenAsync();
+                        var content = await GetHttpContentWithTokenAsync().ConfigureAwait(false);
                         UpdateUserContent(content);
                     }
                 }
                 else
                 {
-                    await PCAHelper.Instance.SignOutAsync();
+                    await PCAHelper.Instance.SignOutAsync().ConfigureAwait(false);
 
                     Device.BeginInvokeOnMainThread(() =>
                     {

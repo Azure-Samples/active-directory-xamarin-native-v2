@@ -97,11 +97,16 @@ namespace Microsoft.Identity.Client.Helper
         /// </summary>
         /// <param name="doSilent">Attempts silent acquire based on the value</param>
         /// <param name="doInteractive">UI interaction even if silent action fails<</param>
-        /// <param name="account">Account to be used. (optional)</param>
+        /// <param name="preferredAccount">Function that determines th account to be used. The default is first. (optional)</param>
         /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder prior to execute</param>
         /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder prior to execute</param>
         /// <returns></returns>
-        public async Task<AuthenticationResult> EnsureAuthenticatedAsync(bool doSilent = true, bool doInteractive = true, IAccount account = null, Action<AcquireTokenSilentParameterBuilder> customizeSilent = null, Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null)
+        public async Task<AuthenticationResult> EnsureAuthenticatedAsync(
+                                                                bool doSilent = true,
+                                                                bool doInteractive = true,
+                                                                Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,
+                                                                Action<AcquireTokenSilentParameterBuilder> customizeSilent = null,
+                                                                Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null)
         {
             AuthResult = null;
 
@@ -109,6 +114,17 @@ namespace Microsoft.Identity.Client.Helper
             {
                 if (doSilent)
                 {
+                    IAccount account = null;
+                    IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
+                    if (preferredAccount != null)
+                    {
+                        account = preferredAccount(accounts);
+                    }
+                    else if(accounts != null)
+                    {
+                        account = accounts.FirstOrDefault();
+                    }
+
                     // Customize silentBuilder
                     var silentparamsBuilder = PCA.AcquireTokenSilent(_scopes, account);
                     if (customizeSilent != null)

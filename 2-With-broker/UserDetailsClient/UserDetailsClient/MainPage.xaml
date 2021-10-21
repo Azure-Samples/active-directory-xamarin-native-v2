@@ -3,8 +3,13 @@
              xmlns:local="clr-namespace:UserDetailsClient;assembly=UserDetailsClient"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UserDetailsClient.MainPage">
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="Black"/>
+        </Style>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout Background="Beige" BackgroundColor="White">
             <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
             <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
             <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">

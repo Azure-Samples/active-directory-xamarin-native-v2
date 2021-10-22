@@ -56,9 +56,9 @@ namespace UserDetailsClient
                         catch (Exception ex2)
                         {
                             Device.BeginInvokeOnMainThread(async () =>
-                                                            {
-                                                                await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
-                                                            });
+                            {
+                                await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
+                            });
                         }
                     }
 
@@ -90,7 +90,6 @@ namespace UserDetailsClient
                 {
                     await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
                 });
-                
             }
         }
 
@@ -129,7 +128,10 @@ namespace UserDetailsClient
             }
             catch(Exception ex)
             {
-                await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss").ConfigureAwait(false);
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss").ConfigureAwait(false);
+                });
                 return ex.ToString();
             }
         }

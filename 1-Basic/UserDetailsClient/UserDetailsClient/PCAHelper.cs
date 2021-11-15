@@ -12,12 +12,12 @@ namespace Microsoft.Identity.Client.Helper
     /// 1. PublicClientApplicationBuilder PCABuilder - is created in Init and is available to customizes before accessing PCA
     /// 2. EnsureAuhenticated This has two optional delegates one tocustomize the AcquireTokenInteractiveParameterBuilder and other to customize AcquireTokenSilentParameterBuilder before excute is called
     /// </summary>
-    public class PCAHelper
+    public class PCAHelper : IPCAHelper
     {
         /// <summary>
         /// Instance of the helper
         /// </summary>
-        public static PCAHelper Instance { get; private set; }
+        public static IPCAHelper Instance { get; private set; }
 
         /// <summary>
         /// IPublicClientApplication that is created on the first get
@@ -48,44 +48,43 @@ namespace Microsoft.Identity.Client.Helper
         /// This is applicable to Android. Please update this property in MainActivity.Create method
         /// and consequently with change in the current activity.
         /// </summary>
-        public static object ParentWindow { get; set; } = null;
+        public object ParentWindow { get; set; } = null;
 
         /// <summary>
         /// In UWP app, set it to true.
         /// </summary>
-        public static bool IsUWP { get; set; } = false;
+        public bool IsUWP { get; set; } = false;
 
         /// <summary>
         /// This stores the authentication result, from the auth process.
         /// When the process starts, it is set to null.
         /// </summary>
-        public AuthenticationResult AuthResult { get; private set; }
+        public AuthenticationResult AuthResult { get; internal set; }
 
         // desired scopes
         private string[] _scopes;
 
-        // Private constructor to keep it singleton
-        private PCAHelper()
-        {
-        }
-
         /// <summary>
-        /// Initializes the instance and PublicClientApplicationBuilder with the give parameters
+        /// Initializes the instance and PublicClientApplicationBuilder with the given parameters
         /// PublicClientApplicationBuilder can be customized after the call.
         /// </summary>
+        /// <typeparam name="T">Any class that can is inherited from PCAHelper</typeparam>
         /// <param name="clientId">Client id of your application</param>
         /// <param name="scopes">The desired scope</param>
         /// <param name="specialRedirectUri">If you are using recommended pattern fo rredirect Uri, this is optional</param>
-        /// <returns></returns>
-        public static PCAHelper Init(string clientId, string[] scopes, string specialRedirectUri = null)
+        /// <param name="forceCreate">Creates a new instance irrespective of the previous instance</param>
+        /// <returns>Instance of class inherited from PCAHelper</returns>
+        public static IPCAHelper Init<T>(string clientId, string[] scopes, string specialRedirectUri = null, bool forceCreate = false) 
+                where T : PCAHelper, new()
         {
-            if (Instance == null)
+            if (Instance == null || forceCreate)
             {
-                Instance = new PCAHelper();
-                Instance._scopes = scopes;
-                Instance.PCABuilder = PublicClientApplicationBuilder.Create(clientId)
+                var pcaHelper = new T();
+                pcaHelper._scopes = scopes;
+                pcaHelper.PCABuilder = PublicClientApplicationBuilder.Create(clientId)
                                                                     .WithRedirectUri(specialRedirectUri ?? $"msal{clientId}://auth")
                                                                     .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
+                Instance = pcaHelper;
             }
             return Instance;
         }

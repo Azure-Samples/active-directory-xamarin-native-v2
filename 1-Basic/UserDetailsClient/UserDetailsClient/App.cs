@@ -18,9 +18,11 @@ namespace UserDetailsClient
 
         public static object ParentWindow { get; set; }
 
+        public static IPCAHelper PCA { get; private set; }
+
         public App(string specialRedirectUri = null)
         {
-            PCAHelper.Init(ClientID, Scopes);
+            PCA = PCAHelper.Init<PCAHelper>(ClientID, Scopes);
 
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());
         }

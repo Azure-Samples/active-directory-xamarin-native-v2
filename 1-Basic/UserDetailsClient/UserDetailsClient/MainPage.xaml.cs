@@ -48,7 +48,7 @@ namespace UserDetailsClient
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
+                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss").ConfigureAwait(false);
             }
         }
 

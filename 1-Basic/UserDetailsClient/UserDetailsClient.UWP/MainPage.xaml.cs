@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Identity.Client.Helper;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace UserDetailsClient.UWP
 
             // Then use the following:
             LoadApplication(new UserDetailsClient.App(redirectURIForSsoWithoutBroker.AbsoluteUri));
+            PCAHelper.Instance.IsUWP = true;
         }
     }
 }

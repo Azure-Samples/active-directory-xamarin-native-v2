@@ -22,7 +22,7 @@ namespace UserDetailsClient.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
-            PCAHelper.ParentWindow = this;
+            PCAHelper.Instance.ParentWindow = this;
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

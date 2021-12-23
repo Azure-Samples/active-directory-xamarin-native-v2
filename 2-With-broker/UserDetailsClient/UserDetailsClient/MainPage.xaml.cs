@@ -31,7 +31,7 @@ namespace UserDetailsClient
                     break;
             }
 
-            PCAHelper.Init(App.ClientID, App.Scopes, redirectUri);
+            PCAHelper.Init<PCAHelper>(App.ClientID, App.Scopes, redirectUri);
             if (Device.RuntimePlatform == Device.UWP)
             {
                 PCAHelper.Instance.PCABuilder.WithExperimentalFeatures();

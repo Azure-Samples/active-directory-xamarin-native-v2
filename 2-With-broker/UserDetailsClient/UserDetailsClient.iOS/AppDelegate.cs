@@ -27,7 +27,7 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-            PCAHelper.ParentWindow = new UIViewController(); // iOS broker requires a view controller
+            PCAHelper.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
             return base.FinishedLaunching(app, options);
         }
 

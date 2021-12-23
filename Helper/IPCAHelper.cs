@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace Microsoft.Identity.Client.Helper
 {
     /// <summary>
-    /// This helper class encapsulates the common functionality used in the Apps
-    /// At the same time, developers can customizes its behavior in two places
+    /// This is the interface for helper class to encapsulate the calling patterns used in the Public Client Applications.
+    /// At the same time, developers can customizes its behaviors
     /// 1. PublicClientApplicationBuilder PCABuilder - is created in Init and is available to customizes before accessing PCA
-    /// 2. EnsureAuhenticated This has two optional delegates one tocustomize the AcquireTokenInteractiveParameterBuilder and other to customize AcquireTokenSilentParameterBuilder before excute is called
+    /// 2. EnsureAuthenticatedAsync has delegates to customize AcquireTokenInteractiveParameterBuilder, AcquireTokenSilentParameterBuilder and selection of account
+    /// before excute is called.
     /// </summary>
     public interface IPCAHelper
     {
@@ -43,16 +44,16 @@ namespace Microsoft.Identity.Client.Helper
         AuthenticationResult AuthResult { get; }
 
         /// <summary>
-        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException attempt interactively,
+        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException attempt acquire token interactively.
         /// Interactive attempt is optional.
-        /// If AcquireTokenInteractiveParameterBuilder needs to be cusomized prior to the execution, it provides a delegate.
+        /// It provides optional delegates to customize behavior.
         /// </summary>
-        /// <param name="doSilent">Attempts silent acquire based on the value</param>
-        /// <param name="doInteractive">UI interaction even if silent action fails<</param>
-        /// <param name="preferredAccount">Function that determines th account to be used. The default is first. (optional)</param>
-        /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder prior to execute</param>
-        /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder prior to execute</param>
-        /// <returns></returns>
+        /// <param name="doSilent">Determines whether to execute AcquireTokenSilent</param>
+        /// <param name="doInteractive">Determines whether to execute AcquireTokenInteractive. By detault, UI interaction takes place if silent action fails.</param>
+        /// <param name="preferredAccount">Function that determines the account to be used. The default is first. (optional)</param>
+        /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder.</param>
+        /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder.</param>
+        /// <returns>Authenitcation result</returns>
         Task<AuthenticationResult> EnsureAuthenticatedAsync(
                                                                 bool doSilent = true,
                                                                 bool doInteractive = true,
@@ -67,9 +68,10 @@ namespace Microsoft.Identity.Client.Helper
         Task SignOutAsync();
 
         /// <summary>
-        /// This will add bearer token to request message from the Authentication result
+        /// This will add bearer token to request message as per the Authentication result.
+        /// It is assumed that the class has valid AuthenticationResult
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">Message that needs token</param>
         void AddAuthenticationBearerToken(HttpRequestMessage message);
     }
 }

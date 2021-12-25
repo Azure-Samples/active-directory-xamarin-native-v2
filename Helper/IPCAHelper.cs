@@ -8,8 +8,10 @@ namespace Microsoft.Identity.Client.Helper
 {
     /// <summary>
     /// This is the interface for helper class to encapsulate the calling patterns used in the Public Client Applications.
-    /// At the same time, developers can customizes its behaviors
-    /// 1. PublicClientApplicationBuilder PCABuilder - is created in Init and is available to customizes before accessing PCA
+    /// At the same time, developers can customize its behaviors.
+
+    /// 1. PublicClientApplicationBuilder PCABuilder - is created in Init and is available to customize before accessing PCA.
+
     /// 2. EnsureAuthenticatedAsync has delegates to customize AcquireTokenInteractiveParameterBuilder, AcquireTokenSilentParameterBuilder and selection of account
     /// before excute is called.
     /// </summary>

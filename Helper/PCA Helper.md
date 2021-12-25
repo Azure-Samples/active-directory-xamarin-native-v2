@@ -15,7 +15,7 @@ PCAHelper extracts API at a higher level offering flexibility for granular progr
 The APIs are briefly described here.
 
 ## Initialization
-This can be done once in the App. This initializes the helper with client id and scope, if it does not have a standrd redirect URI, it can be customized here. By default it PCAHelper is singleton. It can be overwritten by forcing creation.
+This can be done once in the App. This initializes the helper with client id and scope, if it does not have a standard redirect URI, it can be customized here. By default the PCAHelper is a singleton. It can be overwritten by forcing creation.
 
 ```CSharp
 public static IPCAHelper Init<T>(string clientId, string[] scopes, string specialRedirectUri = null, bool forceCreate = false) 
@@ -32,7 +32,7 @@ PCAHelper.Instance.PCABuilder.WithB2CAuthority(B2CConstants.AuthoritySignInSignU
 ```
 
 ## Obtain the token
-This API is for obtaining the token. It attempts to acquire silently and if that fails, raises UI. It provides options to do silent, interative and ability to customizes each parameter builder.
+This API is for obtaining the token. It attempts to acquire a token silently and if that fails, presents an interactive sign-in dialogue to the user. It provides options to do silent, interactive and has the ability to customize each parameter builder.
 One can also choose the preferred account.
 
 ``` CSharp
@@ -82,7 +82,7 @@ Apart from the above, the API provides Instance of the PCHelper that has propert
         IPublicClientApplication PCA { get; }
 
         /// <summary>
-        /// Application builder. It is created in Init and thie member can be used to customize it before Build occurs in PCA->get
+        /// Application builder. It is created in Init and this member can be used to customize it before Build occurs in PCA->get
         /// </summary>
         PublicClientApplicationBuilder PCABuilder { get; }
 

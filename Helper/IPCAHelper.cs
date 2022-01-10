@@ -48,18 +48,18 @@ namespace Microsoft.Identity.Client.Helper
         /// Interactive attempt is optional.
         /// It provides optional delegates to customize behavior.
         /// </summary>
-        /// <param name="doSilent">Determines whether to execute AcquireTokenSilent</param>
-        /// <param name="doInteractive">Determines whether to execute AcquireTokenInteractive. By detault, UI interaction takes place if silent action fails.</param>
+        /// <param name="scopes">The desired scope</param>
+        /// <param name="tenantID">TenantID for the token request in case of Multi tenant app</param>
         /// <param name="preferredAccount">Function that determines the account to be used. The default is first. (optional)</param>
         /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder.</param>
         /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder.</param>
         /// <returns>Authenitcation result</returns>
         Task<AuthenticationResult> EnsureAuthenticatedAsync(
-                                                                bool doSilent = true,
-                                                                bool doInteractive = true,
-                                                                Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,
-                                                                Action<AcquireTokenSilentParameterBuilder> customizeSilent = null,
-                                                                Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null);
+                                                             string[] scopes,
+                                                             string tenantID = null,
+                                                             Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,
+                                                             Action<AcquireTokenSilentParameterBuilder> customizeSilent = null,
+                                                             Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null);
 
         /// <summary>
         /// This will remove all the accounts.

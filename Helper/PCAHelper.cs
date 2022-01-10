@@ -10,7 +10,8 @@ namespace Microsoft.Identity.Client.Helper
     /// This helper class encapsulates the calling patterns used in the Public Client Applications.
     /// At the same time, developers can customizes its behaviors
     /// 1. PublicClientApplicationBuilder PCABuilder - is created in Init and is available to customizes before accessing PCA
-    /// 2. EnsureAuthenticatedAsync has delegates to customize AcquireTokenInteractiveParameterBuilder, AcquireTokenSilentParameterBuilder and selection of account
+    /// 2. EnsureAuthenticatedAsync has delegates to customize AcquireTokenInteractiveParameterBuilder,
+    /// AcquireTokenSilentParameterBuilder and selection of account
     /// before excute is called.
     /// </summary>
     public class PCAHelper : IPCAHelper
@@ -62,9 +63,6 @@ namespace Microsoft.Identity.Client.Helper
         /// </summary>
         public AuthenticationResult AuthResult { get; internal set; }
 
-        // desired scopes
-        private string[] _scopes;
-
         /// <summary>
         /// Initializes the PCAHelpr or its derived class as per the generics and PublicClientApplicationBuilder with the given parameters
         /// PublicClientApplicationBuilder can be customized after this method prior to accessing PublicClientApplication.
@@ -72,20 +70,44 @@ namespace Microsoft.Identity.Client.Helper
         /// </summary>
         /// <typeparam name="T">Any class that is inherited from PCAHelper</typeparam>
         /// <param name="clientId">Client id of your application</param>
-        /// <param name="scopes">The desired scope</param>
         /// <param name="specialRedirectUri">If you are using recommended pattern fo rredirect Uri, this is optional</param>
+        /// <param name="authority">Authority to acquire token. If this is supplied with tenantID, tenantID need not be supplied as parameter. </param>
+        /// <param name="tenantId">TenantID required for single tenant app.</param>
+        /// <param name="useBroker">To use broker or not. Recommended practice true for security.</param>
+        /// <param name="postInit">Perform customization after the creation and before execute.</param>
         /// <param name="forceCreate">Creates a new instance irrespective of the existance of the previous instance</param>
         /// <returns>Instance of class inherited from PCAHelper</returns>
-        public static IPCAHelper Init<T>(string clientId, string[] scopes, string specialRedirectUri = null, bool forceCreate = false) 
+        public static IPCAHelper Init<T>(string clientId,
+                                         string specialRedirectUri = null,
+                                         string authority = null,
+                                         string tenantId = null,
+                                         bool useBroker = true,
+                                         Action<T> postInit = null,
+                                         bool forceCreate = false) 
                 where T : PCAHelper, new()
         {
             if (Instance == null || forceCreate)
             {
                 var pcaHelper = new T();
-                pcaHelper._scopes = scopes;
                 pcaHelper.PCABuilder = PublicClientApplicationBuilder.Create(clientId)
                                                                     .WithRedirectUri(specialRedirectUri ?? $"msal{clientId}://auth")
-                                                                    .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
+                                                                    .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
+                                                                    .WithBroker(useBroker);
+                if (!string.IsNullOrEmpty(tenantId))
+                {
+                    pcaHelper.PCABuilder.WithTenantId(tenantId);
+                }
+
+                if (!string.IsNullOrEmpty(authority))
+                {
+                    pcaHelper.PCABuilder.WithAuthority(authority);
+                }
+
+                if (postInit != null)
+                {
+                    postInit(pcaHelper);
+                }
+
                 Instance = pcaHelper;
             }
             return Instance;
@@ -96,15 +118,15 @@ namespace Microsoft.Identity.Client.Helper
         /// Interactive attempt is optional.
         /// It provides optional delegates to customize behavior.
         /// </summary>
-        /// <param name="doSilent">Determines whether to execute AcquireTokenSilent</param>
-        /// <param name="doInteractive">Determines whether to execute AcquireTokenInteractive. By detault, UI interaction takes place if silent action fails.</param>
+        /// <param name="scopes">The desired scope</param>
+        /// <param name="tenantID">TenantID for the token request in case of Multi tenant app</param>
         /// <param name="preferredAccount">Function that determines the account to be used. The default is first. (optional)</param>
         /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder.</param>
         /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder.</param>
         /// <returns>Authenitcation result</returns>
         public async Task<AuthenticationResult> EnsureAuthenticatedAsync(
-                                                                bool doSilent = true,
-                                                                bool doInteractive = true,
+                                                                string[] scopes,
+                                                                string tenantID = null,
                                                                 Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,
                                                                 Action<AcquireTokenSilentParameterBuilder> customizeSilent = null,
                                                                 Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null)
@@ -113,56 +135,53 @@ namespace Microsoft.Identity.Client.Helper
 
             try
             {
-                if (doSilent)
+                IAccount account = null;
+                IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
+                if (preferredAccount != null)
                 {
-                    IAccount account = null;
-                    IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
-                    if (preferredAccount != null)
-                    {
-                        account = preferredAccount(accounts);
-                    }
-                    else if(accounts != null)
-                    {
-                        account = accounts.FirstOrDefault();
-                    }
+                    account = preferredAccount(accounts);
+                }
+                else if(accounts != null)
+                {
+                    account = accounts.FirstOrDefault();
+                }
 
-                    // Customize silentBuilder
-                    var silentparamsBuilder = PCA.AcquireTokenSilent(_scopes, account);
-                    if (customizeSilent != null)
-                    {
-                        customizeSilent(silentparamsBuilder);
-                    }
+                // Customize silentBuilder
+                var silentparamsBuilder = PCA.AcquireTokenSilent(scopes, account);
+                if (tenantID != null)
+                {
+                    silentparamsBuilder.WithTenantId(tenantID);
+                }
 
-                    AuthResult = await silentparamsBuilder.ExecuteAsync()
-                                          .ConfigureAwait(false);
-                }
-                else if (doInteractive)
+                if (customizeSilent != null)
                 {
-                    await AcquireInteractive(customizeInteractive).ConfigureAwait(false);
+                    customizeSilent(silentparamsBuilder);
                 }
-                else
-                {
-                    throw new ArgumentException($"Both doSilent and do Interactive cannot be false");
-                }
+
+                AuthResult = await silentparamsBuilder.ExecuteAsync()
+                                        .ConfigureAwait(false);
             }
             catch (MsalUiRequiredException)
             {
-                if (doInteractive)
-                {
-                    await AcquireInteractive(customizeInteractive).ConfigureAwait(false);
-                }
+                await AcquireInteractive(scopes, tenantID, customizeInteractive).ConfigureAwait(false);
             }
 
             return AuthResult;
         }
 
         // acquire interactively.
-        private async Task AcquireInteractive(Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive)
+        private async Task AcquireInteractive(string[] scopes,
+                                              string tenantID,
+                                              Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive)
         {
             try
             {
-                var builder = PCA.AcquireTokenInteractive(_scopes)
+                var builder = PCA.AcquireTokenInteractive(scopes)
                                                            .WithParentActivityOrWindow(ParentWindow);
+                if (tenantID != null)
+                {
+                    builder.WithTenantId(tenantID);
+                }
 
                 if (!IsUWP)
                 {
@@ -214,7 +233,7 @@ namespace Microsoft.Identity.Client.Helper
         /// <param name="message">Message that needs token</param>
         public void AddAuthenticationBearerToken(HttpRequestMessage message)
         {
-            message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthResult.AccessToken);
+            message.Headers.Add("Authorization", AuthResult.CreateAuthorizationHeader());
         }
     }
 }

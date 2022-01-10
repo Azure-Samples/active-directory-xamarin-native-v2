@@ -22,7 +22,7 @@ namespace UserDetailsClient
 
         public App(string specialRedirectUri = null)
         {
-            PCA = PCAHelper.Init<PCAHelper>(ClientID, Scopes);
+            PCA = PCAHelper.Init<PCAHelper>(ClientID, useBroker: false);
 
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());
         }

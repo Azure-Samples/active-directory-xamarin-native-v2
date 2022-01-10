@@ -31,10 +31,9 @@ namespace UserDetailsClient
                     break;
             }
 
-            PCAHelper.Init<PCAHelper>(App.ClientID, App.Scopes, redirectUri);
+            PCAHelper.Init<PCAHelper>(App.ClientID, redirectUri);
             if (Device.RuntimePlatform == Device.UWP)
             {
-                PCAHelper.Instance.PCABuilder.WithExperimentalFeatures();
                 PCAHelper.Instance.PCABuilder.WithDefaultRedirectUri();
             }
             PCAHelper.Instance.PCABuilder.WithBroker();
@@ -86,7 +85,7 @@ namespace UserDetailsClient
             {
                 if (PCAHelper.Instance.AuthResult == null)
                 {
-                    await PCAHelper.Instance.EnsureAuthenticatedAsync(preferredAccount:(accounts) => accounts.FirstOrDefault()).ConfigureAwait(false);
+                    await PCAHelper.Instance.EnsureAuthenticatedAsync(App.Scopes, preferredAccount:(accounts) => accounts.FirstOrDefault()).ConfigureAwait(false);
 
                     if (PCAHelper.Instance.AuthResult != null)
                     {
@@ -111,7 +110,10 @@ namespace UserDetailsClient
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss").ConfigureAwait(false);
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss").ConfigureAwait(false);
+                });
             }
         }
     }

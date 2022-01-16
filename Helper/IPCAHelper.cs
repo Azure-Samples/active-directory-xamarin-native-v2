@@ -46,8 +46,8 @@ namespace Microsoft.Identity.Client.Helper
         AuthenticationResult AuthResult { get; }
 
         /// <summary>
-        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException attempt acquire token interactively.
-        /// Interactive attempt is optional.
+        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException 
+        /// attempt acquire token interactively.
         /// It provides optional delegates to customize behavior.
         /// </summary>
         /// <param name="scopes">The desired scope</param>
@@ -55,8 +55,8 @@ namespace Microsoft.Identity.Client.Helper
         /// <param name="preferredAccount">Function that determines the account to be used. The default is first. (optional)</param>
         /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder.</param>
         /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder.</param>
-        /// <returns>Authenitcation result</returns>
-        Task<AuthenticationResult> EnsureAuthenticatedAsync(
+        /// <returns>Authentication result</returns>
+        Task<AuthenticationResult> AcquireTokenAsync(
                                                              string[] scopes,
                                                              string tenantID = null,
                                                              Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,

@@ -36,7 +36,6 @@ namespace UserDetailsClient
             {
                 PCAHelper.Instance.PCABuilder.WithDefaultRedirectUri();
             }
-            PCAHelper.Instance.PCABuilder.WithBroker();
         }
 
         private void UpdateUserContent(string content)
@@ -85,7 +84,7 @@ namespace UserDetailsClient
             {
                 if (PCAHelper.Instance.AuthResult == null)
                 {
-                    await PCAHelper.Instance.EnsureAuthenticatedAsync(App.Scopes, preferredAccount:(accounts) => accounts.FirstOrDefault()).ConfigureAwait(false);
+                    await PCAHelper.Instance.AcquireTokenAsync(App.Scopes, preferredAccount:(accounts) => accounts.FirstOrDefault()).ConfigureAwait(false);
 
                     if (PCAHelper.Instance.AuthResult != null)
                     {

@@ -24,7 +24,7 @@ namespace UserDetailsClient
             {
                 if (btnSignInSignOut.Text == "Sign in")
                 {
-                    var authResult = await PCAHelper.Instance.EnsureAuthenticatedAsync(App.Scopes, customizeInteractive: (builder) =>
+                    var authResult = await PCAHelper.Instance.AcquireTokenAsync(App.Scopes, customizeInteractive: (builder) =>
                     {
                         builder.WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount);
                     }).ConfigureAwait(false);

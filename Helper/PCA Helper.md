@@ -1,55 +1,82 @@
 # PCA Helper
-PCA developers use common pattern to acquire token. The code appears to be repeatative and very granular. At the same time, the current API is based on the builder pattern. There are several "With" APIs and a some are used in commonly in the Public Client Application (PCA). Due to the abudance of the With APIs, the learning curve can be high to perform simple/common tasks.
+The utility provides easy to use API and flexibility for granular programming for authentication in public client application. This is achieved by encapsulating the common patterns and providing optional delegates for more granular programming. The APIs accepts have various commonly used values making it configurable.
 
-PCAHelper extracts API at a higher level offering flexibility for granular programming as desired. The helper provides methods with optional paramaeters and lambdas for customization. It has the following features:
+It has the following features:
+- The API is interface based. Developer can create Mocks and perform testing with no dependency on MSAL.NET.
 
-- It comes with two main common practices as default:
-    - There is only one instance of PCA
-    - Scope for permissions is defined only once.
-    The above default can be customized as desired.
- - It is inteface based. So the calling app can create Mocks and perform testing w/o havinng dependency on MSAL.NET and any network connectivity
- - It allows customization of token acqusition methods.
- - It allows specialization of the Helper class should developer choose it.
+- The initialization allows specialization of the PCAHelper class should developer choose it.
+- It is Singleton by default, it can be overridden.
+- API provides commonly used values as defaults, reducing the burden on the developers.
+- It provides delegates for customization allowing granular programming.
 
 # APIs
-The APIs are briefly described here.
+The APIs are briefly described here. Developer will first need to initialize the utility and then call API to acquire token.
 
 ## Initialization
-This can be done once in the App. This initializes the helper with client id and scope, if it does not have a standard redirect URI, it can be customized here. By default the PCAHelper is a singleton. It can be overwritten by forcing creation.
+Initialization can be done in the App class. It instantiates the helper with the client id and various optional parameters. By default, the PCAHelper is a singleton. It can be overwritten by forcing creation. Other actions such as logging, token cache initialization can be done optionally in the postInit action.
 
 ```CSharp
-public static IPCAHelper Init<T>(string clientId, string[] scopes, string specialRedirectUri = null, bool forceCreate = false) 
+
+        /// <summary>
+        /// Instantiates the PCAHelper (or its derived class) and PublicClientApplicationBuilder with the given parameters.
+        /// PublicClientApplicationBuilder can be customized after this method or in the postInit prior to accessing PublicClientApplication.
+        /// By default it is singleton pattern with option to force creation. 
+        /// </summary>
+        /// <typeparam name="T">Any class that is inherited from PCAHelper</typeparam>
+        /// <param name="clientId">Client id of your application</param>
+        /// <param name="specialRedirectUri">If you are using recommended pattern for redirect Uri (i.e. $"msal{clientId}://auth"), this is optional</param>
+        /// <param name="authority">Authority to acquire token. If this is supplied with tenantID, tenantID need not be supplied as parameter. </param>
+        /// <param name="tenantId">TenantID - This is required for single tenant app.</param>
+        /// <param name="useBroker">To use broker or not. Recommended practice is to use it for security.</param>
+        /// <param name="postInit">Perform customization after the creation and before execute.</param>
+        /// <param name="forceCreate">Creates a new instance irrespective of the existance of the previous instance</param>
+        /// <returns>Instance of class inherited from PCAHelper</returns>
+        public static IPCAHelper Init<T>(string clientId,
+                                         string specialRedirectUri = null,
+                                         string authority = null,
+                                         string tenantId = null,
+                                         bool useBroker = true,
+                                         Action<T> postInit = null,
+                                         bool forceCreate = false) 
                 where T : PCAHelper, new()
 ```
 
 Example usage:
 ```CSharp
-// initialize with the client id and scopes. One can optionally pass special redirect URI
-// else it creates one with commonly used: $"msal{clientId}://auth"
-PCAHelper.Init<PCAHelper>(B2CConstants.ClientID, B2CConstants.Scopes);
+// initialize with the client id and redirectURI. One can optionally pass the other parameters
+PCAHelper.Init<PCAHelper>(App.ClientID, redirectUri);
 // additional customization of the builder
 PCAHelper.Instance.PCABuilder.WithB2CAuthority(B2CConstants.AuthoritySignInSignUp);
 ```
 
-## Obtain the token
-This API is for obtaining the token. It attempts to acquire a token silently and if that fails, presents an interactive sign-in dialogue to the user. It provides options to do silent, interactive and has the ability to customize each parameter builder.
-One can also choose the preferred account.
+## Acquire the token
+AcquireTokenAsync will acquire authentication token given the scopes. It attempts to acquire the token silently and if that fails, it presents an interactive sign-in dialogue to the user. Developer can provide tenantID in case of multi-tenant application. It also has optional delegates to select the preferred account, customize silent and interactive acquisition.
 
 ``` CSharp
-public async Task<AuthenticationResult> EnsureAuthenticatedAsync(
-                                            bool doSilent = true,
-                                            bool doInteractive = true,
-                                            Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,
-                                            Action<AcquireTokenSilentParameterBuilder> customizeSilent = null,
-                                            Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null)
+        /// <summary>
+        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException 
+        /// attempt acquire token interactively.
+        /// It provides optional delegates to customize behavior.
+        /// </summary>
+        /// <param name="scopes">The desired scope</param>
+        /// <param name="tenantID">TenantID for the token request in case of Multi tenant app</param>
+        /// <param name="preferredAccount">Function that determines the account to be used. The default is first. (optional)</param>
+        /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder.</param>
+        /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder.</param>
+        /// <returns>Authentication result</returns>
+        Task<AuthenticationResult> AcquireTokenAsync(
+                                                             string[] scopes,
+                                                             string tenantID = null,
+                                                             Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,
+                                                             Action<AcquireTokenSilentParameterBuilder> customizeSilent = null,
+                                                             Action<AcquireTokenInteractiveParameterBuilder> customizeInteractive = null);
 ```
 
 Example usage (B2C sample):
 ``` CSharp
-var authResult = await PCAHelper.Instance.EnsureAuthenticatedAsync(
-                                            doSilent:false,
-                                            preferredAccount: (accounts) => GetAccountByPolicy(accounts, B2CConstants.PolicyEditProfile),
-                                            customizeInteractive: (builder) =>
+var authResult = PCAHelper.Instance.AcquireTokenAsync(App.Scopes, 
+                                     preferredAccount:(accounts) => GetAccountByPolicy(accounts, B2CConstants.PolicyEditProfile),
+                                     customizeInteractive: (builder) =>
                                                 {
                                                     builder.WithPrompt(Prompt.NoPrompt)
                                                            .WithAuthority(B2CConstantsAuthorityEditProfile);

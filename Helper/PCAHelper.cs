@@ -64,16 +64,16 @@ namespace Microsoft.Identity.Client.Helper
         public AuthenticationResult AuthResult { get; internal set; }
 
         /// <summary>
-        /// Initializes the PCAHelpr or its derived class as per the generics and PublicClientApplicationBuilder with the given parameters
-        /// PublicClientApplicationBuilder can be customized after this method prior to accessing PublicClientApplication.
+        /// Instantiates the PCAHelpr (or its derived class) and PublicClientApplicationBuilder with the given parameters.
+        /// PublicClientApplicationBuilder can be customized after this method or in the postInit prior to accessing PublicClientApplication.
         /// By default it is singleton pattern with option to force creation. 
         /// </summary>
         /// <typeparam name="T">Any class that is inherited from PCAHelper</typeparam>
         /// <param name="clientId">Client id of your application</param>
-        /// <param name="specialRedirectUri">If you are using recommended pattern fo rredirect Uri, this is optional</param>
+        /// <param name="specialRedirectUri">If you are using recommended pattern for redirect Uri (i.e. $"msal{clientId}://auth"), this is optional</param>
         /// <param name="authority">Authority to acquire token. If this is supplied with tenantID, tenantID need not be supplied as parameter. </param>
-        /// <param name="tenantId">TenantID required for single tenant app.</param>
-        /// <param name="useBroker">To use broker or not. Recommended practice true for security.</param>
+        /// <param name="tenantId">TenantID - This is required for single tenant app.</param>
+        /// <param name="useBroker">To use broker or not. Recommended practice is to use for security.</param>
         /// <param name="postInit">Perform customization after the creation and before execute.</param>
         /// <param name="forceCreate">Creates a new instance irrespective of the existance of the previous instance</param>
         /// <returns>Instance of class inherited from PCAHelper</returns>
@@ -114,8 +114,8 @@ namespace Microsoft.Identity.Client.Helper
         }
 
         /// <summary>
-        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException attempt acquire token interactively.
-        /// Interactive attempt is optional.
+        /// This encapuslates the common pattern to acquire token i.e. attempt AcquireTokenSilent and if that throws MsalUiRequiredException 
+        /// attempt acquire token interactively.
         /// It provides optional delegates to customize behavior.
         /// </summary>
         /// <param name="scopes">The desired scope</param>
@@ -123,8 +123,8 @@ namespace Microsoft.Identity.Client.Helper
         /// <param name="preferredAccount">Function that determines the account to be used. The default is first. (optional)</param>
         /// <param name="customizeSilent">This is a delegate to optionally customize AcquireTokenSilentParameterBuilder.</param>
         /// <param name="customizeInteractive">This is a delegate to optionally customize AcquireTokenInteractiveParameterBuilder.</param>
-        /// <returns>Authenitcation result</returns>
-        public async Task<AuthenticationResult> EnsureAuthenticatedAsync(
+        /// <returns>Authentication result</returns>
+        public async Task<AuthenticationResult> AcquireTokenAsync(
                                                                 string[] scopes,
                                                                 string tenantID = null,
                                                                 Func<IEnumerable<IAccount>, IAccount> preferredAccount = null,

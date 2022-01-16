@@ -6,6 +6,7 @@ using Foundation;
 using UIKit;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Platforms.iOS;
+using Microsoft.Identity.Client.Helper;
 
 namespace UserDetailsClient.iOS
 {
@@ -26,7 +27,7 @@ namespace UserDetailsClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-            App.ParentWindow = new UIViewController(); // iOS broker requires a view controller
+            PCAHelper.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
             return base.FinishedLaunching(app, options);
         }
 

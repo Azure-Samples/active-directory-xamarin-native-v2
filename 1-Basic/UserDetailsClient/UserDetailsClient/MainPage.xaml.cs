@@ -1,4 +1,5 @@
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Helper;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -19,68 +20,29 @@ namespace UserDetailsClient
 
         async void OnSignInSignOut(object sender, EventArgs e)
         {
-            AuthenticationResult authResult = null;
-            IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
             try
             {
                 if (btnSignInSignOut.Text == "Sign in")
                 {
-                    try
+                    var authResult = await PCAHelper.Instance.AcquireTokenAsync(App.Scopes, customizeInteractive: (builder) =>
                     {
-                        IAccount firstAccount = accounts.FirstOrDefault();
-                        authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
-                                              .ExecuteAsync()
-                                              .ConfigureAwait(false);
-                    }
-                    catch (MsalUiRequiredException)
-                    {
-                        try
-                        { 
-                            var builder = App.PCA.AcquireTokenInteractive(App.Scopes)
-                                                                       .WithParentActivityOrWindow(App.ParentWindow);
-
-                            if (Device.RuntimePlatform != "UWP")
-                            {
-                                // on Android and iOS, prefer to use the system browser, which does not exist on UWP
-                                SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
-                                {                            
-                                    iOSHidePrivacyPrompt = true,
-                                };
-
-                                builder.WithSystemWebViewOptions(systemWebViewOptions);
-                                builder.WithUseEmbeddedWebView(false);
-                            }
-
-                            authResult = await builder.ExecuteAsync().ConfigureAwait(false);
-                        }
-                        catch (Exception ex2)
-                        {
-                            Device.BeginInvokeOnMainThread(async () =>
-                            {
-                                await DisplayAlert("Acquire token interactive failed. See exception message for details: ", ex2.Message, "Dismiss");
-                            });
-                        }
-                    }
+                        builder.WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount);
+                    }).ConfigureAwait(false);
 
                     if (authResult != null)
                     {
-                        var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
+                        var content = await GetHttpContentWithTokenAsync().ConfigureAwait(false);
                         UpdateUserContent(content);
                     }
                 }
                 else
                 {
-                    while (accounts.Any())
-                    {
-                        await App.PCA.RemoveAsync(accounts.FirstOrDefault()).ConfigureAwait(false);
-                        accounts = await App.PCA.GetAccountsAsync().ConfigureAwait(false);
-                    }
+                    await PCAHelper.Instance.SignOutAsync().ConfigureAwait(false);
 
-                    
-                    Device.BeginInvokeOnMainThread(() => 
+                    Device.BeginInvokeOnMainThread(() =>
                     {
                         slUser.IsVisible = false;
-                        btnSignInSignOut.Text = "Sign in"; 
+                        btnSignInSignOut.Text = "Sign in";
                     });
                 }
             }
@@ -88,14 +50,14 @@ namespace UserDetailsClient
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss");
+                    await DisplayAlert("Authentication failed. See exception message for details: ", ex.Message, "Dismiss").ConfigureAwait(false);
                 });
             }
         }
 
         private void UpdateUserContent(string content)
         {
-            if(!string.IsNullOrEmpty(content))
+            if (!string.IsNullOrEmpty(content))
             {
                 JObject user = JObject.Parse(content);
 
@@ -114,19 +76,19 @@ namespace UserDetailsClient
             }
         }
 
-        public async Task<string> GetHttpContentWithTokenAsync(string token)
+        public async Task<string> GetHttpContentWithTokenAsync()
         {
             try
             {
                 //get data from API
                 HttpClient client = new HttpClient();
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
-                message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                PCAHelper.Instance.AddAuthenticationBearerToken(message);
                 HttpResponseMessage response = await client.SendAsync(message).ConfigureAwait(false);
                 string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return responseString;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {

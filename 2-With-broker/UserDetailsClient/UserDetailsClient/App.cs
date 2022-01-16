@@ -5,8 +5,6 @@ namespace UserDetailsClient
 {
     public class App : Application
     {
-        public static IPublicClientApplication PCA = null;
-
         /// <summary>
         /// The ClientID is the Application ID found in the portal (https://go.microsoft.com/fwlink/?linkid=2083908). 
         /// You can use the below id however if you create an app of your own you should replace the value here.
@@ -25,14 +23,8 @@ namespace UserDetailsClient
         public static string[] Scopes = { "User.Read" };
         public static string Username = string.Empty;
 
-        public static object ParentWindow { get; set; }
-
         public App()
         {
-            PCA = PublicClientApplicationBuilder.Create(ClientID)
-                .WithRedirectUri($"msal{ClientID}://auth")
-                .Build();
-
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());
         }
 

@@ -18,4 +18,12 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Helper\PCAHelper.cs">
+      <Link>Helper\PCAHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Helper\IPCAHelper.cs">
+      <Link>Helper\IPCAHelper.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

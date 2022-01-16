@@ -9,6 +9,7 @@ using Android.OS;
 using Microsoft.Identity.Client;
 using Android.Content;
 using Microsoft.Identity.Client.Platforms.Android;
+using Microsoft.Identity.Client.Helper;
 
 namespace UserDetailsClient.Droid
 {
@@ -21,7 +22,8 @@ namespace UserDetailsClient.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
-            App.ParentWindow = this;           
+            App.ParentWindow = this;
+            PCAHelper.Instance.ParentWindow = this;
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

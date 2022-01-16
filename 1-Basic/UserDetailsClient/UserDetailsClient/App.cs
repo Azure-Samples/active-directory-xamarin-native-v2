@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Helper;
 using System;
 using Xamarin.Forms;
 
@@ -6,8 +7,6 @@ namespace UserDetailsClient
 {
     public class App : Application
     {
-        public static IPublicClientApplication PCA = null;
-
         /// <summary>
         /// The ClientID is the Application ID found in the portal (https://go.microsoft.com/fwlink/?linkid=2083908). 
         /// You can use the below id however if you create an app of your own you should replace the value here.
@@ -19,12 +18,11 @@ namespace UserDetailsClient
 
         public static object ParentWindow { get; set; }
 
+        public static IPCAHelper PCA { get; private set; }
+
         public App(string specialRedirectUri = null)
         {
-            PCA = PublicClientApplicationBuilder.Create(ClientID)
-                .WithRedirectUri(specialRedirectUri?? $"msal{ClientID}://auth")
-                .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-                .Build();
+            PCA = PCAHelper.Init<PCAHelper>(ClientID, useBroker: false);
 
             MainPage = new NavigationPage(new UserDetailsClient.MainPage());
         }

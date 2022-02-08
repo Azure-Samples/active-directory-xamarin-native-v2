@@ -41,8 +41,6 @@ namespace UserDetailsClient
                             builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
                             break;
                         case Device.UWP:
-                            builder = builder.WithExperimentalFeatures();
-
                             // See also UserDetailsClient.UWP project in MainPage.xml.cs
                             // To get the redirect URI that you need to register in your app
                             // registration of a shape similar to:

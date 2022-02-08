@@ -24,39 +24,40 @@ namespace UserDetailsClient
 
         public static void CreatePublicClient(bool useBroker)
         {
-            var builder = PublicClientApplicationBuilder
-                .Create(App.ClientID);
-                
-            if (useBroker)
-            {                
-                switch (Device.RuntimePlatform)
-                {
-                    case Device.Android:
-                        builder = builder.WithRedirectUri(App.BrokerRedirectUriOnAndroid);
-                        break;
-                    case Device.iOS:
-                        builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
-                        builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
-                        break;
-                    case Device.UWP:
-                        builder = builder.WithExperimentalFeatures();
+            if (App.PCA == null)
+            {
+                var builder = PublicClientApplicationBuilder
+                    .Create(App.ClientID);
 
-                        // See also UserDetailsClient.UWP project in MainPage.xml.cs
-                        // To get the redirect URI that you need to register in your app
-                        // registration of a shape similar to:
-                        // ms-appx-web://microsoft.aad.brokerplugin/S-1-15-2-3163378744-4254380357-4090943427-3442740072-2185909759-2930900273-1603380124
-                        builder.WithDefaultRedirectUri();
-                        break;
+                if (useBroker)
+                {
+                    switch (Device.RuntimePlatform)
+                    {
+                        case Device.Android:
+                            builder = builder.WithRedirectUri(App.BrokerRedirectUriOnAndroid);
+                            break;
+                        case Device.iOS:
+                            builder = builder.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
+                            builder = builder.WithRedirectUri(App.BrokerRedirectUriOnIos);
+                            break;
+                        case Device.UWP:
+                            // See also UserDetailsClient.UWP project in MainPage.xml.cs
+                            // To get the redirect URI that you need to register in your app
+                            // registration of a shape similar to:
+                            // ms-appx-web://microsoft.aad.brokerplugin/S-1-15-2-3163378744-4254380357-4090943427-3442740072-2185909759-2930900273-1603380124
+                            builder.WithDefaultRedirectUri();
+                            break;
+                    }
+
+                    builder.WithBroker();
+                }
+                else
+                {
+                    builder = builder.WithRedirectUri($"msal{App.ClientID}://auth");
                 }
 
-                builder.WithBroker();
+                App.PCA = builder.Build();
             }
-            else
-            {
-                builder = builder.WithRedirectUri($"msal{App.ClientID}://auth");
-            }
-
-            App.PCA = builder.Build();
         }
 
         private void UpdateUserContent(string content)

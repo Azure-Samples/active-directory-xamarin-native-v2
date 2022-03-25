@@ -11,7 +11,7 @@ namespace active_directory_xamarin_intune.iOS
 {
     public class IntuneMAMConnector : IIntuneMAMConnector
     {
-        public async Task DoMAMRegister(IntuneAppProtectionPolicyRequiredException exProtection)
+        public async Task DoMAMRegisterAsync(IntuneAppProtectionPolicyRequiredException exProtection)
         {
             // Reset the registration event. So the app will wait till it is complete.
             PCAWrapper.MAMRegsiteredEvent.Reset();

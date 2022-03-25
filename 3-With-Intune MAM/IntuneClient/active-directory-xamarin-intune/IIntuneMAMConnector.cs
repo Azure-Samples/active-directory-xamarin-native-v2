@@ -17,6 +17,6 @@ namespace activedirectoryxamarinintune
         /// </summary>
         /// <param name="exProtection"></param>
         /// <returns></returns>
-        Task DoMAMRegister(IntuneAppProtectionPolicyRequiredException exProtection);
+        Task DoMAMRegisterAsync(IntuneAppProtectionPolicyRequiredException exProtection);
     }
 }

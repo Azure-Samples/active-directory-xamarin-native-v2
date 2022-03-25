@@ -19,7 +19,7 @@
     },
     {
       "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
-      "description": "Attempt ATI",
+      "description": "Attempt AcquireTokenInteractive",
       "line": 42
     },
     {
@@ -29,7 +29,7 @@
     },
     {
       "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
-      "description": "This will perform platform specific registration and wait for it to complete. Do the ATS after that.\r\nNext will be how it functions on iOS and Android",
+      "description": "This will perform platform specific registration and wait for it to complete. Do the AcquireTokenSilent after that.\r\nNext will be how it functions on iOS and Android",
       "line": 51
     },
     {

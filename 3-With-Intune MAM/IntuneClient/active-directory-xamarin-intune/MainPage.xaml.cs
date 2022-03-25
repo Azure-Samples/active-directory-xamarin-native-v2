@@ -30,43 +30,43 @@ namespace active_directory_xamarin_intune
                 // attempt silent login.
                 // If this is very first time and the device is not enrolled, it will throw MsalUiRequiredException
                 // If the device is enrolled, this will succeed.
-                result = await PCAWrapper.Instance.DoSilentAsync(Scopes).ConfigureAwait(false);
+                result = await PCAWrapper.Instance.AcquireTokenSilentAsync(Scopes).ConfigureAwait(false);
 
-                await ShowMessage("Silent 1", result.AccessToken).ConfigureAwait(false);
+                await ShowMessage("First AcquireTokenTokenSilent call", result.AccessToken).ConfigureAwait(false);
             }
             catch (MsalUiRequiredException)
             {
                 try
                 {
                     // This executes UI interaction ot obtain token
-                    result = await PCAWrapper.Instance.DoInteractiveAsync(Scopes).ConfigureAwait(false);
+                    result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(Scopes).ConfigureAwait(false);
 
-                    await ShowMessage("Interactive 1", result.AccessToken).ConfigureAwait(false);
+                    await ShowMessage("First AcquireTokenInteractive call", result.AccessToken).ConfigureAwait(false);
                 }
                 catch (IntuneAppProtectionPolicyRequiredException exProtection)
                 {
                     // if the scope requires App Protection Policy,  IntuneAppProtectionPolicyRequiredException is thrown.
                     // Perform registration operation here and then does the silent token acquisition
                     var intuneConnector = DependencyService.Get<IIntuneMAMConnector>(DependencyFetchTarget.GlobalInstance);
-                    await intuneConnector.DoMAMRegister(exProtection).ContinueWith(async (arg) =>
+                    await intuneConnector.DoMAMRegisterAsync(exProtection).ContinueWith(async (arg) =>
                     {
                         try
                         {
                             // Now the device is registered, perform silent token acquisition
-                            result = await PCAWrapper.Instance.DoSilentAsync(Scopes).ConfigureAwait(false);
+                            result = await PCAWrapper.Instance.AcquireTokenSilentAsync(Scopes).ConfigureAwait(false);
 
-                            await ShowMessage("Silent 2", result.AccessToken).ConfigureAwait(false);
+                            await ShowMessage("AcquireTokenTokenSilent call after Intune registration.", result.AccessToken).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
-                            await ShowMessage("Exception 1", ex.Message).ConfigureAwait(false);
+                            await ShowMessage("Exception in AcquireTokenSilentAsync after registration.", ex.Message).ConfigureAwait(false);
                         }
                     }).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
             {
-                await ShowMessage("Exception 2", ex.Message).ConfigureAwait(false);
+                await ShowMessage("Exception in AcquireTokenTokenSilent", ex.Message).ConfigureAwait(false);
             }
         }
 

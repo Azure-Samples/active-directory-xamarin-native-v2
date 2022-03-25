@@ -32,7 +32,7 @@ namespace active_directory_xamarin_intune.Droid
                 string[] scopes = new string[] { resourceId + "/.default" };
 
                 // do the silent authentication for the resource
-                var authresult = PCAWrapper.Instance.DoSilentAsync(scopes).GetAwaiter().GetResult();
+                var authresult = PCAWrapper.Instance.AcquireTokenSilentAsync(scopes).GetAwaiter().GetResult();
                 ret = authresult?.AccessToken;
             }
             catch (Exception ex)

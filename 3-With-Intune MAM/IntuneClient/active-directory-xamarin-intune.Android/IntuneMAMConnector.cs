@@ -17,7 +17,7 @@ namespace active_directory_xamarin_intune.Droid
         /// </summary>
         /// <param name="exProtection"></param>
         /// <returns></returns>
-        public async Task DoMAMRegister(IntuneAppProtectionPolicyRequiredException exProtection)
+        public async Task DoMAMRegisterAsync(IntuneAppProtectionPolicyRequiredException exProtection)
         {
             // reset the registered event
             PCAWrapper.MAMRegsiteredEvent.Reset();

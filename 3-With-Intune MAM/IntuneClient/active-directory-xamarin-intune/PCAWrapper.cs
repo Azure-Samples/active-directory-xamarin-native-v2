@@ -19,7 +19,7 @@ namespace activedirectoryxamarinintune
         /// <summary>
         /// This is the singleton used by consumers
         /// </summary>
-        static public PCAWrapper Instance { get; }
+        static public PCAWrapper Instance { get; } = new PCAWrapper();
 
         internal IPublicClientApplication PCA { get; }
 
@@ -32,12 +32,12 @@ namespace activedirectoryxamarinintune
         private const string _authority = "https://login.microsoftonline.com/organizations";
 
         // ClientID of the application in (msidlab4.com)
-        private static string _clientID = "94996db4-9d57-422d-a707-84a1328a3cb8"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
+        private const string ClientId = "94996db4-9d57-422d-a707-84a1328a3cb8"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
 
         // TenantID of the organization (msidlab4.com)
-        private static string _tenantID = "f645ad92-e38d-4d1a-b510-d1b09a74a8ca"; // TODO - Replace with your TenantID. And also replace in the AndroidManifest.xml
+        private const string TenantId = "f645ad92-e38d-4d1a-b510-d1b09a74a8ca"; // TODO - Replace with your TenantID. And also replace in the AndroidManifest.xml
 
-        static string[] clientCapabilities = { "ProtApp" }; // It is must to have these capabilities
+        private readonly static string[] clientCapabilities = { "ProtApp" }; // It is must to have these capabilities
 
         // private constructor for singleton
         private PCAWrapper()
@@ -45,22 +45,14 @@ namespace activedirectoryxamarinintune
             // Create PCA once. Make sure that all the config parameters below are passed
             // ClientCapabilities - must have ProtApp
             PCA = PublicClientApplicationBuilder
-                                        .Create(_clientID)
+                                        .Create(ClientId)
                                         .WithAuthority(_authority)
                                         .WithBroker()
                                         .WithClientCapabilities(clientCapabilities)
-                                        .WithTenantId(_tenantID)
+                                        .WithTenantId(TenantId)
                                         .WithRedirectUri(PlatformConfigImpl.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
-        }
-
-        /// <summary>
-        /// Static constructor to instantiate PCA
-        /// </summary>
-        static PCAWrapper()
-        {
-            Instance = new PCAWrapper();
         }
 
         /// <summary>
@@ -69,7 +61,7 @@ namespace activedirectoryxamarinintune
         /// <param name="scopes">desired scopes</param>
         /// <param name="parentWindow">Parent window</param>
         /// <returns></returns>
-        internal async Task<AuthenticationResult> DoInteractiveAsync(string[] scopes)
+        internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync(string[] scopes)
         {
             return await PCA.AcquireTokenInteractive(scopes)
                                     .WithParentActivityOrWindow(PlatformConfigImpl.Instance.ParentWindow)
@@ -83,13 +75,8 @@ namespace activedirectoryxamarinintune
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns>Authenticaiton result</returns>
-        public async Task<AuthenticationResult> DoSilentAsync(string[] scopes)
+        public async Task<AuthenticationResult> AcquireTokenSilentAsync(string[] scopes)
         {
-            if (PCA == null)
-            {
-                return null;
-            }
-
             var accts = await PCA.GetAccountsAsync().ConfigureAwait(false);
             var acct = accts.FirstOrDefault();
 
@@ -108,11 +95,9 @@ namespace activedirectoryxamarinintune
         internal async Task SignOut()
         {
             var accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
-            while (accounts.Any())
+            foreach (var acct in accounts)
             {
-                var acct = accounts.FirstOrDefault();
                 await PCA.RemoveAsync(acct).ConfigureAwait(false);
-                accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
             }
         }
     }

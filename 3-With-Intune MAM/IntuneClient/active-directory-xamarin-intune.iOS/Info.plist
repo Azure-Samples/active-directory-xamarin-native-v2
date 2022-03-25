@@ -24,9 +24,9 @@
 	<key>IntuneMAMSettings</key>
 	<dict>
 		<key>ADALClientId</key>
-		<string>94996db4-9d57-422d-a707-84a1328a3cb8</string>
+		<string>94996db4-9d57-422d-a707-84a1328a3cb8</string> <!-- TODO change clientId here -->
 		<key>ADALRedirectUri</key>
-		<string>msauth.com.yourcompany.XamarinIntuneApp://auth</string>
+		<string>msauth.com.yourcompany.XamarinIntuneApp://auth</string> <!-- TODO change redirect URI here -->
 	</dict>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>

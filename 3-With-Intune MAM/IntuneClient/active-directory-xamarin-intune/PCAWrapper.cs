@@ -37,7 +37,7 @@ namespace activedirectoryxamarinintune
         // TenantID of the organization (msidlab4.com)
         private const string TenantId = "f645ad92-e38d-4d1a-b510-d1b09a74a8ca"; // TODO - Replace with your TenantID. And also replace in the AndroidManifest.xml
 
-        private readonly static string[] clientCapabilities = { "ProtApp" }; // It is must to have these capabilities
+        private static string[] clientCapabilities = { "ProtApp" }; // It is must to have these capabilities
 
         // private constructor for singleton
         private PCAWrapper()

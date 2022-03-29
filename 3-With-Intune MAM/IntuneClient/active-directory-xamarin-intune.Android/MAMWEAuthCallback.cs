@@ -16,7 +16,7 @@ namespace active_directory_xamarin_intune.Droid
     class MAMWEAuthCallback : Java.Lang.Object, IMAMServiceAuthenticationCallback
     {
         /// <summary>
-        /// MAM expects that this method performs silent authentication for the give resourceID
+        /// MAM expects that this method performs silent authentication for the given resourceID
         /// Note. This resource is not the same one from the App. The resource is api for MAM service.
         /// </summary>
         /// <param name="upn">UPN of the user</param>

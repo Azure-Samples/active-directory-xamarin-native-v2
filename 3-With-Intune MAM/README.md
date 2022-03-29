@@ -5,7 +5,7 @@ This sample demonstrates how to access [Intune Mobile App Management (MAM)](http
 ## Overview
 When a user attempts to access a MAM protected resource and if the device is not compliant, MSAL.NET will throw ```IntuneAppProtectionPolicyRequiredException```. The common code catches the exception and requests Intune MAM SDK to make the app compliant. Intune MAM SDK usage is platform specific. So this exception handling behavior is executed using Inversion of Control pattern, i.e. using a common interface with platform specific implementations.  
 
-After the device becomes compliant, the App makes silent token request to obtain the token.  
+After the device becomes compliant, the App makes a silent token request to obtain the token.  
 
 The sample has a code tour that shows the workflow of the app.  You can open the source code in [VS Code](https://code.visualstudio.com/). Get the [CodeTour Extension](https://marketplace.visualstudio.com/items?itemName=vsls-contrib.codetour) and run the steps. It will walk you through the code flow.  
 
@@ -22,7 +22,7 @@ To run this sample you will need:
   - An Azure AD account - you can get a free trial Office 365 account by visiting [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
 - Setup [Xamarin.iOS for Visual Studio](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/introduction-to-xamarin-ios-for-visual-studio) (if you want to run the iOS app)
 
-### Step 1: Setup Azure Active Directory and Intune Portal
+### Step 1: Setup Azure Active Directory and Intune Company Portal
 The app requires setup in Azure Active Directory to obtain your parameters. The setup instructions can be found [here](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Steps-to-create-config-for-MAM-(Conditional-access))
 
 

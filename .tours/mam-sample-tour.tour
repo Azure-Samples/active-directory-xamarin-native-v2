@@ -1,0 +1,102 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "MAM Sample tour",
+  "steps": [
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/PCAWrapper.cs",
+      "description": "Wrapper for PCA. This is singleton and wraps the parameters and the desired methods.",
+      "line": 14
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/PCAWrapper.cs",
+      "description": "Event is to coordinate between MAM and MSAL",
+      "line": 27
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
+      "description": "Attempt silent login.",
+      "line": 33
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
+      "description": "Attempt AcquireTokenInteractive",
+      "line": 42
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
+      "description": "if the resource requires app protection, this exception is thrown",
+      "line": 47
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
+      "description": "This will perform platform specific registration and wait for it to complete. Do the AcquireTokenSilent after that.\r\nNext will be how it functions on iOS and Android",
+      "line": 51
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.iOS/AppDelegate.cs",
+      "description": "Platform specific params are registered.",
+      "line": 35
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.iOS/AppDelegate.cs",
+      "description": "Registers the MAM connector for iOS",
+      "line": 40
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.iOS/AppDelegate.cs",
+      "description": "Registers callback for the delegate",
+      "line": 43
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.iOS/IntuneMAMConnector.cs",
+      "description": "Reset the event, call method to make the device compliant and wait for it to finish.",
+      "line": 14
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.iOS/MainIntuneMAMComplianceDelegate.cs",
+      "description": "In the callback, wait for the device to become compliant and set the event. It will release the event and the app can continue.",
+      "line": 19
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/IntuneSampleApp.cs",
+      "description": "Android tour begins here.\r\nAndroid part of MAM requires this special class to perform registration during creation.",
+      "line": 22
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/IntuneSampleApp.cs",
+      "description": "Android requires two callbacks. One for enrollment manager and other for receiving MAM notifications.",
+      "line": 28
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/MainActivity.cs",
+      "description": "Set platform specific params and register the MAM connectors",
+      "line": 29
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/IntuneMAMConnector.cs",
+      "description": "This gets called on Android platform when MSAL throws IntuneAppProtectionPolicyRequiredException",
+      "line": 20
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/IntuneMAMConnector.cs",
+      "description": "MAM SDK compliance is called here. It will result in MAMWEAuthCallback.",
+      "line": 29
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/MAMWEAuthCallback.cs",
+      "description": "This is called back as part of compliance process. This will ask token for MAM services. Not not the original resource app was seeking. Ensure that the resource has corresct suffix. Acquire the token silenty and return it. This will not throw UIRequired exception as user would have already authenticated for the original resource.\r\nAfter receiving the token, MAM will notify via notificaiton receiver callback.",
+      "line": 26
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune.Android/EnrollmentNotificationReceiver.cs",
+      "description": "All MAM notifications are received here. If enrollment is successful, release the flag. Then the App will continue.",
+      "line": 31
+    },
+    {
+      "file": "3-With-Intune MAM/IntuneClient/active-directory-xamarin-intune/MainPage.xaml.cs",
+      "description": "App continues here after the registration with MAM and acquires the desired token.",
+      "line": 56
+    }
+  ],
+  "ref": "feature/IntuneSample"
+}

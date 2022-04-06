@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="active_directory_xamarin_intune.MainPage">
+
+    <StackLayout
+        VerticalOptions="CenterAndExpand"
+        HorizontalOptions="CenterAndExpand">
+        <Button
+            x:Name="btnAcquireToken"
+            Text="Acquire Token"
+            HorizontalOptions="Center"
+            Margin="10"
+            Clicked="btnAcquireToken_Clicked"/>
+        <Button
+            x:Name="btnSignOut"
+            Text="Sign Out"
+            HorizontalOptions="Center"
+            Clicked="btnSignOut_Clicked"/>
+    </StackLayout>
+
+</ContentPage>

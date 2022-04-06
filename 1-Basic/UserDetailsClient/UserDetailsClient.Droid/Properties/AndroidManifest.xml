@@ -3,7 +3,8 @@
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="30" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<application android:label="UserDetailsClient.Droid">
+	<application android:label="UserDetailsClient.Droid"
+				 xmlns="urn:schemas-microsoft-com:asm.v3">
 		<activity android:name="microsoft.identity.client.BrowserTabActivity" android:configChanges="orientation|screenSize">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -12,6 +13,9 @@
 				<data android:scheme="msal4a1aa1d5-c567-49d0-ad0b-cd957a47f842" android:host="auth" />
 			</intent-filter>
 		</activity>
+		<windowsSettings xmlns:ws2="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+			<ws2:longPathAware>true</ws2:longPathAware>
+		</windowsSettings>
 	</application>
 	<!-- Required for API Level 30 to make sure we can detect browsers and other apps we want to
      be able to talk to.-->

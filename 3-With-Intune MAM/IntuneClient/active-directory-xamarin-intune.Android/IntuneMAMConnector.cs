@@ -8,6 +8,7 @@ using Microsoft.Identity.Client;
 using Microsoft.Intune.Mam.Client.App;
 using Microsoft.Intune.Mam.Policy;
 
+[assembly: Xamarin.Forms.Dependency(typeof(IIntuneMAMConnector))]
 namespace active_directory_xamarin_intune.Droid
 {
     public class IntuneMAMConnector : IIntuneMAMConnector

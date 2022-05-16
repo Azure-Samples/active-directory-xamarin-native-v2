@@ -22,6 +22,13 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+# Resource.Designer.cs files
+**/Resources/[Rr]esource.[Dd]esigner.cs
+**/*.Droid/**/[Rr]esource.[Dd]esigner.cs
+**/*.Android/**/[Rr]esource.[Dd]esigner.cs
+**/Android/**/[Rr]esource.[Dd]esigner.cs
+**/Droid/**/[Rr]esource.[Dd]esigner.cs
+
 # Visual Studo 2015 cache/options directory
 .vs/
 

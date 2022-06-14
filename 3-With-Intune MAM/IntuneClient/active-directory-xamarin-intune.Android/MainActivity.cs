@@ -1,7 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using System;
-
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -17,28 +15,20 @@ namespace active_directory_xamarin_intune.Droid
     {
         private const string AndroidRedirectURI = "msauth://com.yourcompany.xamarinintuneapp/JjmT52ASxa1Lz55s+qPPgxb5xeo="; // TODO - Replace with your redirectURI
 
-        IIntuneMAMConnector _connector = new IntuneMAMConnector();
-
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override void OnMAMCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(savedInstanceState);
+            base.OnMAMCreate(savedInstanceState);
 
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             // configure platform specific params
             PlatformConfigImpl.Instance.RedirectUri = AndroidRedirectURI;
             PlatformConfigImpl.Instance.ParentWindow = this;
 
-            // register IntuneMAMConnector
-            Xamarin.Forms.DependencyService.RegisterSingleton<IIntuneMAMConnector>(_connector);
-
             LoadApplication(new App());
         }
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
-            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
@@ -49,9 +39,9 @@ namespace active_directory_xamarin_intune.Droid
         /// <param name="requestCode">request code </param>
         /// <param name="resultCode">result code</param>
         /// <param name="data">intent of the actvity</param>
-        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        protected override void OnMAMActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
-            base.OnActivityResult(requestCode, resultCode, data);
+            base.OnMAMActivityResult(requestCode, resultCode, data);
             AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
         }
     }

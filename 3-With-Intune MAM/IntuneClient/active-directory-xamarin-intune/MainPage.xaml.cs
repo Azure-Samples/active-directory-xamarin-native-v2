@@ -14,7 +14,7 @@ namespace active_directory_xamarin_intune
         /// <summary>
         /// The scopes that are protected by conditional access
         /// </summary>
-        internal static string[] Scopes = { "api://xam-Intune-sample-EnterpriseApp/Hello.World" }; // TODO - change scopes are per your enterprise app
+        internal static string[] Scopes = { "https://<TODO - Your tenant name>.sharepoint.com/AllSites.Read" }; // TODO - change scopes per your enterprise app
 
         public MainPage()
         {
@@ -50,18 +50,30 @@ namespace active_directory_xamarin_intune
                     var intuneConnector = DependencyService.Get<IIntuneMAMConnector>(DependencyFetchTarget.GlobalInstance);
                     await intuneConnector.DoMAMRegisterAsync(exProtection).ContinueWith(async (arg) =>
                     {
+                        // Now the device is registered, perform token acquisition
                         try
                         {
-                            // Now the device is registered, perform silent token acquisition
+                            // if no MFA Policy is present, the silent should work.
                             result = await PCAWrapper.Instance.AcquireTokenSilentAsync(Scopes).ConfigureAwait(false);
 
                             await ShowMessage("AcquireTokenTokenSilent call after Intune registration.", result.AccessToken).ConfigureAwait(false);
+                        }
+                        catch (MsalUiRequiredException )
+                        {
+                            // if MFA policy is present, one needs to AcquireTokenInteractive API
+                            result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(Scopes).ConfigureAwait(false);
+
+                            await ShowMessage("Second AcquireTokenInteractive call after Intune registration.", result.AccessToken).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
                             await ShowMessage("Exception in AcquireTokenSilentAsync after registration.", ex.Message).ConfigureAwait(false);
                         }
                     }).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    await ShowMessage("Exception in AcquireTokenInteractiveAsync", ex.Message).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -84,7 +96,8 @@ namespace active_directory_xamarin_intune
         // called when signout it pressed
         async void btnSignOut_Clicked(System.Object sender, System.EventArgs e)
         {
-            await PCAWrapper.Instance.SignOut().ConfigureAwait(false);
+            var intuneConnector = DependencyService.Get<IIntuneMAMConnector>(DependencyFetchTarget.GlobalInstance);
+            intuneConnector.Unenroll();
         }
     }
 }

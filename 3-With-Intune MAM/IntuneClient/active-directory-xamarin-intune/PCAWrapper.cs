@@ -29,15 +29,17 @@ namespace activedirectoryxamarinintune
         /// <summary>
         /// The authority for the MSAL PublicClientApplication. Sign in will use this URL.
         /// </summary>
-        private const string _authority = "https://login.microsoftonline.com/organizations";
+        private const string _authority = "https://login.microsoftonline.com/organizations"; // TODO - Optionally replace organizations with your tenant ID or name
 
-        // ClientID of the application in (msidlab4.com)
-        private const string ClientId = "94996db4-9d57-422d-a707-84a1328a3cb8"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
-
-        // TenantID of the organization (msidlab4.com)
-        private const string TenantId = "f645ad92-e38d-4d1a-b510-d1b09a74a8ca"; // TODO - Replace with your TenantID. And also replace in the AndroidManifest.xml
+        // ClientID of the application
+        private const string ClientId = "TODO <Your ClientID>"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
 
         private string[] clientCapabilities = { "ProtApp" }; // It is must to have these capabilities
+
+        void MyLoggingMethod(LogLevel level, string message, bool containsPii)
+        {
+            Console.WriteLine($"MSAL .NET {level}: {message}");
+        }
 
         // private constructor for singleton
         private PCAWrapper()
@@ -46,10 +48,10 @@ namespace activedirectoryxamarinintune
             // ClientCapabilities - must have ProtApp
             PCA = PublicClientApplicationBuilder
                                         .Create(ClientId)
+                                        .WithClientCapabilities(clientCapabilities)
+                                        .WithLogging(MyLoggingMethod, LogLevel.Verbose, enablePiiLogging: true, enableDefaultPlatformLogging: false)
                                         .WithAuthority(_authority)
                                         .WithBroker()
-                                        .WithClientCapabilities(clientCapabilities)
-                                        .WithTenantId(TenantId)
                                         .WithRedirectUri(PlatformConfigImpl.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
@@ -92,7 +94,7 @@ namespace activedirectoryxamarinintune
         /// the token.
         /// </summary>
         /// <returns></returns>
-        internal async Task SignOut()
+        public async Task SignOut()
         {
             var accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
             foreach (var acct in accounts)

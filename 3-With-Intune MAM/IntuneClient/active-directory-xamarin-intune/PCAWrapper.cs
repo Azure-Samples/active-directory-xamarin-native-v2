@@ -36,11 +36,6 @@ namespace activedirectoryxamarinintune
 
         private string[] clientCapabilities = { "ProtApp" }; // It is must to have these capabilities
 
-        void MyLoggingMethod(LogLevel level, string message, bool containsPii)
-        {
-            Console.WriteLine($"MSAL .NET {level}: {message}");
-        }
-
         // private constructor for singleton
         private PCAWrapper()
         {
@@ -49,7 +44,6 @@ namespace activedirectoryxamarinintune
             PCA = PublicClientApplicationBuilder
                                         .Create(ClientId)
                                         .WithClientCapabilities(clientCapabilities)
-                                        .WithLogging(MyLoggingMethod, LogLevel.Verbose, enablePiiLogging: true, enableDefaultPlatformLogging: false)
                                         .WithAuthority(_authority)
                                         .WithBroker()
                                         .WithRedirectUri(PlatformConfigImpl.Instance.RedirectUri)

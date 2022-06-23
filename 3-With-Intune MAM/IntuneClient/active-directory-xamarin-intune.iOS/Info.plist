@@ -5,7 +5,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Xamarin Intune Sample</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.XamarinIntuneApp</string> <!--TODO replace with your app-->
+	<string>com.yourcompany.XamarinIntuneApp</string><!--TODO replace with your app-->
 	<key>CFBundleName</key>
 	<string>active_directory_xamarin_intune</string>
 	<key>CFBundleURLTypes</key>
@@ -13,7 +13,8 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.yourcompany.XamarinIntuneApp</string> <!--TODO replace with your app-->
+				<string>msauth.com.yourcompany.XamarinIntuneApp</string> <!--TODO replace with your app-->
+				<string>msauth.com.yourcompany.XamarinIntuneApp-intunemam</string>
 				<string>msauth.com.microsoft.intunemam</string>
 			</array>
 		</dict>

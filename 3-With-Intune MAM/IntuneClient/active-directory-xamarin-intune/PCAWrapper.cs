@@ -29,7 +29,7 @@ namespace activedirectoryxamarinintune
         /// <summary>
         /// The authority for the MSAL PublicClientApplication. Sign in will use this URL.
         /// </summary>
-        private const string _authority = "https://login.microsoftonline.com/organizations"; // TODO - Optionally replace organizations with your tenant ID or name
+        private const string _authority = "https://login.microsoftonline.com/organizations"; // TODO - For single tenant app replace organizations with your tenant ID or name. Also modify ADALAuthority in info.plist
 
         // ClientID of the application
         private const string ClientId = "TODO <Your ClientID>"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml

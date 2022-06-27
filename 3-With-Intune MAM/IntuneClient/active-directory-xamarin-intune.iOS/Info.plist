@@ -23,12 +23,12 @@
 	<string>1.0</string>
 	<key>IntuneMAMSettings</key>
 	<dict>
+		<key>ADALAuthority</key>
+		<string>https://login.microsoftonline.com/TODO -tenantId</string> <!--For single tenant app replace organizations with your tenant ID or name. Remove entry for others -->
 		<key>ADALClientId</key>
 		<string>TODO - Your Client Id</string> <!--TODO replace with your ClientId-->
 		<key>ADALRedirectUri</key>
 		<string>msauth.com.yourcompany.XamarinIntuneApp://auth</string> <!-- TODO change redirect URI here -->
-		<key>VerboseLoggingEnabled</key>
-		<true/>
 	</dict>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>

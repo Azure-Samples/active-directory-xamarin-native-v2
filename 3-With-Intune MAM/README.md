@@ -210,9 +210,11 @@ result = await app.AcquireTokenInteractive(scopes)
 #### [iOS only] Step 4d: Register a URL Scheme
 MSAL.NET uses URLs to invoke the broker and then return the broker response back to your app. To finish the round trip, you need to register a URL scheme for your app in the `Info.plist` file.
 
-The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by your `CFBundleURLName`.
+The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by your `CFBundleURLName`. This should be the first entry.
 
 `$"msauth.(BundleId)"`
+It also requires additional entry for 
+`msauth.com.microsoft.intunemam`
 
 **For example:**
 `msauth.com.yourcompany.xforms`
@@ -227,6 +229,7 @@ The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by yo
         <string>Editor</string>
         <key>CFBundleURLName</key>
         <string>com.yourcompany.xforms</string>
+        <string>msauth.com.microsoft.intunemam</string>
         <key>CFBundleURLSchemes</key>
         <array>
           <string>msauth.com.yourcompany.xforms</string>
@@ -248,7 +251,23 @@ MSAL uses `canOpenURL:` to check if the broker is installed on the device. In 
     </array>
 ```
 
-#### Step 4f: Register your RedirectUri in the application portal
+#### [iOS only] Step 4f: IntuneMAMSettings
+Please update the clientId in the following settings.  
+If you have a single tenant app, you need to modify the ADALAuthority value replacing orgnizations with the tenantId
+
+```CSharp 
+	<key>IntuneMAMSettings</key>
+	<dict>
+		<key>ADALAuthority</key>
+		<string>https://login.microsoftonline.com/organizations</string>
+		<key>ADALClientId</key>
+		<string>TODO - Your Client Id</string>
+		<key>ADALRedirectUri</key>
+		<string>msauth.com.yourcompany.XamarinIntuneApp://auth</string>
+	</dict>
+```
+
+#### Step 4g: Register your RedirectUri in the application portal
 Using the broker adds an extra requirement on your redirectUri. The redirectUri _**must**_ have the following format:
 
 **For iOS:**
@@ -354,8 +373,9 @@ Clean the solution, build and run it:
     - If adding a new one, on the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The authenticator app works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
     - Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
     - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-    - Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
+    - Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in. This will unenroll the app.
 - If there are no conditional access policies applied to the user signing in, signing in with a broker is not required, so you will see the typical sign-in UI flow.
+- If there is an MFA policy in addition to the Inutne policy, it will require user to sign-in twice for the first time.
 
 
 The details about platform specific implementation are [here](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Protect-your-resources-in-iOS-and-Android-applications-using-Intune-MAM-and-MSAL.NET)

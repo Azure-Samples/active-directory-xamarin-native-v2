@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "active-directory-xamarin-in
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "active-directory-xamarin-intune.iOS", "IntuneClient\active-directory-xamarin-intune.iOS\active-directory-xamarin-intune.iOS.csproj", "{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Identity.Client", "..\..\microsoft-authentication-library-for-dotnet\src\client\Microsoft.Identity.Client\Microsoft.Identity.Client.csproj", "{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,18 +59,6 @@ Global
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Release|iPhone.Build.0 = Release|iPhone
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Release|iPhone.Build.0 = Release|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

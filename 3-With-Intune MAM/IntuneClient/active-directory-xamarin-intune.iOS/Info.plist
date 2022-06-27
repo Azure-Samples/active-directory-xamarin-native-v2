@@ -24,7 +24,7 @@
 	<key>IntuneMAMSettings</key>
 	<dict>
 		<key>ADALAuthority</key>
-		<string>https://login.microsoftonline.com/TODO -tenantId</string> <!--For single tenant app replace organizations with your tenant ID or name. Remove entry for others -->
+		<string>https://login.microsoftonline.com/organizations</string> <!--For single tenant app replace organizations with your tenant ID. -->
 		<key>ADALClientId</key>
 		<string>TODO - Your Client Id</string> <!--TODO replace with your ClientId-->
 		<key>ADALRedirectUri</key>

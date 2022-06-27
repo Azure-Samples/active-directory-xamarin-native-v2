@@ -13,11 +13,9 @@
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.45.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Microsoft.Identity.Client" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\microsoft-authentication-library-for-dotnet\src\client\Microsoft.Identity.Client\Microsoft.Identity.Client.csproj" />
   </ItemGroup>
 </Project>

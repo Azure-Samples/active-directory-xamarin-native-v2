@@ -134,16 +134,15 @@
     <PackageReference Include="Microsoft.Intune.MAM.Xamarin.iOS">
       <Version>16.0.3</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Identity.Client">
+      <Version>4.45.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\active-directory-xamarin-intune\active-directory-xamarin-intune.csproj">
       <Project>{C44C647D-BC45-4B6B-93C7-3222E3DBD633}</Project>
       <Name>active-directory-xamarin-intune</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\microsoft-authentication-library-for-dotnet\src\client\Microsoft.Identity.Client\Microsoft.Identity.Client.csproj">
-      <Project>{9C8E525E-3FC0-4D3A-9BDB-C9E87A46D139}</Project>
-      <Name>Microsoft.Identity.Client</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

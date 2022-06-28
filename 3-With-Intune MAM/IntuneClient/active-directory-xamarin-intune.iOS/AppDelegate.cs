@@ -16,11 +16,12 @@ namespace active_directory_xamarin_intune.iOS
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
-        private const string iOSRedirectURI = "msauth.com.yourcompany.XamarinIntuneApp://auth"; // TODO - Replace with your redirectURI
+        private const string iOSRedirectURI = "msauth.com.yourcompany.XamarinIntuneApp://auth"; // TODO - Replace bundleId with your redirectURI
 
         IIntuneMAMConnector _connector = new IntuneMAMConnector();
 
         MainIntuneMAMComplianceDelegate _mamComplianceDelegate = new MainIntuneMAMComplianceDelegate();
+        MainIntuneMAMEnrollmentDelegate _mamEnrollmentDelegate = new MainIntuneMAMEnrollmentDelegate();
         //
         // This method is invoked when the application has loaded and is ready to run. In this 
         // method you should instantiate the window, load the UI into it and then make the window
@@ -41,6 +42,7 @@ namespace active_directory_xamarin_intune.iOS
 
             // register the delegate for IntuneMAMCompliance manager
             IntuneMAMComplianceManager.Instance.Delegate = _mamComplianceDelegate;
+            IntuneMAMEnrollmentManager.Instance.Delegate = _mamEnrollmentDelegate;
 
             LoadApplication(new App());
 

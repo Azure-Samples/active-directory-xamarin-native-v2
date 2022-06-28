@@ -5,7 +5,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Xamarin Intune Sample</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.XamarinIntuneApp</string>
+	<string>com.yourcompany.XamarinIntuneApp</string><!--TODO replace with your app-->
 	<key>CFBundleName</key>
 	<string>active_directory_xamarin_intune</string>
 	<key>CFBundleURLTypes</key>
@@ -13,7 +13,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>msauth.com.yourcompany.XamarinIntuneApp</string>
+				<string>msauth.com.yourcompany.XamarinIntuneApp</string> <!--TODO replace with your app-->
 				<string>msauth.com.yourcompany.XamarinIntuneApp-intunemam</string>
 				<string>msauth.com.microsoft.intunemam</string>
 			</array>
@@ -23,8 +23,10 @@
 	<string>1.0</string>
 	<key>IntuneMAMSettings</key>
 	<dict>
+		<key>ADALAuthority</key>
+		<string>https://login.microsoftonline.com/organizations</string> <!--For single tenant app replace organizations with your tenant ID. -->
 		<key>ADALClientId</key>
-		<string>94996db4-9d57-422d-a707-84a1328a3cb8</string> <!-- TODO change clientId here -->
+		<string>TODO - Your Client Id</string> <!--TODO replace with your ClientId-->
 		<key>ADALRedirectUri</key>
 		<string>msauth.com.yourcompany.XamarinIntuneApp://auth</string> <!-- TODO change redirect URI here -->
 	</dict>

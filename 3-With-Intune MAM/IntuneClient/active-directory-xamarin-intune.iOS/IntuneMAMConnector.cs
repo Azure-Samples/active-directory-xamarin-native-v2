@@ -23,5 +23,10 @@ namespace active_directory_xamarin_intune.iOS
             // Wait for the delegate to signal that it is compliant
             PCAWrapper.MAMRegsiteredEvent.WaitOne();
         }
+
+        public void Unenroll()
+        {
+            IntuneMAMEnrollmentManager.Instance.DeRegisterAndUnenrollAccount(IntuneMAMEnrollmentManager.Instance.EnrolledAccount, true);
+        }
     }
 }

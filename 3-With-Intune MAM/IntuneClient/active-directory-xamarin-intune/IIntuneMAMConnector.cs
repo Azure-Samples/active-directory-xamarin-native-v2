@@ -18,5 +18,10 @@ namespace activedirectoryxamarinintune
         /// <param name="exProtection"></param>
         /// <returns></returns>
         Task DoMAMRegisterAsync(IntuneAppProtectionPolicyRequiredException exProtection);
+
+        /// <summary>
+        /// Unenrolls App from MAM
+        /// </summary>
+        void Unenroll();
     }
 }

@@ -35,5 +35,10 @@ namespace active_directory_xamarin_intune.Droid
             // per the business requirements of the app and not considered in the sample app.
             PCAWrapper.MAMRegsiteredEvent.WaitOne();
         }
+
+        public void Unenroll()
+        {
+            // Not implpemented on Android.
+        }
     }
 }

@@ -48,28 +48,31 @@ namespace active_directory_xamarin_intune
                     // if the scope requires App Protection Policy,  IntuneAppProtectionPolicyRequiredException is thrown.
                     // Perform registration operation here and then does the silent token acquisition
                     var intuneConnector = DependencyService.Get<IIntuneMAMConnector>(DependencyFetchTarget.GlobalInstance);
-                    await intuneConnector.DoMAMRegisterAsync(exProtection).ContinueWith(async (arg) =>
-                    {
-                        // Now the device is registered, perform token acquisition
-                        try
-                        {
-                            // if no MFA Policy is present, the silent should work.
-                            result = await PCAWrapper.Instance.AcquireTokenSilentAsync(Scopes).ConfigureAwait(false);
+                    _ = Task.Factory.StartNew(async () =>
+                                            { 
+                                                await intuneConnector.DoMAMRegisterAsync(exProtection).ContinueWith(async (arg) =>
+                                                {
+                                                    // Now the device is registered, perform token acquisition
+                                                    try
+                                                    {
+                                                        // if no MFA Policy is present, the silent should work.
+                                                        result = await PCAWrapper.Instance.AcquireTokenSilentAsync(Scopes).ConfigureAwait(false);
 
-                            await ShowMessage("AcquireTokenTokenSilent call after Intune registration.", result.AccessToken).ConfigureAwait(false);
-                        }
-                        catch (MsalUiRequiredException )
-                        {
-                            // if MFA policy is present, one needs to AcquireTokenInteractive API
-                            result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(Scopes).ConfigureAwait(false);
+                                                        await ShowMessage("AcquireTokenTokenSilent call after Intune registration.", result.AccessToken).ConfigureAwait(false);
+                                                    }
+                                                    catch (MsalUiRequiredException )
+                                                    {
+                                                        // if MFA policy is present, one needs to AcquireTokenInteractive API
+                                                        result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(Scopes).ConfigureAwait(false);
 
-                            await ShowMessage("Second AcquireTokenInteractive call after Intune registration.", result.AccessToken).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            await ShowMessage("Exception in AcquireTokenSilentAsync after registration.", ex.Message).ConfigureAwait(false);
-                        }
-                    }).ConfigureAwait(false);
+                                                        await ShowMessage("Second AcquireTokenInteractive call after Intune registration.", result.AccessToken).ConfigureAwait(false);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        await ShowMessage("Exception in AcquireTokenSilentAsync after registration.", ex.Message).ConfigureAwait(false);
+                                                    }
+                                                }).ConfigureAwait(false);
+                                            }).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

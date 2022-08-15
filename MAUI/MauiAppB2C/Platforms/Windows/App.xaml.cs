@@ -11,7 +11,7 @@ namespace MauiB2C.WinUI;
 /// </summary>
 public partial class App : MauiWinUIApplication
 {
-    // private const string RedirectURIWindows = "http://localhost";
+    private const string RedirectURIWindows = "http://localhost";
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code

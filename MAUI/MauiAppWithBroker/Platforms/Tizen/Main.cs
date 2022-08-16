@@ -13,8 +13,7 @@ namespace MauiAppWithBroker
 
         static void Main(string[] args)
         {
-            var app = new Program();
-            app.Run(args);
+            throw new PlatformNotSupportedException("Tizen platform is not supported!");
         }
     }
 }

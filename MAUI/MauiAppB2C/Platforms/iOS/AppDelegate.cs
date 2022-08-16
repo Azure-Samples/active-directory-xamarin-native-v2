@@ -10,12 +10,4 @@ namespace MauiB2C;
 public class AppDelegate : MauiUIApplicationDelegate
 {
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
-
-    public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
-    {
-        // configure platform specific params
-        PlatformConfig.Instance.RedirectUri = $"msal{B2CConstants.ClientID}://auth";
-        
-        return base.FinishedLaunching(application, launchOptions);
-    }
 }

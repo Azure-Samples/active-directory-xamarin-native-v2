@@ -6,6 +6,7 @@
         public static string Tenant = "fabrikamb2c.onmicrosoft.com";
         public static string AzureADB2CHostname = "fabrikamb2c.b2clogin.com";
         public static string ClientID = "e5737214-6372-472c-a85a-68e8fbe6cf3c";
+        public static string RedirectUri = $"msal{ClientID}://auth";
         public static string PolicySignUpSignIn = "b2c_1_susi";
 
         public static string[] Scopes = { "https://fabrikamb2c.onmicrosoft.com/helloapi/demo.read" };

@@ -16,7 +16,6 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnCreate(savedInstanceState);
         // configure platform specific params
-        PlatformConfig.Instance.RedirectUri = $"msal{B2CConstants.ClientID}://auth";
         PlatformConfig.Instance.ParentWindow = this;
     }
 

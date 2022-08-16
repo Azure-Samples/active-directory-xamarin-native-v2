@@ -2,17 +2,24 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Diagnostics;
 using Microsoft.Identity.Client;
 
 namespace MauiB2C.MSALClient
 {
+    /// <summary>
+    /// This is a wrapper for PublicClientApplication. It is singleton and can be utilized by both application and the MAM callback
+    /// </summary>    
     public class PCAWrapperB2C
     {
         /// <summary>
-        /// This is the singleton used by consumers
+        /// This is the singleton used by consumers. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
         /// </summary>
         public static PCAWrapperB2C Instance { get; private set; } = new PCAWrapperB2C();
 
+        /// <summary>
+        /// Instance of PublicClientApplication. It is provided, if App wants more customization.
+        /// </summary>
         internal IPublicClientApplication PCA { get; }
 
         // private constructor for singleton
@@ -21,10 +28,18 @@ namespace MauiB2C.MSALClient
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(B2CConstants.ClientID)
+                                        .WithLogging(LogHere)
                                         .WithB2CAuthority(B2CConstants.AuthoritySignInSignUp)
                                         .WithIosKeychainSecurityGroup(B2CConstants.IOSKeyChainGroup)
-                                        .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
+                                        .WithRedirectUri(B2CConstants.RedirectUri)
                                         .Build();
+        }
+
+        // This demos logging
+        private void LogHere(LogLevel level, string message, bool containsPii)
+        {
+            // You can do customized logging here. This is just for demo.
+            Debug.WriteLine(message);
         }
 
         /// <summary>
@@ -52,14 +67,7 @@ namespace MauiB2C.MSALClient
         /// <returns></returns>
         internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync(string[] scopes)
         {
-            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
-#if IOS
-            // Hide the privacy prompt in iOS
-            systemWebViewOptions.iOSHidePrivacyPrompt = true;
-#endif
-
             return await PCA.AcquireTokenInteractive(B2CConstants.Scopes)
-                                                        .WithSystemWebViewOptions(systemWebViewOptions)
                                                         .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                                                         .ExecuteAsync()
                                                         .ConfigureAwait(false);

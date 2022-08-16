@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,28 +11,32 @@ using Microsoft.Identity.Client;
 namespace MauiAppBasic.MSALClient
 {
     /// <summary>
-    /// This is a wrapper for PCA. It is singleton and can be utilized by both application and the MAM callback
+    /// This is a wrapper for PublicClientApplication. It is singleton and can be utilized by both application and the MAM callback
     /// </summary>
     public class PCAWrapper
     {
         /// <summary>
-        /// This is the singleton used by consumers
+        /// This is the singleton used by consumers. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
         /// </summary>
         public static PCAWrapper Instance { get; private set; } = new PCAWrapper();
 
+        /// <summary>
+        /// Instance of PublicClientApplication. It is provided, if App wants more customization.
+        /// </summary>
         internal IPublicClientApplication PCA { get; }
 
-        internal bool UseEmbedded { get; set; } = false;
-
         /// <summary>
-        /// The authority for the MSAL PublicClientApplication. Sign in will use this URL.
+        /// This will determine if the Interactive Authentication should be Embedded or System view
         /// </summary>
-        private const string _authority = "https://login.microsoftonline.com/common";
+        internal bool UseEmbedded { get; set; } = false;
 
         // ClientID of the application in (sample-testing.com)
         internal const string ClientId = "4b706872-7c33-43f0-9325-55bf81d39b93"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
 
-        public static string[] Scopes = { "User.Read" };
+        /// <summary>
+        /// Scopes defining what app can access in the graph
+        /// </summary>
+        internal static string[] Scopes = { "User.Read" };
 
         // private constructor for singleton
         private PCAWrapper()
@@ -39,9 +44,17 @@ namespace MauiAppBasic.MSALClient
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(ClientId)
+                                        .WithLogging(LogHere)
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
+        }
+
+        // This demos logging
+        private void LogHere(LogLevel level, string message, bool containsPii)
+        {
+            // You can do customized logging here. This is just for demo.
+            Debug.WriteLine(message);
         }
 
         /// <summary>
@@ -49,7 +62,7 @@ namespace MauiAppBasic.MSALClient
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns>Authentication result</returns>
-        public async Task<AuthenticationResult> AcquireTokenSilentAsync(string[] scopes)
+        internal async Task<AuthenticationResult> AcquireTokenSilentAsync(string[] scopes)
         {
             var accts = await PCA.GetAccountsAsync().ConfigureAwait(false);
             var acct = accts.FirstOrDefault();
@@ -67,9 +80,6 @@ namespace MauiAppBasic.MSALClient
         /// <returns></returns>
         internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync(string[] scopes)
         {
-            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
-#if IOS
-            // embedded view is not supported on Android
             if (UseEmbedded)
             {
 
@@ -80,6 +90,8 @@ namespace MauiAppBasic.MSALClient
                                         .ConfigureAwait(false);
             }
 
+            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
+#if IOS
             // Hide the privacy prompt in iOS
             systemWebViewOptions.iOSHidePrivacyPrompt = true;
 #endif

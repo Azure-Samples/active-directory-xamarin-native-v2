@@ -18,9 +18,9 @@ namespace MauiAppBasic
             try
             {
                 PCAWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
-                // attempt silent login.
+                // First attempt silent login, which checks the cache for an existing valid token.
                 // If this is very first time or user has signed out, it will throw MsalUiRequiredException
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(PCAWrapper.Scopes).ConfigureAwait(false);
+                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes).ConfigureAwait(false);
 
                 // call Web API to get the data
                 string data = await CallWebAPIWithToken(result).ConfigureAwait(false);
@@ -31,7 +31,7 @@ namespace MauiAppBasic
             catch (MsalUiRequiredException)
             {
                 // This executes UI interaction to obtain token
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(PCAWrapper.Scopes).ConfigureAwait(false);
+                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes).ConfigureAwait(false);
 
                 // call Web API to get the data
                 string data = await CallWebAPIWithToken(result).ConfigureAwait(false);

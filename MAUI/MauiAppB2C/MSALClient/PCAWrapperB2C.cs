@@ -4,16 +4,17 @@
 using System;
 using System.Diagnostics;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Abstractions;
 
 namespace MauiB2C.MSALClient
 {
     /// <summary>
-    /// This is a wrapper for PublicClientApplication. It is singleton and can be utilized by both application and the MAM callback
+    /// This is a wrapper for PublicClientApplication. It is singleton.
     /// </summary>    
     public class PCAWrapperB2C
     {
         /// <summary>
-        /// This is the singleton used by consumers. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
+        /// This is the singleton used by ux. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
         /// </summary>
         public static PCAWrapperB2C Instance { get; private set; } = new PCAWrapperB2C();
 
@@ -28,18 +29,12 @@ namespace MauiB2C.MSALClient
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(B2CConstants.ClientID)
-                                        .WithLogging(LogHere)
+                                        .WithExperimentalFeatures() // this is for upcoming logger
+                                        .WithLogging(_logger)
                                         .WithB2CAuthority(B2CConstants.AuthoritySignInSignUp)
                                         .WithIosKeychainSecurityGroup(B2CConstants.IOSKeyChainGroup)
                                         .WithRedirectUri(B2CConstants.RedirectUri)
                                         .Build();
-        }
-
-        // This demos logging
-        private void LogHere(LogLevel level, string message, bool containsPii)
-        {
-            // You can do customized logging here. This is just for demo.
-            Debug.WriteLine(message);
         }
 
         /// <summary>
@@ -74,8 +69,7 @@ namespace MauiB2C.MSALClient
         }
 
         /// <summary>
-        /// Signout may not perform the complete signout as company portal may hold
-        /// the token.
+        /// It will sign out the user.
         /// </summary>
         /// <returns></returns>
         internal async Task SignOutAsync()
@@ -86,5 +80,38 @@ namespace MauiB2C.MSALClient
                 await PCA.RemoveAsync(acct).ConfigureAwait(false);
             }
         }
+
+        // Custom logger for sample
+        private MyLogger _logger = new MyLogger();
+
+        // Custom logger class
+        private class MyLogger : IIdentityLogger
+        {
+            /// <summary>
+            /// Checks if log is enabled or not based on the Entry level
+            /// </summary>
+            /// <param name="eventLogLevel"></param>
+            /// <returns></returns>
+            public bool IsEnabled(EventLogLevel eventLogLevel)
+            {
+                //Try to pull the log level from an environment variable
+                var msalEnvLogLevel = Environment.GetEnvironmentVariable("MSAL_LOG_LEVEL");
+
+                EventLogLevel envLogLevel = EventLogLevel.Informational;
+                Enum.TryParse<EventLogLevel>(msalEnvLogLevel, out envLogLevel);
+
+                return envLogLevel <= eventLogLevel;
+            }
+
+            /// <summary>
+            /// Log to console for demo purpose
+            /// </summary>
+            /// <param name="entry">Log Entry values</param>
+            public void Log(LogEntry entry)
+            {
+                Console.WriteLine(entry.Message);
+            }
+        }
+
     }
 }

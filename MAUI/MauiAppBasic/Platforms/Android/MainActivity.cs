@@ -14,7 +14,7 @@ namespace MauiAppBasic
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
-        private const string AndroidRedirectURI = $"msal{PCAWrapper.ClientId}://auth";
+        private const string AndroidRedirectURI = $"msal{AppConstants.ClientId}://auth";
         
         protected override void OnCreate(Bundle savedInstanceState)
         {

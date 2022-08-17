@@ -2,21 +2,18 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Abstractions;
 
 namespace MauiAppBasic.MSALClient
 {
     /// <summary>
-    /// This is a wrapper for PublicClientApplication. It is singleton and can be utilized by both application and the MAM callback
+    /// This is a wrapper for PublicClientApplication. It is singleton.
     /// </summary>
     public class PCAWrapper
     {
         /// <summary>
-        /// This is the singleton used by consumers. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
+        /// This is the singleton used by Ux. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
         /// </summary>
         public static PCAWrapper Instance { get; private set; } = new PCAWrapper();
 
@@ -30,31 +27,17 @@ namespace MauiAppBasic.MSALClient
         /// </summary>
         internal bool UseEmbedded { get; set; } = false;
 
-        // ClientID of the application in (sample-testing.com)
-        internal const string ClientId = "4b706872-7c33-43f0-9325-55bf81d39b93"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
-
-        /// <summary>
-        /// Scopes defining what app can access in the graph
-        /// </summary>
-        internal static string[] Scopes = { "User.Read" };
-
         // private constructor for singleton
         private PCAWrapper()
         {
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
-                                        .Create(ClientId)
-                                        .WithLogging(LogHere)
+                                        .Create(AppConstants.ClientId)
+                                        .WithExperimentalFeatures() // this is for upcoming logger
+                                        .WithLogging(_logger)
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
-        }
-
-        // This demos logging
-        private void LogHere(LogLevel level, string message, bool containsPii)
-        {
-            // You can do customized logging here. This is just for demo.
-            Debug.WriteLine(message);
         }
 
         /// <summary>
@@ -104,8 +87,7 @@ namespace MauiAppBasic.MSALClient
         }
 
         /// <summary>
-        /// Signout may not perform the complete signout as company portal may hold
-        /// the token.
+        /// It will sign out the user.
         /// </summary>
         /// <returns></returns>
         internal async Task SignOutAsync()
@@ -114,6 +96,38 @@ namespace MauiAppBasic.MSALClient
             foreach (var acct in accounts)
             {
                 await PCA.RemoveAsync(acct).ConfigureAwait(false);
+            }
+        }
+
+        // Custom logger for sample
+        private readonly MyLogger _logger = new MyLogger();
+
+        // Custom logger class
+        private class MyLogger : IIdentityLogger
+        {
+            /// <summary>
+            /// Checks if log is enabled or not based on the Entry level
+            /// </summary>
+            /// <param name="eventLogLevel"></param>
+            /// <returns></returns>
+            public bool IsEnabled(EventLogLevel eventLogLevel)
+            {
+                //Try to pull the log level from an environment variable
+                var msalEnvLogLevel = Environment.GetEnvironmentVariable("MSAL_LOG_LEVEL");
+
+                EventLogLevel envLogLevel = EventLogLevel.Informational;
+                Enum.TryParse<EventLogLevel>(msalEnvLogLevel, out envLogLevel);
+
+                return envLogLevel <= eventLogLevel;
+            }
+
+            /// <summary>
+            /// Log to console for demo purpose
+            /// </summary>
+            /// <param name="entry">Log Entry values</param>
+            public void Log(LogEntry entry)
+            {
+                Console.WriteLine(entry.Message);
             }
         }
     }

@@ -17,7 +17,7 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            // attempt silent login.
+            // First attempt silent login, which checks the cache for an existing valid token.
             // If this is very first time or user has signed out, it will throw MsalUiRequiredException
             AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync(B2CConstants.Scopes).ConfigureAwait(false);
 

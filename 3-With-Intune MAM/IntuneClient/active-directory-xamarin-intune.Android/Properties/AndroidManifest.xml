@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.yourcompany.XamarinIntuneApp">
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="30" />
-	<application android:label="Xamarin Intune Sample" android:theme="@style/MainTheme"></application>
+	<application android:label="Xamarin Intune Sample" android:theme="@style/MainTheme" android:debuggable="true"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<!-- Note: TODO - Replace with your TenantID -->
 	<meta-data android:name="com.microsoft.intune.mam.aad.Authority" android:value="https://login.microsoftonline.com/organizations" />

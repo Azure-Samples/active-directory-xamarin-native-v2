@@ -15,7 +15,7 @@ namespace active_directory_xamarin_intune.Droid
     [Activity(Label = "Xamarin Intune Sample", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        private const string AndroidRedirectURI = "msauth://com.yourcompany.xamarinintuneapp/JjmT52ASxa1Lz55s+qPPgxb5xeo="; // TODO - Replace with your redirectURI
+        private const string AndroidRedirectURI = "msauth://com.yourcompany.xamarinintuneapp/EHyvOdXj4uLXJXDaOMy5lwANmp0="; // TODO - Replace with your redirectURI
 
         IIntuneMAMConnector _connector = new IntuneMAMConnector();
 
@@ -31,7 +31,7 @@ namespace active_directory_xamarin_intune.Droid
             PlatformConfigImpl.Instance.ParentWindow = this;
 
             // register IntuneMAMConnector
-            Xamarin.Forms.DependencyService.RegisterSingleton<IIntuneMAMConnector>(_connector);
+            Xamarin.Forms.DependencyService.Register<IIntuneMAMConnector, IntuneMAMConnector>();
 
             LoadApplication(new App());
         }

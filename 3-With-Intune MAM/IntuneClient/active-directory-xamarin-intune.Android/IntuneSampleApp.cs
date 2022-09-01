@@ -33,8 +33,10 @@ namespace active_directory_xamarin_intune.Droid
 
             // Register the notification receivers to receive MAM notifications.
             // Along with other, this will receive notification that the device has been enrolled.
+            var notificationRcvr = new EnrollmentNotificationReceiver();
             IMAMNotificationReceiverRegistry registry = MAMComponents.Get<IMAMNotificationReceiverRegistry>();
-            registry.RegisterReceiver(new EnrollmentNotificationReceiver(), MAMNotificationType.MamEnrollmentResult);
+            registry.RegisterReceiver(notificationRcvr, MAMNotificationType.MamEnrollmentResult);
+            registry.RegisterReceiver(notificationRcvr, MAMNotificationType.ComplianceStatus);
 
             base.OnMAMCreate();
         }

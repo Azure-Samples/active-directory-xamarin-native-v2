@@ -52,6 +52,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>-all</MtouchInterpreter>
     <BuildIpa>true</BuildIpa>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -128,13 +129,13 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+    <PackageReference Include="Microsoft.Identity.Client">
+      <Version>4.46.2</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991864" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
     <PackageReference Include="Microsoft.Intune.MAM.Xamarin.iOS">
-      <Version>16.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Identity.Client">
-      <Version>4.46.0</Version>
+      <Version>16.0.1.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

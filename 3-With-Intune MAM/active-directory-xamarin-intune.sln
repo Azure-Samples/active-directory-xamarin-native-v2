@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.810.14
+VisualStudioVersion = 16.0.32802.440
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "active-directory-xamarin-intune", "IntuneClient\active-directory-xamarin-intune\active-directory-xamarin-intune.csproj", "{C44C647D-BC45-4B6B-93C7-3222E3DBD633}"
 EndProject
@@ -52,6 +52,7 @@ Global
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Debug|iPhone.Build.0 = Debug|iPhone
+		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Debug|iPhone.Deploy.0 = Debug|iPhone
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
 		{EB20B633-5FEA-4AB6-B07D-3CF7E6AA9CF3}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator

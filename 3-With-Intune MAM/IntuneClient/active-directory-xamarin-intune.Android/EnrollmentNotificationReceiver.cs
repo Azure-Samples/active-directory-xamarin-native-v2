@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Diagnostics;
 using activedirectoryxamarinintune;
 using Android.Runtime;
+using Android.Util;
 using Microsoft.Intune.Mam.Client.Notification;
 using Microsoft.Intune.Mam.Policy;
 using Microsoft.Intune.Mam.Policy.Notification;
@@ -28,16 +30,34 @@ namespace active_directory_xamarin_intune.Droid
         /// </returns>
         public bool OnReceive(IMAMNotification notification)
         {
+            Debug.WriteLine("***Begin EnrollmentNotificationReceiver -> OnReceive");
             if (notification.Type == MAMNotificationType.MamEnrollmentResult)
             {
+                Debug.WriteLine("***Begin EnrollmentNotificationReceiver -> OnReceive (notification.Type == MAMNotificationType.MamEnrollmentResult)");
                 IMAMEnrollmentNotification enrollmentNotification = notification.JavaCast<IMAMEnrollmentNotification>();
                 MAMEnrollmentManagerResult result = enrollmentNotification.EnrollmentResult;
-
-                if (result.Equals(MAMEnrollmentManagerResult.EnrollmentSucceeded))
+                Debug.WriteLine($"***Begin OnReceive-> Enrollment = {result} Code = {result.Code}");
+            }
+            else if (notification.Type == MAMNotificationType.ComplianceStatus)
+            {
+                Debug.WriteLine("***Begin EnrollmentNotificationReceiver -> OnReceive (notification.Type == MAMNotificationType.ComplianceStatus)");
+                IMAMComplianceNotification complianceNotification = notification.JavaCast<IMAMComplianceNotification>();
+                MAMCAComplianceStatus result = complianceNotification.ComplianceStatus;
+                Debug.WriteLine($"***Begin OnReceive-> Compliance = {result} Code = {result.Code}");
+                if (result.Equals(MAMCAComplianceStatus.Compliant))
                 {
+                    Log.Info(GetType().Name, "remediateCompliance succeeded; status = " + result);
+                    Debug.WriteLine("***Begin OnReceive-> Compliant");
                     // this signals that MAM registration is complete and the app can proceed
                     PCAWrapper.MAMRegsiteredEvent.Set();
                 }
+                else
+                {
+                    Log.Info(GetType().Name, "remediateCompliance failed; status = " + result);
+                    Log.Info(GetType().Name, complianceNotification.ComplianceErrorTitle);
+                    Log.Info(GetType().Name, complianceNotification.ComplianceErrorMessage);
+                }
+
             }
 
             return true;

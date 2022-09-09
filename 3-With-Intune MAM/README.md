@@ -360,6 +360,7 @@ The app code is marked with TODO at places where parameters such as clientId, te
 - AppDelegate.cs
 
 ### Step 7: Run the sample!
+**Important Note: Android Sample runs only in the _Release_ configuration and not in the** ~~debug~~ configuration!  
 Run the sample on the platform of your choice.  
 **Note**: If you run the sample with the existing clientId and other parameters, it will not function with your account. As user must be part of certain group in the Azure Active Directory as described in the setup.  
 

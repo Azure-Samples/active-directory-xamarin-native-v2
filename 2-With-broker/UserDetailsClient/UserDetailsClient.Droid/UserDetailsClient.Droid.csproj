@@ -181,7 +181,7 @@
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat.Resources" Version="1.1.0.1" />
     <PackageReference Include="Microsoft.Identity.Client">
-      <Version>4.46.0</Version>
+      <Version>4.47.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -193,7 +193,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadXFormsNugetUpgradeInfoBarUserDetailsClientDroidHideInfoBar="True" TriggeredFromHotReload="False" />
+      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadXFormsNugetUpgradeInfoBarUserDetailsClientDroidHideInfoBar="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

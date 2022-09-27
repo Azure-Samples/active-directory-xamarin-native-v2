@@ -361,6 +361,7 @@ The app code is marked with TODO at places where parameters such as clientId, te
 
 ### Step 7: Run the sample!
 Run the sample on the platform of your choice.  
+**On Android, this runs only in the release mode and not in the debug mode.**  
 **Note**: If you run the sample with the existing clientId and other parameters, it will not function with your account. As user must be part of certain group in the Azure Active Directory as described in the setup.  
 
 Make sure the platform you configured is the same one you mark for build and deployment.

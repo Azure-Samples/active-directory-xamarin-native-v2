@@ -14,7 +14,7 @@ namespace MauiAppWithBroker
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
-        private const string AndroidRedirectURI = "msauth://com.companyname.mauiappwithbroker/EHyvOdXj4uLXJXDaOMy5lwANmp0="; // TODO - Replace with your redirectURI
+        private const string AndroidRedirectURI = "msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU="; // TODO - Replace with your redirectURI
 
         protected override void OnCreate(Bundle savedInstanceState)
         {

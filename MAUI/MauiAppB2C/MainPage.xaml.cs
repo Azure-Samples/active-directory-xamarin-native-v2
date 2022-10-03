@@ -24,7 +24,7 @@ public partial class MainPage : ContentPage
             string claims = GetClaims(result);
 
             // show the claims
-            await ShowMessage("AcquireTokenTokenSilent call Claims", claims).ConfigureAwait(false);
+            await ShowMessage("AcquireTokenSilent call Claims", claims).ConfigureAwait(false);
         }
         catch (MsalUiRequiredException)
         {
@@ -38,7 +38,7 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         {
-            await ShowMessage("Exception in AcquireTokenTokenSilent", ex.Message).ConfigureAwait(false);
+            await ShowMessage("Exception in AcquireTokenSilent", ex.Message).ConfigureAwait(false);
         }
     }
 

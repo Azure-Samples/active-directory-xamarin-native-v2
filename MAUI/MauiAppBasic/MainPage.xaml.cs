@@ -26,7 +26,7 @@ namespace MauiAppBasic
                 string data = await CallWebAPIWithToken(result).ConfigureAwait(false);
 
                 // show the data
-                await ShowMessage("AcquireTokenTokenSilent call", data).ConfigureAwait(false);
+                await ShowMessage("AcquireTokenSilent call", data).ConfigureAwait(false);
             }
             catch (MsalUiRequiredException)
             {
@@ -41,7 +41,7 @@ namespace MauiAppBasic
             }
             catch (Exception ex)
             {
-                await ShowMessage("Exception in AcquireTokenTokenSilent", ex.Message).ConfigureAwait(false);
+                await ShowMessage("Exception in AcquireTokenSilent", ex.Message).ConfigureAwait(false);
             }
         }
         private async void SignOutButton_Clicked(object sender, EventArgs e)

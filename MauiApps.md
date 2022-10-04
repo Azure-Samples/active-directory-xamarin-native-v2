@@ -5,8 +5,8 @@ A preview package has been published on NuGet. [Microsoft.Identity.Client 4.47.0
 
 ## Prerequisites
 To build and run the branch, it will require:
-- Visual Studio 2022 Release 17.3.
-- Mac to compile iOS Apps
+- Visual Studio 2022 Release 17.3.5
+- Mac with **XCode 13.3** to compile iOS Apps. Note: Support for XCode 14.0 for MAUI is in RC.
 
 # Getting started
 - Clone this repository  

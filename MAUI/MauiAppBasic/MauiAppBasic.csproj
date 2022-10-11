@@ -55,7 +55,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Identity.Client" Version="4.46.0-preview2" />
+	  <PackageReference Include="Microsoft.Graph" Version="5.0.0-preview.12" />
+	  <PackageReference Include="Microsoft.Identity.Client" Version="4.47.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\MainView.xaml.cs">
+	    <DependentUpon>MainView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\UserView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

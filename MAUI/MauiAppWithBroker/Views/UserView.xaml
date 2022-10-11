@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppWithBroker.Views.UserView"
+             xmlns:viewmodel="clr-namespace:MauiAppWithBroker.ViewModels"
+             x:DataType="viewmodel:UserViewModel"
+             Title="User View"
+             NavigationPage.HasBackButton="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+    <VerticalStackLayout>
+        <Label 
+            Text="Azure Active Directory"
+            FontSize="32"
+            SemanticProperties.HeadingLevel="Level1"
+            HorizontalOptions="Center" />
+        <Label 
+            Text="MAUI sample"
+            FontSize="32"
+            Padding="0,0,0,20"
+            SemanticProperties.HeadingLevel="Level1"
+            HorizontalOptions="Center" />
+        <Image
+            Source="{Binding UserImage}"
+            MaximumWidthRequest="200"
+            />
+        <Label 
+            Text="{Binding DisplayName}"
+            Padding="0,20,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" 
+            FontSize="22"
+            />
+        <Label 
+            Text="{Binding Email}"
+            Padding="20,0,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="18"
+            />
+        <Button
+            x:Name="SignOutButton"
+            Text="Sign Out"
+            HorizontalOptions="Center"
+            Clicked="SignOutButton_Clicked" />
+    </VerticalStackLayout>
+</ContentPage>

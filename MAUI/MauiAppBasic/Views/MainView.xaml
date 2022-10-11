@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppBasic.Views.MainView"
+             xmlns:viewmodel="clr-namespace:MauiAppBasic.ViewModels"
+             x:DataType="viewmodel:MainViewModel"
+             NavigationPage.HasBackButton="False"
+             Title="Login Screen"
+             >
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+
+    <ScrollView>
+        <VerticalStackLayout 
+            Spacing="25" 
+            Padding="30,0" 
+            VerticalOptions="Center">
+
+            <Image
+                Source="azure_active_directory.jpg"
+                SemanticProperties.Description="Azure Active Directory Logo"
+                HeightRequest="200"
+                HorizontalOptions="Center" />
+
+            <Label 
+                Text="Azure Active Directory"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center" />
+
+            <Label 
+                Text="MAUI sample"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center" />
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <CheckBox x:Name="useEmbedded" VerticalOptions="Center"/>
+                <Label Text="Use Embedded" VerticalOptions="Center"/>
+            </StackLayout>
+
+            <Button 
+                x:Name="SignInButton"
+                Text="Sign In"
+                SemanticProperties.Hint="Sign In"
+                Clicked="OnSignInClicked"
+                HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+ 
+</ContentPage>

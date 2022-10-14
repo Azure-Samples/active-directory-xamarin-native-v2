@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:MauiB2C.ViewModels"
+             xmlns:local="clr-namespace:MauiB2C"
+             x:Class="MauiB2C.Views.ScopeView"
+             x:DataType="viewmodel:ScopeViewModel"
+             Title="Scope View">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+    <VerticalStackLayout>
+        <Label 
+            Text="Azure Active Directory B2C"
+            FontSize="26"
+            SemanticProperties.HeadingLevel="Level1"
+            HorizontalOptions="Center" />
+        <Label 
+            Text="MAUI sample"
+            FontSize="26"
+            Padding="0,0,0,20"
+            SemanticProperties.HeadingLevel="Level1"
+            HorizontalOptions="Center" />
+        <Label 
+            Text="{Binding Name}"
+            Padding="0,20,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" 
+            FontSize="22"
+            />
+        <Label 
+            Text="{Binding TrustFrameworkPolicy}"
+            Padding="20,0,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="18"
+            />
+        <Label 
+            Text="{Binding IssuedAt}"
+            Padding="20,0,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="18"
+            />
+        <Label 
+            Text="{Binding ExpiresAt}"
+            Padding="20,0,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="18"
+            />
+        <Button
+            x:Name="SignOutButton"
+            Text="Sign Out"
+            HorizontalOptions="Center"
+            Clicked="SignOutButton_Clicked" />
+    </VerticalStackLayout>
+</ContentPage>

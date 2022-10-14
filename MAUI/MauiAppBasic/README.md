@@ -86,8 +86,8 @@ As a first step you'll need to:
 In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the solution in Visual Studio.
-2. Open the `UserDetailsClient\App.cs` file.
-3. Find the assignment for `public static string ClientID` and replace the value with the Application ID from the app registration portal, created in Step 2.
+2. Open the `MSALClient\AppConstants.cs` file.
+3. Find the assignment for `internal const string ClientId` and replace the value with the Application ID from the app registration portal, created in Step 2.
 
 #### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
 

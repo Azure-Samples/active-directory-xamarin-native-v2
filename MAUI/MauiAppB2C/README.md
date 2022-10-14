@@ -262,8 +262,6 @@ Once you have created your redirect URI, you can register it by navigating to th
 
 - **iOS:** Select **Add a platform** under the **Platform Configurations** section, click on **iOS** and add your iOS bundle id.
 
-Once you have the proper redirect URI, update the `BrokerRedirectUriOnIos` and the `BrokerRedirectUriOnAndroid` fields in the App.cs file with the values.
-
 #### Android Specific Redirect URI Configuration
 
 The redirect uri on Android will need to be created based on the signature of the .APK used to sign it. This means that it will be different depending on where this sample is run because Visual Studio creates a unique signing key for debugging purposes on every machine. You can figure out what that signature will be by running the following commands

@@ -80,7 +80,12 @@ As a first step you'll need to:
 1. Select **Register** to create the application.
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. In the list of pages for the app, select **Authentication**.
-   - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
+   - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section
+   - Add a redirect URI with the following format: `ms-appx-web://Microsoft.AAD.BrokerPlugin/{YOUR_CLIENT_ID}` where `YOUR_CLIENT_ID` is the client id of your application
+1. If you plan on using an Android application click on the `Add a platform` button and select `Android`
+   - Follow the directions in the tab to setup the Android redirect URI
+1. If you plan on using an iOS application click on the `Add a platform` button and select `iOS / macOS`
+   - Follow the directions in the tab to setup the iOS redirect URI
 
 1. Select **Save**.
 1. In the list of pages for the app, select **API permissions**

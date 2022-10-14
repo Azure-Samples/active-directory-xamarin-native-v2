@@ -18,8 +18,6 @@ namespace active_directory_xamarin_intune.iOS
     {
         private const string iOSRedirectURI = "msauth.com.yourcompany.XamarinIntuneApp://auth"; // TODO - Replace bundleId with your redirectURI
 
-        IIntuneMAMConnector _connector = new IntuneMAMConnector();
-
         MainIntuneMAMComplianceDelegate _mamComplianceDelegate = new MainIntuneMAMComplianceDelegate();
         MainIntuneMAMEnrollmentDelegate _mamEnrollmentDelegate = new MainIntuneMAMEnrollmentDelegate();
         //
@@ -38,7 +36,7 @@ namespace active_directory_xamarin_intune.iOS
             PlatformConfigImpl.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
 
             // register the connector
-            Xamarin.Forms.DependencyService.RegisterSingleton<IIntuneMAMConnector>(_connector);
+            Xamarin.Forms.DependencyService.Register<IIntuneMAMConnector, IntuneMAMConnector>();
 
             // register the delegate for IntuneMAMCompliance manager
             IntuneMAMComplianceManager.Instance.Delegate = _mamComplianceDelegate;

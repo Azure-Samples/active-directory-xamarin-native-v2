@@ -1,6 +1,6 @@
 {
   "Sample": {
-    "Title": "MAUI using MSAL.NET to acquire an access token and call Microsoft Graph API",
+    "Title": "MAUI using MSAL.NET and a broker to acquire an access token and call Microsoft Graph API",
     "Level": 200,
     "Client": "MAUI (iOS, Android, UWP)",
     "Service": "Microsoft Graph",
@@ -13,9 +13,8 @@
   "AADApps": [
     {
       "Id": "client",
-      "Name": "active-directory-maui-v2",
-      "Kind": "Mobile",
-      "ReplyUrls": "http://localhost",
+      "Name": "active-directory-maui-with-broker-v2",
+      "Kind": "WinUI",
       "RequiredResourcesAccess": [
         {
           "Resource": "Microsoft Graph",
@@ -23,11 +22,7 @@
             "User.Read"
           ]
         }
-      ],
-      "DefaultDesktopAndMobileRedirectUriSettings": {
-        "UsesDefaultNativeClientRedirectUri": true,
-        "UsesDefaultMsalRedirectUri": true
-      }
+      ]
     }
   ],
   /*
@@ -43,7 +38,7 @@
       "SettingFile": "\\..\\MSALClient\\AppConstants.cs",
       "Mappings": [
         {
-          "key": "4b706872-7c33-43f0-9325-55bf81d39b93",
+          "key": "858b4a09-dc31-45d3-83a7-2b5f024f99cd",
           "value": ".AppId"
         }
       ]
@@ -51,18 +46,18 @@
     {
       "App": "client",
       "SettingKind": "Replace",
-      "SettingFile": "\\..\\Platforms\\Android\\MsalActivity.cs",
+      "SettingFile": "\\..\\MSALClient\\AppConstants.cs",
       "Mappings": [
         {
-          "key": "4b706872-7c33-43f0-9325-55bf81d39b93",
-          "value": ".AppId"
+          "key": "7f58f645-c190-4ce5-9de4-e2b7acd2a6ab",
+          "value": "$tenantId"
         }
       ]
     },
     {
       "App": "client",
       "SettingKind": "Replace",
-      "SettingFile": "\\..\\Platforms\\Android\\AndroidManifest.xml",
+      "SettingFile": "\\..\\Platforms\\Windows\\App.xaml.cs",
       "Mappings": [
         {
           "key": "4b706872-7c33-43f0-9325-55bf81d39b93",

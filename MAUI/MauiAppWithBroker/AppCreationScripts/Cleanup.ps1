@@ -7,6 +7,7 @@ param(
     [string] $azureEnvironmentName
 )
 
+
 Function Cleanup
 {
     if (!$azureEnvironmentName)
@@ -24,31 +25,33 @@ Function Cleanup
 
     # Connect to the Microsoft Graph API
     Write-Host "Connecting to Microsoft Graph"
-    if ($tenantId -eq "") {
+    if ($tenantId -eq "") 
+    {
         Connect-MgGraph -Scopes "Application.ReadWrite.All" -Environment $azureEnvironmentName
         $tenantId = (Get-MgContext).TenantId
     }
-    else {
+    else 
+    {
         Connect-MgGraph -TenantId $tenantId -Scopes "Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     
     # Removes the applications
     Write-Host "Cleaning-up applications from tenant '$tenantId'"
 
-    Write-Host "Removing 'client' (active-directory-maui-v2) if needed"
+    Write-Host "Removing 'client' (active-directory-maui-with-broker-v2) if needed"
     try
     {
-        Get-MgApplication -Filter "DisplayName eq 'active-directory-maui-v2'" | ForEach-Object {Remove-MgApplication -ApplicationId $_.Id }
+        Get-MgApplication -Filter "DisplayName eq 'active-directory-maui-with-broker-v2'" | ForEach-Object {Remove-MgApplication -ApplicationId $_.Id }
     }
     catch
     {
         $message = $_
         Write-Warning $Error[0]
-        Write-Host "Unable to remove the application 'active-directory-maui-v2'. Error is $message. Try deleting manually." -ForegroundColor White -BackgroundColor Red
+        Write-Host "Unable to remove the application 'active-directory-maui-with-broker-v2'. Error is $message. Try deleting manually." -ForegroundColor White -BackgroundColor Red
     }
 
-    Write-Host "Making sure there are no more (active-directory-maui-v2) applications found, will remove if needed..."
-    $apps = Get-MgApplication -Filter "DisplayName eq 'active-directory-maui-v2'" | Format-List Id, DisplayName, AppId, SignInAudience, PublisherDomain
+    Write-Host "Making sure there are no more (active-directory-maui-with-broker-v2) applications found, will remove if needed..."
+    $apps = Get-MgApplication -Filter "DisplayName eq 'active-directory-maui-with-broker-v2'" | Format-List Id, DisplayName, AppId, SignInAudience, PublisherDomain
     
     if ($apps)
     {
@@ -57,20 +60,20 @@ Function Cleanup
 
     foreach ($app in $apps) 
     {
-        Remove-MgApplication -ApplicationId $app.Id -Debug
-        Write-Host "Removed active-directory-maui-v2.."
+        Remove-MgApplication -ApplicationId $app.Id
+        Write-Host "Removed active-directory-maui-with-broker-v2.."
     }
 
     # also remove service principals of this app
     try
     {
-        Get-MgServicePrincipal -filter "DisplayName eq 'active-directory-maui-v2'" | ForEach-Object {Remove-MgServicePrincipal -ServicePrincipalId $_.Id -Confirm:$false}
+        Get-MgServicePrincipal -filter "DisplayName eq 'active-directory-maui-with-broker-v2'" | ForEach-Object {Remove-MgServicePrincipal -ServicePrincipalId $_.Id -Confirm:$false}
     }
     catch
     {
         $message = $_
         Write-Warning $Error[0]
-        Write-Host "Unable to remove ServicePrincipal 'active-directory-maui-v2'. Error is $message. Try deleting manually from Enterprise applications." -ForegroundColor White -BackgroundColor Red
+        Write-Host "Unable to remove ServicePrincipal 'active-directory-maui-with-broker-v2'. Error is $message. Try deleting manually from Enterprise applications." -ForegroundColor White -BackgroundColor Red
     }
 }
 
@@ -81,7 +84,17 @@ Import-Module Microsoft.Graph.Applications
 $ErrorActionPreference = "Stop"
 
 
-Cleanup -tenantId $tenantId -environment $azureEnvironmentName
+try
+{
+    Cleanup -tenantId $tenantId -environment $azureEnvironmentName
+}
+catch
+{
+    $_.Exception.ToString() | out-host
+    $message = $_
+    Write-Warning $Error[0]    
+    Write-Host "Unable to register apps. Error is $message." -ForegroundColor White -BackgroundColor Red
+}
 
 Write-Host "Disconnecting from tenant"
 Disconnect-MgGraph

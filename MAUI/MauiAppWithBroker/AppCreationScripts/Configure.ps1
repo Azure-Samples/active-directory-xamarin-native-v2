@@ -13,7 +13,7 @@ param(
 
  In case you don't have Microsoft.Graph.Applications already installed, the script will automatically install it for the current user
  
- There are four ways to run this script. For more information, read the AppCreationScripts.md file in the same folder as this script.
+ There are two ways to run this script. For more information, read the AppCreationScripts.md file in the same folder as this script.
 #>
 
 # Adds the requiredAccesses (expressed as a pipe separated string) to the requiredAccess structure
@@ -71,6 +71,9 @@ Function GetRequiredPermissions([string] $applicationDisplayName, [string] $requ
 }
 
 
+<#.Description
+   This function takes a string input as a single line, matches a key value and replaces with the replacement value
+#>     
 Function ReplaceInLine([string] $line, [string] $key, [string] $value)
 {
     $index = $line.IndexOf($key)
@@ -82,6 +85,9 @@ Function ReplaceInLine([string] $line, [string] $key, [string] $value)
     return $line
 }
 
+<#.Description
+   This function takes a dictionary of keys to search and their replacements and replaces the placeholders in a text file
+#>     
 Function ReplaceInTextFile([string] $configFilePath, [System.Collections.HashTable] $dictionary)
 {
     $lines = Get-Content $configFilePath
@@ -102,6 +108,85 @@ Function ReplaceInTextFile([string] $configFilePath, [System.Collections.HashTab
     Set-Content -Path $configFilePath -Value $lines -Force
 }
 
+<#.Description
+   This function creates a new Azure AD scope (OAuth2Permission) with default and provided values
+#>  
+Function CreateScope( [string] $value, [string] $userConsentDisplayName, [string] $userConsentDescription, [string] $adminConsentDisplayName, [string] $adminConsentDescription)
+{
+    $scope = New-Object Microsoft.Graph.PowerShell.Models.MicrosoftGraphPermissionScope
+    $scope.Id = New-Guid
+    $scope.Value = $value
+    $scope.UserConsentDisplayName = $userConsentDisplayName
+    $scope.UserConsentDescription = $userConsentDescription
+    $scope.AdminConsentDisplayName = $adminConsentDisplayName
+    $scope.AdminConsentDescription = $adminConsentDescription
+    $scope.IsEnabled = $true
+    $scope.Type = "User"
+    return $scope
+}
+
+<#.Description
+   This function creates a new Azure AD AppRole with default and provided values
+#>  
+Function CreateAppRole([string] $types, [string] $name, [string] $description)
+{
+    $appRole = New-Object Microsoft.Graph.PowerShell.Models.MicrosoftGraphAppRole
+    $appRole.AllowedMemberTypes = New-Object System.Collections.Generic.List[string]
+    $typesArr = $types.Split(',')
+    foreach($type in $typesArr)
+    {
+        $appRole.AllowedMemberTypes += $type;
+    }
+    $appRole.DisplayName = $name
+    $appRole.Id = New-Guid
+    $appRole.IsEnabled = $true
+    $appRole.Description = $description
+    $appRole.Value = $name;
+    return $appRole
+}
+<#.Description
+   This function takes a string input as a single line, matches a key value and replaces with the replacement value
+#> 
+Function UpdateLine([string] $line, [string] $value)
+{
+    $index = $line.IndexOf(':')
+    $lineEnd = ''
+
+    if($line[$line.Length - 1] -eq ','){   $lineEnd = ',' }
+    
+    if ($index -ige 0)
+    {
+        $line = $line.Substring(0, $index+1) + " " + '"' + $value+ '"' + $lineEnd
+    }
+    return $line
+}
+
+<#.Description
+   This function takes a dictionary of keys to search and their replacements and replaces the placeholders in a text file
+#> 
+Function UpdateTextFile([string] $configFilePath, [System.Collections.HashTable] $dictionary)
+{
+    $lines = Get-Content $configFilePath
+    $index = 0
+    while($index -lt $lines.Length)
+    {
+        $line = $lines[$index]
+        foreach($key in $dictionary.Keys)
+        {
+            if ($line.Contains($key))
+            {
+                $lines[$index] = UpdateLine $line $dictionary[$key]
+            }
+        }
+        $index++
+    }
+
+    Set-Content -Path $configFilePath -Value $lines -Force
+}
+
+<#.Description
+   Primary entry method to create and configure app registrations
+#> 
 Function ConfigureApplications
 {
     $isOpenSSl = 'N' #temporary disable open certificate creation 
@@ -129,77 +214,59 @@ Function ConfigureApplications
     
 
    # Create the client AAD application
-   Write-Host "Creating the AAD application (active-directory-maui-v2)"
-   
+   Write-Host "Creating the AAD application (active-directory-maui-with-broker-v2)"
    # create the application 
-   $clientAadApplication = New-MgApplication -DisplayName "active-directory-maui-v2" `
-                                             -PublicClient @{ `
-                                                   RedirectUris="https://login.microsoftonline.com/common/oauth2/nativeclient" `
-                                             } `
-                                             -SignInAudience AzureADMultipleOrgs `
+   $clientAadApplication = New-MgApplication -DisplayName "active-directory-maui-with-broker-v2" `
+                                                      -PublicClient `
+                                                      @{ `
+                                                      RedirectUris = "ms-appx-web://microsoft.aad.brokerplugin/{ClientId}"; `
+                                                        } `
+                                                       -SignInAudience AzureADMyOrg `
                                                       #end of command
-    # create the service principal of the newly created application 
     $currentAppId = $clientAadApplication.AppId
+    $currentAppObjectId = $clientAadApplication.Id
+
+    $replyUrlsForApp = "ms-appx-web://microsoft.aad.brokerplugin/" + $currentAppId + ""
+    Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}
+    
+    # create the service principal of the newly created application     
     $clientServicePrincipal = New-MgServicePrincipal -AppId $currentAppId -Tags {WindowsAzureActiveDirectoryIntegratedApp}
 
     # add the user running the script as an app owner if needed
-    $owner = Get-MgApplicationOwner -ApplicationId $clientAadApplication.Id
+    $owner = Get-MgApplicationOwner -ApplicationId $currentAppObjectId
     if ($owner -eq $null)
     { 
-        New-MgApplicationOwnerByRef -ApplicationId $clientAadApplication.Id  -BodyParameter = @{"@odata.id" = "htps://graph.microsoft.com/v1.0/directoryObjects/$user.ObjectId"}
+        New-MgApplicationOwnerByRef -ApplicationId $currentAppObjectId  -BodyParameter = @{"@odata.id" = "htps://graph.microsoft.com/v1.0/directoryObjects/$user.ObjectId"}
         Write-Host "'$($user.UserPrincipalName)' added as an application owner to app '$($clientServicePrincipal.DisplayName)'"
     }
-    Write-Host "Done creating the client application (active-directory-maui-v2)"
+    Write-Host "Done creating the client application (active-directory-maui-with-broker-v2)"
 
     # URL of the AAD application in the Azure portal
-    # Future? $clientPortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/"+$clientAadApplication.AppId+"/objectId/"+$clientAadApplication.Id+"/isMSAApp/"
-    $clientPortalUrl = "https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/"+$clientAadApplication.AppId+"/objectId/"+$clientAadApplication.Id+"/isMSAApp/"
-    Add-Content -Value "<tr><td>client</td><td>$currentAppId</td><td><a href='$clientPortalUrl'>active-directory-maui-v2</a></td></tr>" -Path createdApps.html
+    # Future? $clientPortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/"+$currentAppId+"/objectId/"+$currentAppObjectId+"/isMSAApp/"
+    $clientPortalUrl = "https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/"+$currentAppId+"/objectId/"+$currentAppObjectId+"/isMSAApp/"
+
+    Add-Content -Value "<tr><td>client</td><td>$currentAppId</td><td><a href='$clientPortalUrl'>active-directory-maui-with-broker-v2</a></td></tr>" -Path createdApps.html
+    # Declare a list to hold RRA items    
     $requiredResourcesAccess = New-Object System.Collections.Generic.List[Microsoft.Graph.PowerShell.Models.MicrosoftGraphRequiredResourceAccess]
-    
+
     # Add Required Resources Access (from 'client' to 'Microsoft Graph')
     Write-Host "Getting access from 'client' to 'Microsoft Graph'"
-    $requiredPermissions = GetRequiredPermissions -applicationDisplayName "Microsoft Graph" `
-        -requiredDelegatedPermissions "User.Read" `
-    $requiredResourcesAccess.Add($requiredPermissions)
-    Update-MgApplication -ApplicationId $clientAadApplication.Id -RequiredResourceAccess $requiredResourcesAccess
-    Write-Host "Granted permissions."
+    $requiredPermission = GetRequiredPermissions -applicationDisplayName "Microsoft Graph"`
+        -requiredDelegatedPermissions "User.Read"
 
-    Write-Host "Successfully registered and configured that app registration for 'active-directory-maui-v2' at" -ForegroundColor Green
-    $clientPortalUrl
-Function UpdateLine([string] $line, [string] $value)
-{
-    $index = $line.IndexOf(':')
-    $lineEnd = ''
-
-    if($line[$line.Length - 1] -eq ','){   $lineEnd = ',' }
+    $requiredResourcesAccess.Add($requiredPermission)
+    Write-Host "Added 'Microsoft Graph' to the RRA list."
+    # Useful for RRA additions troubleshooting
+    # $requiredResourcesAccess.Count
+    # $requiredResourcesAccess
     
-    if ($index -ige 0)
-    {
-        $line = $line.Substring(0, $index+1) + " " + '"' + $value+ '"' + $lineEnd
-    }
-    return $line
-}
+    Update-MgApplication -ApplicationId $currentAppObjectId -RequiredResourceAccess $requiredResourcesAccess
+    Write-Host "Granted permissions."
+    
+    
 
-Function UpdateTextFile([string] $configFilePath, [System.Collections.HashTable] $dictionary)
-{
-    $lines = Get-Content $configFilePath
-    $index = 0
-    while($index -lt $lines.Length)
-    {
-        $line = $lines[$index]
-        foreach($key in $dictionary.Keys)
-        {
-            if ($line.Contains($key))
-            {
-                $lines[$index] = UpdateLine $line $dictionary[$key]
-            }
-        }
-        $index++
-    }
-
-    Set-Content -Path $configFilePath -Value $lines -Force
-}
+    # print the registered app portal URL for any further navigation
+    Write-Host "Successfully registered and configured that app registration for 'active-directory-maui-with-broker-v2' at `n $clientPortalUrl" -ForegroundColor Green 
     
     # Update config file for 'client'
     # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
@@ -207,26 +274,44 @@ Function UpdateTextFile([string] $configFilePath, [System.Collections.HashTable]
     
     $dictionary = @{ "858b4a09-dc31-45d3-83a7-2b5f024f99cd" = $clientAadApplication.AppId };
 
-    Write-Host "Updating the sample config '$configFile' with the following config values"
+    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
+    $dictionary
+    Write-Host "-----------------"
 
     ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
-
+    
+    # Update config file for 'client'
+    # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
     
     $dictionary = @{ "7f58f645-c190-4ce5-9de4-e2b7acd2a6ab" = $tenantId };
 
-    Write-Host "Updating the sample config '$configFile' with the following config values"
+    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
+    $dictionary
+    Write-Host "-----------------"
 
     ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
-       
-    if($isOpenSSL -eq 'Y')
-    {
-        Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
-        Write-Host "You have generated certificate using OpenSSL so follow below steps: "
-        Write-Host "Install the certificate on your system from current folder."
-        Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
-    }
-    Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  
+    
+    # Update config file for 'client'
+    # $configFile = $pwd.Path + "\..\Platforms\Windows\App.xaml.cs"
+    $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Windows\App.xaml.cs"))
+    
+    $dictionary = @{ "4b706872-7c33-43f0-9325-55bf81d39b93" = $clientAadApplication.AppId };
+
+    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
+    $dictionary
+    Write-Host "-----------------"
+
+    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
+
+if($isOpenSSL -eq 'Y')
+{
+    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
+    Write-Host "You have generated certificate using OpenSSL so follow below steps: "
+    Write-Host "Install the certificate on your system from current folder."
+    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
+}
+Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  
 } # end of ConfigureApplications function
 
 # Pre-requisites
@@ -249,8 +334,9 @@ try
 }
 catch
 {
+    $_.Exception.ToString() | out-host
     $message = $_
-    Write-Warning $Error[0]
+    Write-Warning $Error[0]    
     Write-Host "Unable to register apps. Error is $message." -ForegroundColor White -BackgroundColor Red
 }
 Write-Host "Disconnecting from tenant"

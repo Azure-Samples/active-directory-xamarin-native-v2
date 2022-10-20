@@ -12,8 +12,12 @@ namespace MauiAppBasic.MSALClient
     /// </summary>
     internal class AppConstants
     {
-        // ClientID of the application in (sample-testing.com)
-        internal const string ClientId = "4b706872-7c33-43f0-9325-55bf81d39b93"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
+        // ClientID of the application
+        internal const string ClientId = "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]"; // TODO - Replace with your client Id. And also replace in the AndroidManifest.xml
+
+
+        // TenantID of the organization
+        internal const string TenantId = "[REPLACE THIS WITH YOUR TENANT ID]"; // TODO - Replace with your TenantID.
 
         /// <summary>
         /// Scopes defining what app can access in the graph

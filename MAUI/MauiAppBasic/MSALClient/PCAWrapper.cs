@@ -33,6 +33,7 @@ namespace MauiAppBasic.MSALClient
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(AppConstants.ClientId)
+                                        .WithTenantId(AppConstants.TenantId)
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)

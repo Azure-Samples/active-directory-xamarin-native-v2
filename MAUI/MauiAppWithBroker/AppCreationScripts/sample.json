@@ -38,7 +38,7 @@
       "SettingFile": "\\..\\MSALClient\\AppConstants.cs",
       "Mappings": [
         {
-          "key": "858b4a09-dc31-45d3-83a7-2b5f024f99cd",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]
@@ -49,7 +49,7 @@
       "SettingFile": "\\..\\MSALClient\\AppConstants.cs",
       "Mappings": [
         {
-          "key": "7f58f645-c190-4ce5-9de4-e2b7acd2a6ab",
+          "key": "[REPLACE THIS WITH YOUR TENANT ID]",
           "value": "$tenantId"
         }
       ]
@@ -60,7 +60,7 @@
       "SettingFile": "\\..\\Platforms\\Windows\\App.xaml.cs",
       "Mappings": [
         {
-          "key": "4b706872-7c33-43f0-9325-55bf81d39b93",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]

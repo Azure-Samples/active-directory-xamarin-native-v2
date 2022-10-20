@@ -43,7 +43,7 @@
       "SettingFile": "\\..\\MSALClient\\AppConstants.cs",
       "Mappings": [
         {
-          "key": "4b706872-7c33-43f0-9325-55bf81d39b93",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]
@@ -51,10 +51,22 @@
     {
       "App": "client",
       "SettingKind": "Replace",
+      "SettingFile": "\\..\\MSALClient\\AppConstants.cs",
+      "Mappings": [
+        {
+          "key": "[REPLACE THIS WITH YOUR TENANT ID]",
+          "value": "$tenantId"
+        }
+      ]
+    },
+
+    {
+      "App": "client",
+      "SettingKind": "Replace",
       "SettingFile": "\\..\\Platforms\\Android\\MsalActivity.cs",
       "Mappings": [
         {
-          "key": "4b706872-7c33-43f0-9325-55bf81d39b93",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]
@@ -65,7 +77,7 @@
       "SettingFile": "\\..\\Platforms\\Android\\AndroidManifest.xml",
       "Mappings": [
         {
-          "key": "4b706872-7c33-43f0-9325-55bf81d39b93",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]

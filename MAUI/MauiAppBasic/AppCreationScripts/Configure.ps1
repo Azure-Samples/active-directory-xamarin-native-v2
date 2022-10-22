@@ -272,7 +272,19 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
     
-    $dictionary = @{ "4b706872-7c33-43f0-9325-55bf81d39b93" = $clientAadApplication.AppId };
+    $dictionary = @{ "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]" = $clientAadApplication.AppId };
+
+    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
+    $dictionary
+    Write-Host "-----------------"
+
+    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
+    
+    # Update config file for 'client'
+    # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
+    $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
+    
+    $dictionary = @{ "[REPLACE THIS WITH YOUR TENANT ID]" = $tenantId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -284,7 +296,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\Android\MsalActivity.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\MsalActivity.cs"))
     
-    $dictionary = @{ "4b706872-7c33-43f0-9325-55bf81d39b93" = $clientAadApplication.AppId };
+    $dictionary = @{ "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]" = $clientAadApplication.AppId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -296,7 +308,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\Android\AndroidManifest.xml"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\AndroidManifest.xml"))
     
-    $dictionary = @{ "4b706872-7c33-43f0-9325-55bf81d39b93" = $clientAadApplication.AppId };
+    $dictionary = @{ "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]" = $clientAadApplication.AppId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary

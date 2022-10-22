@@ -38,8 +38,8 @@ On Android and iOS, brokers enable:
 To run this sample you will need:
 
 - [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
-    * [Instructions for Windows](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?tabs=vswin)
-    * [Instructions for MacOS](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?tabs=vsmac)
+  - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
+  - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsmac)
 - An Internet connection
 - At least one of the following accounts:
   - A Microsoft Account - you can get a free account by visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).

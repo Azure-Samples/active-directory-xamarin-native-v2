@@ -3,15 +3,30 @@
     "Title": "MAUI using MSAL.NET and a broker to acquire an access token and call Microsoft Graph API",
     "Level": 200,
     "Client": "MAUI (iOS, Android, UWP)",
-    "Service": "Microsoft Graph",
     "RepositoryUrl": "active-directory-xamarin-native-v2",
-    "Endpoint": "AAD v2.0"
+    "Endpoint": "AAD v2.0",
+    "Library": "Microsoft Graph"
+  },
+  "ReadmeAboutTheCode": {
+    "IncludeFilePath": "../ReadmeFiles/AboutTheCode.md"
+  },
+  "ReadmeTroubleshooting": {
+    "IncludeFilePath": "../ReadmeFiles/TroubleShooting.md"
+  },
+  "ReadmeNextSteps": {
+    "IncludeFilePath": "../ReadmeFiles/NextSteps.md"
+  },
+  "ReadmeRunSample": {
+    "IncludeFilePath": "../ReadmeFiles/RunSample.md"
   },
   /*
     This section describes the Azure AD Applications to configure, and their dependencies
   */
   "AADApps": [
     {
+      "Sample": {
+        "SampleSubPath": "MAUI/MauiAppWithBroker"
+      },
       "Id": "client",
       "Name": "active-directory-maui-with-broker-v2",
       "Kind": "WinUI",

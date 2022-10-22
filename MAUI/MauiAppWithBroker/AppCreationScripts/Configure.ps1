@@ -220,6 +220,7 @@ Function ConfigureApplications
                                                       -PublicClient `
                                                       @{ `
                                                       RedirectUris = "ms-appx-web://microsoft.aad.brokerplugin/{ClientId}"; `
+                                                          RedirectUris = ""; `
                                                         } `
                                                        -SignInAudience AzureADMyOrg `
                                                       #end of command
@@ -272,7 +273,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
     
-    $dictionary = @{ "858b4a09-dc31-45d3-83a7-2b5f024f99cd" = $clientAadApplication.AppId };
+    $dictionary = @{ "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]" = $clientAadApplication.AppId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -284,7 +285,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
     
-    $dictionary = @{ "7f58f645-c190-4ce5-9de4-e2b7acd2a6ab" = $tenantId };
+    $dictionary = @{ "[REPLACE THIS WITH YOUR TENANT ID]" = $tenantId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -296,7 +297,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\Windows\App.xaml.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Windows\App.xaml.cs"))
     
-    $dictionary = @{ "4b706872-7c33-43f0-9325-55bf81d39b93" = $clientAadApplication.AppId };
+    $dictionary = @{ "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]" = $clientAadApplication.AppId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary

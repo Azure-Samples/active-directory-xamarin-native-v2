@@ -1,11 +1,15 @@
 {
   "Sample": {
-    "Title": "MAUI using MSAL.NET to acquire an access token and call Microsoft Graph API",
+    "Title": "A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api",
     "Level": 200,
     "Client": "MAUI (iOS, Android, UWP)",
     "RepositoryUrl": "active-directory-xamarin-native-v2",
     "Endpoint": "AAD v2.0",
-    "Library": "Microsoft Graph"
+    "Description": "A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api",
+    "Languages": [ "csharp" ],
+    "Products": [ "maui", "azure-active-directory" ],
+    "Library": [ "Microsoft Graph" ],
+    "Platform": "MAUI"
   },
   "ReadmeAboutTheCode": {
     "IncludeFilePath": "../ReadmeFiles/AboutTheCode.md"

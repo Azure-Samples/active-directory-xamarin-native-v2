@@ -4,14 +4,19 @@ services: ms-identity
 client: MAUI (iOS, Android, UWP)
 service: 
 level: 200
-platform: DotNet
+languages:
+- csharp
+products:
+- maui
+- azure-active-directory
+platform: MAUI
 endpoint: AAD v2.0
 urlFragment: active-directory-xamarin-native-v2
-name: MAUI using MSAL.NET to acquire an access token and call Microsoft Graph API
-description: 
+name: A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
+description: A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api
 ---
 
-# MAUI using MSAL.NET to acquire an access token and call Microsoft Graph API
+# A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
 
 [![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=XXX)
 

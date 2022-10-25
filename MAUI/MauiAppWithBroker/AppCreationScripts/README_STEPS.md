@@ -1,19 +1,20 @@
 ---
 page_type: sample
-services: ms-identity
-client: MAUI (iOS, Android, UWP)
-service: 
-level: 200
-languages:
-- csharp
-products:
-- maui
-- azure-active-directory
-platform: MAUI
-endpoint: AAD v2.0
-urlFragment: active-directory-xamarin-native-v2
 name: A .NET MAUI MAUI using MSAL.NET and a broker to acquire an access token and call Microsoft Graph API
 description: A .NET MAUI app using MSAL.NET to sign-in users using a broker and acquiring a token to call Microsoft Graph Api
+- languages:
+    -  csharp
+products:
+    - maui
+    - azure-active-directory
+urlFragment: active-directory-xamarin-native-v2
+extensions:
+- services: ms-identity
+- platform: MAUI
+- endpoint: AAD v2.0
+- level: 200
+- client: MAUI (iOS, Android, UWP)
+- service: 
 ---
 
 # A .NET MAUI MAUI using MSAL.NET and a broker to acquire an access token and call Microsoft Graph API
@@ -27,14 +28,13 @@ description: A .NET MAUI app using MSAL.NET to sign-in users using a broker and 
 * [Explore the sample](#explore-the-sample)
 * [Troubleshooting](#troubleshooting)
 * [About the code](#about-the-code)
-* [Next Steps](#next-steps)
 * [Contributing](#contributing)
 * [Learn More](#learn-more)
 
 ## Overview
 
 This sample demonstrates a MAUI (iOS, Android, UWP) that authenticates users against Azure AD.
-    
+
 ## Scenario
 
 This sample demonstrates a MAUI (iOS, Android, UWP) that authenticates users against Azure AD.
@@ -47,8 +47,8 @@ This sample demonstrates a MAUI (iOS, Android, UWP) that authenticates users aga
 ## Prerequisites
 
 * [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
-    - [Instructions for Windows](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?tabs=vswin)
-    - [Instructions for MacOS](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?tabs=vsmac)
+    - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
+    - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
 * An **Azure AD** tenant. For more information, see: [How to get an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/test-setup-environment#get-a-test-tenant)
 * A user account in your **Azure AD** tenant. This sample will not work with a **personal Microsoft account**. If you're signed in to the [Azure portal](https://portal.azure.com) with a personal Microsoft account and have not created a user account in your directory before, you will need to create one before proceeding.
 
@@ -125,17 +125,19 @@ To manually register the apps, as a first step you'll need to:
 1. In the **Overview** blade, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. In the app's registration screen, select the **Authentication** blade to the left.
 1. If you don't have a platform added, select **Add a platform** and select the **Public client (mobile & desktop)** option.
-    1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, select **ms-appx-web://microsoft.aad.brokerplugin/{ClientId}**
     1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** type in the value ****
+    1. In the **Redirect URIs** section, add **ms-appx-web://microsoft.aad.brokerplugin/{ClientId}**.
+
+        The **ClientId** is the Id of the App Registration and can be found under **Overview/Application (client) ID**
     1. Click **Save** to save your changes.
 1. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
-   1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:
-   1. Select the **Add a permission** button and then:
-   1. Ensure that the **Microsoft APIs** tab is selected.
-   1. In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
-      * Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is requested by apps when signing-in users.
-           1. In the **Delegated permissions** section, select **User.Read** in the list. Use the search box if necessary.
-   1. Select the **Add permissions** button at the bottom.
+    1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:
+    1. Select the **Add a permission** button and then:
+    1. Ensure that the **Microsoft APIs** tab is selected.
+    1. In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
+      * Since this app signs-in users, we will now proceed to select **delegated permissions**, which is requested by apps that signs-in users.
+      * In the **Delegated permissions** section, select **User.Read** in the list. Use the search box if necessary.
+    1. Select the **Add permissions** button at the bottom.
 
 ##### Configure the client app (active-directory-maui-with-broker-v2) to use your app registration
 
@@ -151,6 +153,7 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 1. Open the `Platforms\Windows\App.xaml.cs` file.
 1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-with-broker-v2` app copied from the Azure portal.
+
 ### Step 4: Running the sample
 
 From your shell or command line, execute the following commands:
@@ -314,6 +317,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 ## Learn More
 
 * [Microsoft identity platform (Azure Active Directory for developers)](https://docs.microsoft.com/azure/active-directory/develop/)
+* [Azure AD code samples](https://docs.microsoft.com/azure/active-directory/develop/sample-v2-code)
 * [Overview of Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)
 * [Register an application with the Microsoft identity platform](https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app)
 * [Configure a client application to access web APIs](https://docs.microsoft.com/azure/active-directory/develop/quickstart-configure-app-access-web-apis)
@@ -323,4 +327,4 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 * [Authentication Scenarios for Azure AD](https://docs.microsoft.com/azure/active-directory/develop/authentication-flows-app-scenarios)
 * [Building Zero Trust ready apps](https://aka.ms/ztdevsession)
 * [National Clouds](https://docs.microsoft.com/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints)
-* [Azure AD code samples](https://docs.microsoft.com/azure/active-directory/develop/sample-v2-code)
+

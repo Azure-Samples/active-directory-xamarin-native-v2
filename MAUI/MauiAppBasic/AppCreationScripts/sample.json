@@ -35,6 +35,7 @@
       "Name": "active-directory-maui-v2",
       "Kind": "Mobile",
       "ReplyUrls": "http://localhost",
+      "SampleSubPath": "MAUI/MauiAppBasic",
       "RequiredResourcesAccess": [
         {
           "Resource": "Microsoft Graph",

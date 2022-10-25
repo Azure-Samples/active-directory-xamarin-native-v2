@@ -73,79 +73,6 @@ Function GetRequiredPermissions([string] $applicationDisplayName, [string] $requ
 
 <#.Description
    This function takes a string input as a single line, matches a key value and replaces with the replacement value
-#>     
-Function ReplaceInLine([string] $line, [string] $key, [string] $value)
-{
-    $index = $line.IndexOf($key)
-    if ($index -ige 0)
-    {
-        $index2 = $index+$key.Length
-        $line = $line.Substring(0, $index) + $value + $line.Substring($index2)
-    }
-    return $line
-}
-
-<#.Description
-   This function takes a dictionary of keys to search and their replacements and replaces the placeholders in a text file
-#>     
-Function ReplaceInTextFile([string] $configFilePath, [System.Collections.HashTable] $dictionary)
-{
-    $lines = Get-Content $configFilePath
-    $index = 0
-    while($index -lt $lines.Length)
-    {
-        $line = $lines[$index]
-        foreach($key in $dictionary.Keys)
-        {
-            if ($line.Contains($key))
-            {
-                $lines[$index] = ReplaceInLine $line $key $dictionary[$key]
-            }
-        }
-        $index++
-    }
-
-    Set-Content -Path $configFilePath -Value $lines -Force
-}
-
-<#.Description
-   This function creates a new Azure AD scope (OAuth2Permission) with default and provided values
-#>  
-Function CreateScope( [string] $value, [string] $userConsentDisplayName, [string] $userConsentDescription, [string] $adminConsentDisplayName, [string] $adminConsentDescription)
-{
-    $scope = New-Object Microsoft.Graph.PowerShell.Models.MicrosoftGraphPermissionScope
-    $scope.Id = New-Guid
-    $scope.Value = $value
-    $scope.UserConsentDisplayName = $userConsentDisplayName
-    $scope.UserConsentDescription = $userConsentDescription
-    $scope.AdminConsentDisplayName = $adminConsentDisplayName
-    $scope.AdminConsentDescription = $adminConsentDescription
-    $scope.IsEnabled = $true
-    $scope.Type = "User"
-    return $scope
-}
-
-<#.Description
-   This function creates a new Azure AD AppRole with default and provided values
-#>  
-Function CreateAppRole([string] $types, [string] $name, [string] $description)
-{
-    $appRole = New-Object Microsoft.Graph.PowerShell.Models.MicrosoftGraphAppRole
-    $appRole.AllowedMemberTypes = New-Object System.Collections.Generic.List[string]
-    $typesArr = $types.Split(',')
-    foreach($type in $typesArr)
-    {
-        $appRole.AllowedMemberTypes += $type;
-    }
-    $appRole.DisplayName = $name
-    $appRole.Id = New-Guid
-    $appRole.IsEnabled = $true
-    $appRole.Description = $description
-    $appRole.Value = $name;
-    return $appRole
-}
-<#.Description
-   This function takes a string input as a single line, matches a key value and replaces with the replacement value
 #> 
 Function UpdateLine([string] $line, [string] $value)
 {
@@ -185,6 +112,44 @@ Function UpdateTextFile([string] $configFilePath, [System.Collections.HashTable]
 }
 
 <#.Description
+   This function takes a string input as a single line, matches a key value and replaces with the replacement value
+#>     
+Function ReplaceInLine([string] $line, [string] $key, [string] $value)
+{
+    $index = $line.IndexOf($key)
+    if ($index -ige 0)
+    {
+        $index2 = $index+$key.Length
+        $line = $line.Substring(0, $index) + $value + $line.Substring($index2)
+    }
+    return $line
+}
+
+<#.Description
+   This function takes a dictionary of keys to search and their replacements and replaces the placeholders in a text file
+#>     
+Function ReplaceInTextFile([string] $configFilePath, [System.Collections.HashTable] $dictionary)
+{
+    $lines = Get-Content $configFilePath
+    $index = 0
+    while($index -lt $lines.Length)
+    {
+        $line = $lines[$index]
+        foreach($key in $dictionary.Keys)
+        {
+            if ($line.Contains($key))
+            {
+                $lines[$index] = ReplaceInLine $line $key $dictionary[$key]
+            }
+        }
+        $index++
+    }
+
+    Set-Content -Path $configFilePath -Value $lines -Force
+}
+
+
+<#.Description
    Primary entry method to create and configure app registrations
 #> 
 Function ConfigureApplications
@@ -205,13 +170,28 @@ Function ConfigureApplications
     # Connect to the Microsoft Graph API, non-interactive is not supported for the moment (Oct 2021)
     Write-Host "Connecting to Microsoft Graph"
     if ($tenantId -eq "") {
-        Connect-MgGraph -Scopes "Application.ReadWrite.All" -Environment $azureEnvironmentName
-        $tenantId = (Get-MgContext).TenantId
+        Connect-MgGraph -Scopes "Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     else {
-        Connect-MgGraph -TenantId $tenantId -Scopes "Application.ReadWrite.All" -Environment $azureEnvironmentName
+        Connect-MgGraph -TenantId $tenantId -Scopes "Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     
+    $context = Get-MgContext
+    $tenantId = $context.TenantId
+
+    # Get the user running the script
+    $currentUserPrincipalName = $context.Account
+    $user = Get-MgUser -Filter "UserPrincipalName eq '$($context.Account)'"
+
+    # get the tenant we signed in to
+    $Tenant = Get-MgOrganization
+    $tenantName = $Tenant.DisplayName
+    
+    $verifiedDomain = $Tenant.VerifiedDomains | where {$_.Isdefault -eq $true}
+    $verifiedDomainName = $verifiedDomain.Name
+    $tenantId = $Tenant.Id
+
+    Write-Host ("Connected to Tenant {0} ({1}) as account '{2}'. Domain is '{3}'" -f  $Tenant.DisplayName, $Tenant.Id, $currentUserPrincipalName, $verifiedDomainName)
 
    # Create the client AAD application
    Write-Host "Creating the AAD application (active-directory-maui-v2)"
@@ -223,12 +203,12 @@ Function ConfigureApplications
                                                         } `
                                                        -SignInAudience AzureADMyOrg `
                                                       #end of command
+
     $currentAppId = $clientAadApplication.AppId
     $currentAppObjectId = $clientAadApplication.Id
 
     $replyUrlsForApp = "http://localhost", "https://login.microsoftonline.com/common/oauth2/nativeclient", "msal$currentAppId`://auth"
-    Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}
-    
+    Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}    
     # create the service principal of the newly created application     
     $clientServicePrincipal = New-MgServicePrincipal -AppId $currentAppId -Tags {WindowsAzureActiveDirectoryIntegratedApp}
 
@@ -262,7 +242,6 @@ Function ConfigureApplications
     
     Update-MgApplication -ApplicationId $currentAppObjectId -RequiredResourceAccess $requiredResourcesAccess
     Write-Host "Granted permissions."
-    
     
 
     # print the registered app portal URL for any further navigation
@@ -327,11 +306,42 @@ Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html
 } # end of ConfigureApplications function
 
 # Pre-requisites
+
+if ($null -eq (Get-Module -ListAvailable -Name "Microsoft.Graph")) {
+    Install-Module "Microsoft.Graph" -Scope CurrentUser 
+}
+
+#Import-Module Microsoft.Graph
+
+if ($null -eq (Get-Module -ListAvailable -Name "Microsoft.Graph.Authentication")) {
+    Install-Module "Microsoft.Graph.Authentication" -Scope CurrentUser 
+}
+
+Import-Module Microsoft.Graph.Authentication
+
+if ($null -eq (Get-Module -ListAvailable -Name "Microsoft.Graph.Identity.DirectoryManagement")) {
+    Install-Module "Microsoft.Graph.Identity.DirectoryManagement" -Scope CurrentUser 
+}
+
+Import-Module Microsoft.Graph.Identity.DirectoryManagement
+
 if ($null -eq (Get-Module -ListAvailable -Name "Microsoft.Graph.Applications")) {
     Install-Module "Microsoft.Graph.Applications" -Scope CurrentUser 
 }
 
 Import-Module Microsoft.Graph.Applications
+
+if ($null -eq (Get-Module -ListAvailable -Name "Microsoft.Graph.Groups")) {
+    Install-Module "Microsoft.Graph.Groups" -Scope CurrentUser 
+}
+
+Import-Module Microsoft.Graph.Groups
+
+if ($null -eq (Get-Module -ListAvailable -Name "Microsoft.Graph.Users")) {
+    Install-Module "Microsoft.Graph.Users" -Scope CurrentUser 
+}
+
+Import-Module Microsoft.Graph.Users
 
 Set-Content -Value "<html><body><table>" -Path createdApps.html
 Add-Content -Value "<thead><tr><th>Application</th><th>AppId</th><th>Url in the Azure portal</th></tr></thead><tbody>" -Path createdApps.html

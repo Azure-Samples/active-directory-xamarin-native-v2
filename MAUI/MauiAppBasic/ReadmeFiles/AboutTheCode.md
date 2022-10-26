@@ -24,32 +24,20 @@ PCA = PublicClientApplicationBuilder
 try
 {
     PCAWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
-    // First attempt silent login, which checks the cache for an existing valid token.
-    // If this is very first time or user has signed out, it will throw MsalUiRequiredException
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes).ConfigureAwait(false);
 
-    // call Web API to get the data
-    string data = await CallWebAPIWithToken(result).ConfigureAwait(false);
-
-    // show the data
-    await ShowMessage("AcquireTokenTokenSilent call", data).ConfigureAwait(false);
+    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes);
 }
 catch (MsalUiRequiredException)
 {
     // This executes UI interaction to obtain token
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes).ConfigureAwait(false);
-
-    // call Web API to get the data
-    string data = await CallWebAPIWithToken(result).ConfigureAwait(false);
-
-    // show the data
-    await ShowMessage("AcquireTokenInteractive call", data).ConfigureAwait(false);
+    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes);
 }
 catch (Exception ex)
 {
-    await ShowMessage("Exception in AcquireTokenTokenSilent", ex.Message).ConfigureAwait(false);
+    await DisplayAlert("Exception during signin", ex.Message, "OK").ConfigureAwait(false);
+    return;
 }
-  ```
+```
 
 - If the attempt to obtain a token silently fails a sign-in screen will appear.
     * Using the 'Embedded' login screen will prompt your user to login from a desktop screen

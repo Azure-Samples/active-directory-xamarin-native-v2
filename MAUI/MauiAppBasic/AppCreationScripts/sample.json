@@ -9,6 +9,7 @@
     "Languages": [ "csharp" ],
     "Products": [ "maui", "azure-active-directory" ],
     "Library": [ "Microsoft Graph" ],
+    "Service": "Microsoft Graph",
     "Platform": "MAUI"
   },
   "ReadmeAboutTheCode": {

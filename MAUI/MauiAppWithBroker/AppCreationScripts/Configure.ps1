@@ -247,6 +247,28 @@ Function ConfigureApplications
     Write-Host "Successfully registered and configured that app registration for 'active-directory-maui-with-broker-v2' at `n $clientPortalUrl" -ForegroundColor Green 
     
     # Update config file for 'client'
+    # $configFile = $pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"
+    $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"))
+    
+    $dictionary = @{ "msauth.com.companyname.mauiappwithbroker://auth" = iOSReplyUrl };
+
+    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
+    $dictionary
+    Write-Host "-----------------"
+
+    
+    # Update config file for 'client'
+    # $configFile = $pwd.Path + "\..\Platforms\Android\MainActivity.cs"
+    $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\MainActivity.cs"))
+    
+    $dictionary = @{ "msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=" = AndroidReplyUrl };
+
+    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
+    $dictionary
+    Write-Host "-----------------"
+
+    
+    # Update config file for 'client'
     # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
     

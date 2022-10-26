@@ -1,136 +1,176 @@
 ---
-services: active-directory
-platforms: dotnet, MAUI.iOS, MAUI.Android, Windows
-author: v-michaelmi
-level:  300
-client: MAUI 
-service: Microsoft Graph 
-endpoint: Microsoft identity platform
+page_type: sample
+name: A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
+description: A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api
+- languages:
+    -  csharp
+products:
+    - maui
+    - azure-active-directory
+urlFragment: active-directory-xamarin-native-v2
+extensions:
+- services: ms-identity
+- platform: MAUI
+- endpoint: AAD v2.0
+- level: 200
+- client: MAUI (iOS, Android, UWP)
+- service: Microsoft Graph
 ---
-# Integrate Microsoft identity and the Microsoft Graph into a MAUI app using MSAL
 
-[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/CI%20of%20Azure-Samples%20--%20xamarin-native-v2)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=32)
+# A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
 
-## About this sample
+[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=XXX)
 
-This is a simple [Multi-platform App UI (MAUI)](https://dotnet.microsoft.com/en-us/apps/maui) app showcasing how to use MSAL.NET to:
+* [Overview](#overview)
+* [Scenario](#scenario)
+* [Prerequisites](#prerequisites)
+* [Setup the sample](#setup-the-sample)
+* [Explore the sample](#explore-the-sample)
+* [Troubleshooting](#troubleshooting)
+* [Moving from sample to production](#moving-from-sample-to-production)
+* [About the code](#about-the-code)
+* [Contributing](#contributing)
+* [Learn More](#learn-more)
 
-1. Authenticate users with Work or School accounts (AAD) or Microsoft personal accounts (MSA)
-2. Get an access token for Microsoft Graph
+## Overview
 
-The MAUI application is provided for MAUI.iOS, MAUI.Android, and MAUI.WinUI
+This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
 
-![Topology](./ReadmeFiles/Topology.png)
+> :information_source: See the community call: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
 
-- You can learn more about Microsoft Graph with this video: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A).
+## Scenario
 
-## How To Run this Sample
+This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
 
-To run this sample you will need:
+1. The client MAUI (iOS, Android, UWP) uses the [Microsoft Graph](https://aka.ms/graph) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) from **Azure AD**.
+1. The **ID Token** proves that the user has successfully authenticated against **Azure AD**.
 
-- [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
-    * [Instructions for Windows](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?tabs=vswin)
-    * [Instructions for MacOS](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?tabs=vsmac)
-- An Internet connection
-- At least one of the following accounts:
-  - A Microsoft Account - you can get a free account by visiting [https://www.microsoft.com/en-us/outlook-com/](https://www.microsoft.com/en-us/outlook-com/).
-  - An Azure AD account - you can get a free trial Office 365 account by visiting [https://products.office.com/en-us/try](https://products.office.com/en-us/try).
+![Scenario Image](./ReadmeFiles/topology.png)
 
-### Step 1:  Clone or download this repository
+## Prerequisites
+
+* [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
+    - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
+    - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
+
+* An **Azure AD** tenant. For more information, see: [How to get an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/test-setup-environment#get-a-test-tenant)
+* A user account in your **Azure AD** tenant. This sample will not work with a **personal Microsoft account**. If you're signed in to the [Azure portal](https://portal.azure.com) with a personal Microsoft account and have not created a user account in your directory before, you will need to create one before proceeding.
+
+## Setup the sample
+
+### Step 1: Clone or download this repository
 
 From your shell or command line:
 
-```Shell
+```console
 git clone https://github.com/Azure-Samples/active-directory-xamarin-native-v2.git
+```
+
+or download and extract the repository *.zip* file.
+
+> :warning: To avoid path length limitations on Windows, we recommend cloning into a directory near the root of your drive.
+
+### Step 2: Navigate to project folder
+
+```console
 cd MAUI/MauiAppBasic
 ```
 
-or download and exact the repository .zip file.
+### Step 3: Register the sample application(s) in your tenant
 
-> Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
+> :information_source: While there are multiple projects in this sample, we'd register just one app with Azure AD and use the registered app's *client id* in both apps. This reuse of app ids (client ids) is used when the apps themselves are just components of one larger app topology.  
 
-### [OPTIONAL] Step 2:  Register the sample on the app registration portal
+There is one project in this sample. To register it, you can:
 
-You can run the sample as is with its current settings, or you can optionally register it as a new application under your own developer account.
+- follow the steps below for manually register your apps
+- or use PowerShell scripts that:
+  - **automatically** creates the Azure AD applications and related objects (passwords, permissions, dependencies) for you.
+  - modify the projects' configuration files.
+
+  <details>
+   <summary>Expand this section if you want to use this automation:</summary>
+
+    > :warning: If you have never used **Microsoft Graph PowerShell** before, we recommend you go through the [App Creation Scripts Guide](./AppCreationScripts/AppCreationScripts.md) once to ensure that your environment is prepared correctly for this step.
+  
+    1. On Windows, run PowerShell as **Administrator** and navigate to the root of the cloned directory
+    1. In PowerShell run:
+
+       ```PowerShell
+       Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
+       ```
+
+    1. Run the script to create your Azure AD application and configure the code of the sample application accordingly.
+    1. For interactive process -in PowerShell, run:
+
+       ```PowerShell
+       cd .\AppCreationScripts\
+       .\Configure.ps1 -TenantId "[Optional] - your tenant id" -AzureEnvironmentName "[Optional] - Azure environment, defaults to 'Global'"
+       ```
+
+    > Other ways of running the scripts are described in [App Creation Scripts guide](./AppCreationScripts/AppCreationScripts.md). The scripts also provide a guide to automated application registration, configuration and removal which can help in your CI/CD scenarios.
+
+  </details>
 
 #### Choose the Azure AD tenant where you want to create your applications
 
-As a first step you'll need to:
+To manually register the apps, as a first step you'll need to:
 
-1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
-1. If your account is present in more than one Azure AD tenant, select your profile at the top right corner in the menu on top of the page, and then **switch directory**.
-   Change your portal session to the desired Azure AD tenant.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+1. If your account is present in more than one Azure AD tenant, select your profile at the top right corner in the menu on top of the page, and then **switch directory** to change your portal session to the desired Azure AD tenant.
 
 #### Register the client app (active-directory-maui-v2)
 
-1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
-1. Select **New registration**.
-1. When the **Register an application page** appears, enter your application's registration information:
-   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `active-directory-maui-v2`.
-   - In the **Supported account types** section, select **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
-1. Select **Register** to create the application.
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
-1. In the list of pages for the app, select **Authentication**..
-   - In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, check **the option of the form msal&lt;clientId&gt;://auth**
-      * If you want to allow for broswer redirect while using the Windows Application be sure to add 'http://localhost' as a redirect URI as well
-1. Select **Save**.
-1. In the list of pages for the app, select **API permissions**
-   - Click the **Add a permission** button and then,
-   - Ensure that the **Microsoft APIs** tab is selected
-   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
-   - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**. Use the search box if necessary.
-   - Select the **Add permissions** button
+1. Navigate to the [Azure portal](https://portal.azure.com) and select the **Azure Active Directory** service.
+1. Select the **App Registrations** blade on the left, then select **New registration**.
+1. In the **Register an application page** that appears, enter your application's registration information:
+    1. In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `active-directory-maui-v2`.
+    1. Under **Supported account types**, select **Accounts in this organizational directory only**
+    1. Select **Register** to create the application.
+1. In the **Overview** blade, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
+1. In the app's registration screen, select the **Authentication** blade to the left.
+1. If you don't have a platform added, select **Add a platform** and select the **Public client (mobile & desktop)** option.
+    1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, select **https://login.microsoftonline.com/common/oauth2/nativeclient**
+    1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** type in the value **http://localhost**
+    1. In the **Redirect URI** section enter the following redirect URI `http://localhost`.
+  1. Click **Save** to save your changes.
+1. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
+    1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:
+    1. Select the **Add a permission** button and then:
+    1. Ensure that the **Microsoft APIs** tab is selected.
+    1. In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
+      * Since this app signs-in users, we will now proceed to select **delegated permissions**, which is requested by apps that signs-in users.
+      * In the **Delegated permissions** section, select **User.Read** in the list. Use the search box if necessary.
+    1. Select the **Add permissions** button at the bottom.
 
-### [OPTIONAL] Step 3: Configure the Visual Studio project with your app coordinates
+##### Configure the client app (active-directory-maui-v2) to use your app registration
 
-In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+Open the project in your IDE (like Visual Studio or Visual Studio Code) to configure the code.
 
-1. Open the solution in Visual Studio.
-2. Open the `MSALClient\AppConstants.cs` file.
-3. Find the assignment for `internal const string ClientId` and replace the value with the Application ID from the app registration portal, created in Step 2.
+> In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-#### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
+1. Open the `MSALClient\AppConstants.cs` file.
+1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
 
-1. Open the `Platforms/iOS/AppDelegate.cs` file.
-1. replace the `iOSRedirectURI` with the redirect URI of your application:
-
-```CSharp
-private const string iOSRedirectURI = "msauth.com.companyname.mauiappbasic://auth"; // TODO - Replace with your redirectURI
-```
-
-where `[ClientID]` is the identifier you copied in step 2. Save the file.
-
-#### [OPTIONAL] Step 3b: Configure the Android project with your return URI
+1. Open the `MSALClient\AppConstants.cs` file.
+1. Find the key `[REPLACE THIS WITH YOUR TENANT ID]` and replace the existing value with your Azure AD tenant/directory ID.
 
 1. Open the `Platforms\Android\MsalActivity.cs` file.
-1. Replace `[ClientID]` with the identifier you copied in step 2.
-1. Save the file.
+1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
 
-```csharp
-  [Activity]
-  [IntentFilter(new[] { Intent.ActionView },
-        Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
-        DataHost = "auth",
-        DataScheme = "msal[ClientID]")]
-  public class MsalActivity : BrowserTabActivity
-  {
-  }
-```
+1. Open the `Platforms\Android\AndroidManifest.xml` file.
+1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
 
-### Step 4:  Run the sample
+### Step 4: Running the sample
+
+From your shell or command line, execute the following commands:
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
-
-- Click the sign-in button at the bottom of the application screen. On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
-- Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
+- Click the sign-in button at the bottom of the application screen.
+- On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
+- Upon successful sign in and consent, the application screen will display the main page.
 - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-- Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
-
-#### Running in an Android Emulator
-
-MSAL.NET in Android requires support for Chrome Custom Tabs for displaying authentication prompts.
-Not every emulator image comes with Chrome on board: please refer to [this document](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md) for instructions on how to ensure that your emulator supports the features required by MSAL.
+- Sign out by clicking the sign out button.
 
 ## About the code
 
@@ -138,10 +178,11 @@ The structure of the solution is straightforward. All the application logic and 
 
 - MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `MSALClient\PCAWrapper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
-  ```CSharp
+```CSharp
 // Create PCA once. Make sure that all the config parameters below are passed
 PCA = PublicClientApplicationBuilder
                             .Create(AppConstants.ClientId)
+                            .WithTenantId(AppConstants.TenantId)
                             .WithExperimentalFeatures() // this is for upcoming logger
                             .WithLogging(_logger)
                             .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
@@ -153,43 +194,30 @@ PCA = PublicClientApplicationBuilder
 
 - At application startup, the main page (`MainPage.xaml.cs`) attempts to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
-  ```CSharp
+```CSharp
 try
 {
     PCAWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
-    // First attempt silent login, which checks the cache for an existing valid token.
-    // If this is very first time or user has signed out, it will throw MsalUiRequiredException
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes).ConfigureAwait(false);
 
-    // call Web API to get the data
-    string data = await CallWebAPIWithToken(result).ConfigureAwait(false);
-
-    // show the data
-    await ShowMessage("AcquireTokenTokenSilent call", data).ConfigureAwait(false);
+    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes);
 }
 catch (MsalUiRequiredException)
 {
     // This executes UI interaction to obtain token
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes).ConfigureAwait(false);
-
-    // call Web API to get the data
-    string data = await CallWebAPIWithToken(result).ConfigureAwait(false);
-
-    // show the data
-    await ShowMessage("AcquireTokenInteractive call", data).ConfigureAwait(false);
+    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes);
 }
 catch (Exception ex)
 {
-    await ShowMessage("Exception in AcquireTokenTokenSilent", ex.Message).ConfigureAwait(false);
+    await DisplayAlert("Exception during signin", ex.Message, "OK").ConfigureAwait(false);
+    return;
 }
-  ```
-
+```
 - If the attempt to obtain a token silently fails a sign-in screen will appear.
     * Using the 'Embedded' login screen will prompt your user to login from a desktop screen
     * Default login behavior will use the devices embedded browser to prompt a login with the authorization host. By default this application uses 'login.microsoft.com'    
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
-  ```CSharp
+```CSharp
 // This executes UI interaction to obtain token
 AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes).ConfigureAwait(false);
   ```
@@ -248,6 +276,21 @@ On Android and iOS, brokers enable:
 
 You can learn how to have your application support the broker on iOS in [Leveraging the broker on iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS)
 
+
+- For more information on acquiring tokens with MSAL.NET, please visit [MSAL.NET's conceptual documentation](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki), in particular:
+  - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
+  - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
+  - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
+- To understand more about the Microsoft identity platform endpoint see http://aka.ms/aaddevv2
+- For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Microsoft identity platform](http://go.microsoft.com/fwlink/?LinkId=394414).
+- For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)
+
+## Contributing
+
+If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.md).
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
 ## Troubleshooting
 
 ### Some projects don't load in Visual Studio
@@ -266,14 +309,20 @@ Samples favor simple code structures that show you how to use MSAL. Samples do n
 - Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
 - MSAL will generally let HTTP exceptions propagate. Consider using [Maui.Networking.Connectivity](https://learn.microsoft.com/en-us/dotnet/maui/platform-integration/communication/networking?tabs=windows) to detect situations where the network is down in order to provide a better error message to the user. 
 
-## More information
+## We'd love your feedback!
 
-For more information, please visit:
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
 
-- For more information on acquiring tokens with MSAL.NET, please visit [MSAL.NET's conceptual documentation](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki), in particular:
-  - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
-  - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
-  - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
-- To understand more about the Microsoft identity platform endpoint see http://aka.ms/aaddevv2
-- For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Microsoft identity platform](http://go.microsoft.com/fwlink/?LinkId=394414).
-- For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)
+## Learn More
+
+* [Microsoft identity platform (Azure Active Directory for developers)](https://docs.microsoft.com/azure/active-directory/develop/)
+* [Azure AD code samples](https://docs.microsoft.com/azure/active-directory/develop/sample-v2-code)
+* [Overview of Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)
+* [Register an application with the Microsoft identity platform](https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app)
+* [Configure a client application to access web APIs](https://docs.microsoft.com/azure/active-directory/develop/quickstart-configure-app-access-web-apis)
+* [Understanding Azure AD application consent experiences](https://docs.microsoft.com/azure/active-directory/develop/application-consent-experience)
+* [Understand user and admin consent](https://docs.microsoft.com/azure/active-directory/develop/howto-convert-app-to-be-multi-tenant#understand-user-and-admin-consent)
+* [Application and service principal objects in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals)
+* [Authentication Scenarios for Azure AD](https://docs.microsoft.com/azure/active-directory/develop/authentication-flows-app-scenarios)
+* [Building Zero Trust ready apps](https://aka.ms/ztdevsession)
+* [National Clouds](https://docs.microsoft.com/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints)

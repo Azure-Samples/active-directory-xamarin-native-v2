@@ -6,9 +6,17 @@
     "RepositoryUrl": "active-directory-xamarin-native-v2",
     "Endpoint": "AAD v2.0",
     "Description": "A .NET MAUI app using MSAL.NET to sign-in users using a broker and acquiring a token to call Microsoft Graph Api",
-    "Languages": [ "csharp" ],
-    "Products": [ "maui", "azure-active-directory" ],
-    "Library": [ "Microsoft Graph" ],
+    "Service": "Microsoft Graph",
+    "Languages": [
+      "csharp"
+    ],
+    "Products": [
+      "maui",
+      "azure-active-directory"
+    ],
+    "Library": [
+      "Microsoft Graph"
+    ],
     "Platform": "MAUI"
   },
   "ReadmeAboutTheCode": {
@@ -35,6 +43,11 @@
       "Name": "active-directory-maui-with-broker-v2",
       "Kind": "WinUI",
       "SampleSubPath": "MAUI/MauiAppWithBroker",
+      "AppBrokers": {
+        "HasWebAccountManagerBroker": true,
+        "HasAndroidBroker": true,
+        "HasiOSBroker": true
+      },
       "RequiredResourcesAccess": [
         {
           "Resource": "Microsoft Graph",
@@ -52,6 +65,28 @@
     with respect to the root of the sample, and the mappping (which string in the config file is mapped to which value
   */
   "CodeConfiguration": [
+    {
+      "App": "client",
+      "SettingKind": "iOSReplyUrl",
+      "SettingFile": "\\..\\Platforms\\iOS\\AppDelegate.cs",
+      "Mappings": [
+        {
+          "key": "msauth.com.companyname.mauiappwithbroker://auth",
+          "value": "iOSReplyUrl"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "AndroidReplyUrl",
+      "SettingFile": "\\..\\Platforms\\Android\\MainActivity.cs",
+      "Mappings": [
+        {
+          "key": "msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=",
+          "value": "AndroidReplyUrl"
+        }
+      ]
+    },
     {
       "App": "client",
       "SettingKind": "Replace",

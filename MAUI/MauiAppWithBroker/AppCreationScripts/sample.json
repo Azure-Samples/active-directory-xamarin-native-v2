@@ -28,9 +28,6 @@
   "ReadmeNextSteps": {
     "IncludeFilePath": "../ReadmeFiles/NextSteps.md"
   },
-  "ReadmeRunSample": {
-    "IncludeFilePath": "../ReadmeFiles/RunSample.md"
-  },
   /*
     This section describes the Azure AD Applications to configure, and their dependencies
   */

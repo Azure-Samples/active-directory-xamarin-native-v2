@@ -1,0 +1,128 @@
+{
+  "Sample": {
+    "Title": "A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api",
+    "Level": 200,
+    "Client": "MAUI (iOS, Android, UWP)",
+    "RepositoryUrl": "active-directory-xamarin-native-v2",
+    "Endpoint": "AAD v2.0",
+    "Description": "A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api",
+    "Languages": [ "csharp" ],
+    "Products": [ "maui", "azure-active-directory" ],
+    "Library": [ "Microsoft Graph" ],
+    "Service": "Microsoft Graph",
+    "Platform": "MAUI",
+    "Provider": "B2C"
+  },
+  "ReadmeAboutTheCode": {
+    "IncludeFilePath": "../ReadmeFiles/AboutTheCode.md"
+  },
+  "ReadmeTroubleshooting": {
+    "IncludeFilePath": "../ReadmeFiles/TroubleShooting.md"
+  },
+  "ReadmeNextSteps": {
+    "IncludeFilePath": "../ReadmeFiles/NextSteps.md"
+  },
+  /*
+    This section describes the Azure AD Applications to configure, and their dependencies
+  */
+  "AADApps": [
+    {
+      "Sample": {
+        "SampleSubPath": "MAUI/MauiAppB2C"
+      },
+      "Id": "client",
+      "Name": "active-directory-maui-b2c-v2",
+      "Kind": "Mobile",
+      "SampleSubPath": "MAUI/MauiAppB2C",
+      "RequiredResourcesAccess": [ ],
+      "DefaultDesktopAndMobileRedirectUriSettings": {
+        "UsesDefaultMsalRedirectUri": true
+      }
+    }
+  ],
+  /*
+    This section describes how to update the code in configuration files from the apps coordinates, once the apps
+    are created in Azure AD.
+    Each section describes a configuration file, for one of the apps, it's type (XML, JSon, plain text), its location
+    with respect to the root of the sample, and the mappping (which string in the config file is mapped to which value
+  */
+  "CodeConfiguration": [
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
+      "Mappings": [
+        {
+          "key": "fabrikamb2c.onmicrosoft.com",
+          "value": "$tenantId"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
+      "Mappings": [
+        {
+          "key": "fabrikamb2c.b2clogin.com",
+          "value": "the login URL for your tenant"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
+      "Mappings": [
+        {
+          "key": "e5737214-6372-472c-a85a-68e8fbe6cf3c",
+          "value": ".AppId"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
+      "Mappings": [
+        {
+          "key": "b2c_1_susi",
+          "value": "the sign-in/sign-up policy you wish to use"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
+      "Mappings": [
+        {
+          "key": "https://fabrikamb2c.onmicrosoft.com/helloapi/demo.read",
+          "value": "the scope you wish to use in your application"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\Platforms\\Android\\MsalActivity.cs",
+      "Mappings": [
+        {
+          "key": "e5737214-6372-472c-a85a-68e8fbe6cf3c",
+          "value": ".AppId"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\Platforms\\Android\\AndroidManifest.xml",
+      "Mappings": [
+        {
+          "key": "e5737214-6372-472c-a85a-68e8fbe6cf3c",
+          "value": ".AppId"
+        }
+      ]
+    }
+  ]
+}

@@ -162,8 +162,6 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 ### Step 4: Running the sample
 
-From your shell or command line, execute the following commands:
-
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
 - Click the sign-in button at the bottom of the application screen.

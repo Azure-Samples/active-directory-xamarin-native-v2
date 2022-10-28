@@ -11,7 +11,7 @@
     </Shell.BackButtonBehavior>
     <VerticalStackLayout>
         <Label 
-            Text="Azure Active Directory"
+            Text="User details from MS Graph"
             FontSize="32"
             SemanticProperties.HeadingLevel="Level1"
             HorizontalOptions="Center" />

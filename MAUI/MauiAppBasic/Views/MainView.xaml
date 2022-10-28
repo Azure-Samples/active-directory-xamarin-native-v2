@@ -29,7 +29,7 @@
                 HorizontalOptions="Center" />
 
             <Label 
-                Text="MAUI sample"
+                Text="MAUI basic sample"
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="32"
                 HorizontalOptions="Center" />

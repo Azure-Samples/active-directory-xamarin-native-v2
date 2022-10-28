@@ -261,11 +261,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\Android\MainActivity.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\MainActivity.cs"))
     
-<<<<<<< HEAD
-    $dictionary = @{  };
-=======
     $dictionary = @{ "msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=" = $currentAppId };
->>>>>>> 7dc51ecc514c8fa2632d78d6cc08f79b6c7a9803
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary

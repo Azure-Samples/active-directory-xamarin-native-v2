@@ -250,7 +250,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"))
     
-    $dictionary = @{ "msauth.com.companyname.mauiappwithbroker://auth" = iOSReplyUrl };
+    $dictionary = @{  };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -261,7 +261,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\Android\MainActivity.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\MainActivity.cs"))
     
-    $dictionary = @{ "msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=" = AndroidReplyUrl };
+    $dictionary = @{  };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary

@@ -170,10 +170,10 @@ Function ConfigureApplications
     # Connect to the Microsoft Graph API, non-interactive is not supported for the moment (Oct 2021)
     Write-Host "Connecting to Microsoft Graph"
     if ($tenantId -eq "") {
-        Connect-MgGraph -Scopes "User.Read.All Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
+        Connect-MgGraph -Scopes "Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     else {
-        Connect-MgGraph -TenantId $tenantId -Scopes "User.Read.All Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
+        Connect-MgGraph -TenantId $tenantId -Scopes "Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     
     $context = Get-MgContext
@@ -248,10 +248,10 @@ Function ConfigureApplications
     Write-Host "Successfully registered and configured that app registration for 'active-directory-maui-v2' at `n $clientPortalUrl" -ForegroundColor Green 
     
     # Update config file for 'client'
-    # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
-    $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
+    # $configFile = $pwd.Path + "\..\appsettings.json"
+    $configFile = $(Resolve-Path ($pwd.Path + "\..\appsettings.json"))
     
-    $dictionary = @{ "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]" = $clientAadApplication.AppId };
+    $dictionary = @{ "[Enter the Client Id of the service (Application ID obtained from the Azure portal), e.g. ba74781c2-53c2-442a-97c2-3d60re42f403]" = $clientAadApplication.AppId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -260,10 +260,10 @@ Function ConfigureApplications
     ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
     
     # Update config file for 'client'
-    # $configFile = $pwd.Path + "\..\MSALClient\AppConstants.cs"
-    $configFile = $(Resolve-Path ($pwd.Path + "\..\MSALClient\AppConstants.cs"))
+    # $configFile = $pwd.Path + "\..\appsettings.json"
+    $configFile = $(Resolve-Path ($pwd.Path + "\..\appsettings.json"))
     
-    $dictionary = @{ "[REPLACE THIS WITH YOUR TENANT ID]" = $tenantId };
+    $dictionary = @{ "[Enter 'common', or 'organizations' or the Tenant Id (Obtained from the Azure portal. Select 'Endpoints' from the 'App registrations' blade and use the GUID in any of the URLs), e.g. da41245a5-11b3-996c-00a8-4d99re19f292]" = $tenantId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary

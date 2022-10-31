@@ -14,13 +14,11 @@ namespace MauiAppBasic
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
-        private const string AndroidRedirectURI = $"msal{AppConstants.ClientId}://auth";
-        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = AndroidRedirectURI;
+            PlatformConfig.Instance.RedirectUri = $"msal{PCAWrapper.AppConfiguration["ClientId"]}://auth";
             PlatformConfig.Instance.ParentWindow = this;
         }
 

@@ -22,7 +22,7 @@ namespace MauiB2C.MSALClient
         /// <summary>
         /// Platform specific Redirect URI
         /// </summary>
-        public string RedirectUri { get; set; } = $"msal{B2CConstants.ClientID}://auth";
+        public string RedirectUri { get; set; } = $"msal{PCAWrapperB2C.AppConfiguration["AzureAdB2C:ClientId"]}://auth";
 
         /// <summary>
         /// Platform specific parent window

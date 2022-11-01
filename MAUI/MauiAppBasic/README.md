@@ -19,8 +19,6 @@ extensions:
 
 # A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
 
-[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=XXX)
-
 * [Overview](#overview)
 * [Scenario](#scenario)
 * [Prerequisites](#prerequisites)
@@ -34,26 +32,25 @@ extensions:
 
 ## Overview
 
-This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) signing-in a user and calling Microsoft Graph.
 
-> :information_source: See the community call: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
+> :information_source: To learn how applications integrate with [Microsoft Graph](https://aka.ms/graph), consider going through the recorded session:: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
 
 ## Scenario
 
-This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) signing-in a user and calling Microsoft Graph.
 
-1. The client MAUI (iOS, Android, UWP) uses the [MSAL.NET](http://aka.ms/msal-net) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) and an [Access Token](https://aka.ms/access-tokens) from **Azure AD**.
+1. The client MAUI (iOS, Android, UWP) uses the [MSAL.NET](https://aka.ms/msal-net) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) and an [Access Token](https://aka.ms/access-tokens) from **Azure AD**.
 1. The **ID Token** proves that the user has successfully authenticated against **Azure AD**.
-1. The access token is used as a *bearer* token to authorize the user to call the Microsoft Graph protected by **Azure AD**.
+1. The **access token** is used as a *bearer* token to authorize the user to call the Microsoft Graph.
 
 ![Scenario Image](./ReadmeFiles/topology.png)
 
 ## Prerequisites
 
 * [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
-    - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
-    - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
-
+  - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
+  - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
 * An **Azure AD** tenant. For more information, see: [How to get an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/test-setup-environment#get-a-test-tenant)
 * A user account in your **Azure AD** tenant. This sample will not work with a **personal Microsoft account**. If you're signed in to the [Azure portal](https://portal.azure.com) with a personal Microsoft account and have not created a user account in your directory before, you will need to create one before proceeding.
 
@@ -149,11 +146,9 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-1. Open the `MSALClient\AppConstants.cs` file.
-1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
-
-1. Open the `MSALClient\AppConstants.cs` file.
-1. Find the key `[REPLACE THIS WITH YOUR TENANT ID]` and replace the existing value with your Azure AD tenant/directory ID.
+1. Open the `appsettings.json` file.
+1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
+1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
 
 1. Open the `Platforms\Android\MsalActivity.cs` file.
 1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.

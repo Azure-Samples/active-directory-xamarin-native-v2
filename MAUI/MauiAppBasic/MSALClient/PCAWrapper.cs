@@ -39,15 +39,14 @@ namespace MauiAppBasic.MSALClient
         {
             var assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
-            AppConfiguration  = new ConfigurationBuilder()
+            AppConfiguration = new ConfigurationBuilder()
                 .AddJsonStream(stream)
                 .Build();
 
             // Create PCA once. Make sure that all the config parameters below are passed
-            PCA = PublicClientApplicationBuilder
-                                        .Create(AppConfiguration["AzureAd:ClientId"])
+            PCA = PublicClientApplicationBuilder.Create(AppConfiguration["AzureAd:ClientId"])
                                         .WithTenantId(AppConfiguration["AzureAd:TenantId"])
-                                        .WithExperimentalFeatures() // this is for upcoming logger
+                                        .WithExperimentalFeatures() // this is for the upcoming logger
                                         .WithLogging(_logger)
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
@@ -75,7 +74,6 @@ namespace MauiAppBasic.MSALClient
             var authResult = await PCA.AcquireTokenSilent(scopes, acct)
                                       .ExecuteAsync().ConfigureAwait(false);
             return authResult;
-
         }
 
         /// <summary>
@@ -87,7 +85,6 @@ namespace MauiAppBasic.MSALClient
         {
             if (UseEmbedded)
             {
-
                 return await PCA.AcquireTokenInteractive(scopes)
                                         .WithUseEmbeddedWebView(true)
                                         .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)

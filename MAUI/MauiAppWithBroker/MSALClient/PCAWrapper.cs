@@ -4,9 +4,12 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
 
 namespace MauiAppWithBroker.MSALClient
@@ -23,6 +26,11 @@ namespace MauiAppWithBroker.MSALClient
         public static PCAWrapper Instance { get; } = new PCAWrapper();
 
         /// <summary>
+        /// This is the configuration for the application found within the 'appsettings.json' file.
+        /// </summary>
+        public static IConfiguration AppConfiguration { get; private set; }
+
+        /// <summary>
         /// Instance of PublicClientApplication. It is provided, if App wants more customization.
         /// </summary>
         internal IPublicClientApplication PCA { get; }
@@ -30,16 +38,30 @@ namespace MauiAppWithBroker.MSALClient
         // private constructor for singleton
         private PCAWrapper()
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
+            AppConfiguration  = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+
             // Create PublicClientApplication once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
-                                        .Create(AppConstants.ClientId)
-                                        .WithTenantId(AppConstants.TenantId)
+                                        .Create(AppConfiguration["AzureAd:ClientId"])
+                                        .WithTenantId(AppConfiguration["AzureAd:TenantId"])
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
                                         .WithBroker()
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
+
+            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            {
+                //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
+                var storageProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
+                MsalCacheHelper.CreateAsync(storageProperties)
+                    .ContinueWith(async msalCacheHelper => (await msalCacheHelper).RegisterCache(PCA.UserTokenCache));
+            }
         }
 
         /// <summary>
@@ -70,6 +92,11 @@ namespace MauiAppWithBroker.MSALClient
                                     .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                                     .ExecuteAsync()
                                     .ConfigureAwait(false);
+
+            //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
+            var storageProperties = new StorageCreationPropertiesBuilder("netcore_winui_cache.txt", "C:\\temp").Build();
+            var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
+            msalcachehelper.RegisterCache(PCA.UserTokenCache);
         }
 
         /// <summary>
@@ -84,6 +111,15 @@ namespace MauiAppWithBroker.MSALClient
             {
                 await PCA.RemoveAsync(acct).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Gets scopes for the application
+        /// </summary>
+        /// <returns>An array of all scopes</returns>
+        internal string[] GetScopes()
+        {
+            return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
         }
 
         // Custom logger for sample

@@ -11,14 +11,12 @@ namespace MauiAppWithBroker
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate
     {
-        private const string iOSRedirectURI = "msauth.com.companyname.mauiappwithbroker://auth"; // TODO - Replace with your redirectURI
-
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = iOSRedirectURI;
+            PlatformConfig.Instance.RedirectUri = PCAWrapper.AppConfiguration["iOSRedirectUri"];
             PlatformConfig.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
 
             return base.FinishedLaunching(application, launchOptions);

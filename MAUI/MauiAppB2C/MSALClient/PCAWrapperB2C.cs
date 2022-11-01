@@ -3,7 +3,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
 
 namespace MauiB2C.MSALClient
@@ -19,6 +22,11 @@ namespace MauiB2C.MSALClient
         public static PCAWrapperB2C Instance { get; private set; } = new PCAWrapperB2C();
 
         /// <summary>
+        /// This is the configuration for the application found within the 'appsettings.json' file.
+        /// </summary>
+        public static IConfiguration AppConfiguration { get; private set; }
+
+        /// <summary>
         /// Instance of PublicClientApplication. It is provided, if App wants more customization.
         /// </summary>
         internal IPublicClientApplication PCA { get; }
@@ -26,15 +34,30 @@ namespace MauiB2C.MSALClient
         // private constructor for singleton
         private PCAWrapperB2C()
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("MauiB2C.appsettings.json");
+
+            AppConfiguration  = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
-                                        .Create(B2CConstants.ClientID)
+                                        .Create(AppConfiguration["AzureAdB2C:ClientId"])
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
-                                        .WithB2CAuthority(B2CConstants.AuthoritySignInSignUp)
-                                        .WithIosKeychainSecurityGroup(B2CConstants.IOSKeyChainGroup)
-                                        .WithRedirectUri(B2CConstants.RedirectUri)
+                                        .WithB2CAuthority($"{AppConfiguration["AzureAdB2C:Instance"]}/tfp/{AppConfiguration["AzureAdB2C:Domain"]}/{AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]}")
+                                        .WithIosKeychainSecurityGroup(AppConfiguration["iOSKeyChainGroup"])
+                                        .WithRedirectUri($"msal{AppConfiguration["AzureAdB2C:ClientId"]}://auth")
                                         .Build();
+
+            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            {
+                //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
+                var storageProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
+                MsalCacheHelper.CreateAsync(storageProperties)
+                    .ContinueWith(async msalCacheHelper => (await msalCacheHelper).RegisterCache(PCA.UserTokenCache));
+            }
         }
 
         /// <summary>
@@ -45,10 +68,10 @@ namespace MauiB2C.MSALClient
         public async Task<AuthenticationResult> AcquireTokenSilentAsync(string[] scopes)
         {
             // Get accounts by policy
-            IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync(B2CConstants.PolicySignUpSignIn).ConfigureAwait(false);
+            IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync(PCAWrapperB2C.AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]).ConfigureAwait(false);
 
             AuthenticationResult authResult = await PCA.AcquireTokenSilent(scopes, accounts.FirstOrDefault())
-               .WithB2CAuthority(B2CConstants.AuthoritySignInSignUp)
+               .WithB2CAuthority($"{AppConfiguration["AzureAdB2C:Instance"]}/tfp/{AppConfiguration["AzureAdB2C:Domain"]}/{AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]}")
                .ExecuteAsync()
                .ConfigureAwait(false);
 
@@ -62,7 +85,7 @@ namespace MauiB2C.MSALClient
         /// <returns></returns>
         internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync(string[] scopes)
         {
-            return await PCA.AcquireTokenInteractive(B2CConstants.Scopes)
+            return await PCA.AcquireTokenInteractive(GetScopes())
                                                         .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                                                         .ExecuteAsync()
                                                         .ConfigureAwait(false);
@@ -80,6 +103,17 @@ namespace MauiB2C.MSALClient
                 await PCA.RemoveAsync(acct).ConfigureAwait(false);
             }
         }
+
+        /// <summary>
+        /// Gets scopes for the application
+        /// </summary>
+        /// <returns>An array of all scopes</returns>
+        internal string[] GetScopes()
+        {
+            return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+        }
+
+
 
         // Custom logger for sample
         private MyLogger _logger = new MyLogger();

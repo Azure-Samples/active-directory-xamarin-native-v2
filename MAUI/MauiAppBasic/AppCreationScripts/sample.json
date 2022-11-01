@@ -8,7 +8,7 @@
     "Description": "A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api",
     "Languages": [ "csharp" ],
     "Products": [ "maui", "azure-active-directory" ],
-    "Library": [ "Microsoft Graph" ],
+    "Library": [ "MSAL.NET" ],
     "Service": "Microsoft Graph",
     "Platform": "MAUI"
   },

@@ -2,7 +2,7 @@
 page_type: sample
 name: A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
 description: A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api
-- languages:
+languages:
     -  csharp
 products:
     - maui
@@ -42,8 +42,9 @@ This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
 
 This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
 
-1. The client MAUI (iOS, Android, UWP) uses the [Microsoft Graph](https://aka.ms/graph) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) from **Azure AD**.
+1. The client MAUI (iOS, Android, UWP) uses the [MSAL.NET](http://aka.ms/msal-net) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) and an [Access Token](https://aka.ms/access-tokens) from **Azure AD**.
 1. The **ID Token** proves that the user has successfully authenticated against **Azure AD**.
+1. The access token is used as a *bearer* token to authorize the user to call the Microsoft Graph protected by **Azure AD**.
 
 ![Scenario Image](./ReadmeFiles/topology.png)
 
@@ -164,11 +165,37 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
+
+## Explore the sample
+
 - Click the sign-in button at the bottom of the application screen.
 - On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
 - Upon successful sign in and consent, the application screen will display the main page.
 - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
 - Sign out by clicking the sign out button.
+
+> :information_source: Did the sample not work for you as expected? Then please reach out to us using the [GitHub Issues](../../../../issues) page.
+
+## We'd love your feedback!
+
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
+## Troubleshooting
+
+### Some projects don't load in Visual Studio
+
+This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
+
+### The project you want is not built
+
+you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
+
+## Moving from sample to production
+
+Samples favor simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
+
+- Consider using [dependency injection](https://medium.com/syncfusion/learn-how-to-use-dependency-injection-in-net-maui-800f1bf9bc4d) for the `IPublicClientApplication` 
+- Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
+- MSAL will generally let HTTP exceptions propagate. Consider using [Maui.Networking.Connectivity](https://learn.microsoft.com/en-us/dotnet/maui/platform-integration/communication/networking?tabs=windows) to detect situations where the network is down in order to provide a better error message to the user. 
 
 ## About the code
 
@@ -210,6 +237,7 @@ catch (Exception ex)
     return;
 }
 ```
+
 - If the attempt to obtain a token silently fails a sign-in screen will appear.
     * Using the 'Embedded' login screen will prompt your user to login from a desktop screen
     * Default login behavior will use the devices embedded browser to prompt a login with the authorization host. By default this application uses 'login.microsoft.com'    
@@ -288,28 +316,6 @@ You can learn how to have your application support the broker on iOS in [Leverag
 If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.md).
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Troubleshooting
-
-### Some projects don't load in Visual Studio
-
-This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
-
-### The project you want is not built
-
-you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
-
-## Moving from sample to production
-
-Samples favor simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
-
-- Consider using [dependency injection](https://medium.com/syncfusion/learn-how-to-use-dependency-injection-in-net-maui-800f1bf9bc4d) for the `IPublicClientApplication` 
-- Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
-- MSAL will generally let HTTP exceptions propagate. Consider using [Maui.Networking.Connectivity](https://learn.microsoft.com/en-us/dotnet/maui/platform-integration/communication/networking?tabs=windows) to detect situations where the network is down in order to provide a better error message to the user. 
-
-## We'd love your feedback!
-
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
 
 ## Learn More
 

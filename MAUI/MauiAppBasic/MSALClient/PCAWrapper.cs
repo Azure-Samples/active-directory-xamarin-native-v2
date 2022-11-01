@@ -39,14 +39,14 @@ namespace MauiAppBasic.MSALClient
         {
             var assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
-            AppConfiguration  = new ConfigurationBuilder()
+            AppConfiguration = new ConfigurationBuilder()
                 .AddJsonStream(stream)
                 .Build();
 
             // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(AppConfiguration["AzureAd:ClientId"])
-                                        .WithTenantId(AppConfiguration["AzureAd:TenantId"])
+                                        .WithAuthority($"{AppConfiguration["AzureAd:Instance"]}{AppConfiguration["AzureAd:TenantId"]}")
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)

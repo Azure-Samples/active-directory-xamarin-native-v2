@@ -18,8 +18,8 @@
   "ReadmeTroubleshooting": {
     "IncludeFilePath": "../ReadmeFiles/TroubleShooting.md"
   },
-  "ReadmeNextSteps": {
-    "IncludeFilePath": "../ReadmeFiles/NextSteps.md"
+  "ReadmeLearnMore": {
+    "IncludeFilePath": "../ReadmeFiles/LearnMore.md"
   },
   /*
     This section describes the Azure AD Applications to configure, and their dependencies

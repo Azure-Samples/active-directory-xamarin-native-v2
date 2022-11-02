@@ -209,6 +209,8 @@ Function ConfigureApplications
 
     $replyUrlsForApp = "https://login.microsoftonline.com/common/oauth2/nativeclient", "msal$currentAppId`://auth", "http://localhost"
     Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}
+    $tenantName = (Get-MgApplication -ApplicationId $currentAppObjectId).PublisherDomain
+    #Update-MgApplication -ApplicationId $currentAppObjectId -IdentifierUris @("https://$tenantName/active-directory-maui-v2")
     
     # create the service principal of the newly created application     
     $clientServicePrincipal = New-MgServicePrincipal -AppId $currentAppId -Tags {WindowsAzureActiveDirectoryIntegratedApp}

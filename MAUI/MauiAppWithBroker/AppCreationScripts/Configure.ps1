@@ -112,44 +112,6 @@ Function UpdateTextFile([string] $configFilePath, [System.Collections.HashTable]
 }
 
 <#.Description
-   This function takes a string input as a single line, matches a key value and replaces with the replacement value
-#>     
-Function ReplaceInLine([string] $line, [string] $key, [string] $value)
-{
-    $index = $line.IndexOf($key)
-    if ($index -ige 0)
-    {
-        $index2 = $index+$key.Length
-        $line = $line.Substring(0, $index) + $value + $line.Substring($index2)
-    }
-    return $line
-}
-
-<#.Description
-   This function takes a dictionary of keys to search and their replacements and replaces the placeholders in a text file
-#>     
-Function ReplaceInTextFile([string] $configFilePath, [System.Collections.HashTable] $dictionary)
-{
-    $lines = Get-Content $configFilePath
-    $index = 0
-    while($index -lt $lines.Length)
-    {
-        $line = $lines[$index]
-        foreach($key in $dictionary.Keys)
-        {
-            if ($line.Contains($key))
-            {
-                $lines[$index] = ReplaceInLine $line $key $dictionary[$key]
-            }
-        }
-        $index++
-    }
-
-    Set-Content -Path $configFilePath -Value $lines -Force
-}
-
-
-<#.Description
    Primary entry method to create and configure app registrations
 #> 
 Function ConfigureApplications
@@ -170,10 +132,10 @@ Function ConfigureApplications
     # Connect to the Microsoft Graph API, non-interactive is not supported for the moment (Oct 2021)
     Write-Host "Connecting to Microsoft Graph"
     if ($tenantId -eq "") {
-        Connect-MgGraph -Scopes "Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
+        Connect-MgGraph -Scopes "User.Read.All Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     else {
-        Connect-MgGraph -TenantId $tenantId -Scopes "Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
+        Connect-MgGraph -TenantId $tenantId -Scopes "User.Read.All Organization.Read.All Application.ReadWrite.All" -Environment $azureEnvironmentName
     }
     
     $context = Get-MgContext
@@ -207,7 +169,10 @@ Function ConfigureApplications
     $currentAppObjectId = $clientAadApplication.Id
 
     $replyUrlsForApp = "ms-appx-web://microsoft.aad.brokerplugin/" + $currentAppId + ""
-    Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}    
+    Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}
+    $tenantName = (Get-MgApplication -ApplicationId $currentAppObjectId).PublisherDomain
+    #Update-MgApplication -ApplicationId $currentAppObjectId -IdentifierUris @("https://$tenantName/active-directory-maui-with-broker-v2")
+    
     # create the service principal of the newly created application     
     $clientServicePrincipal = New-MgServicePrincipal -AppId $currentAppId -Tags {WindowsAzureActiveDirectoryIntegratedApp}
 
@@ -250,7 +215,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"))
     
-    $dictionary = @{  };
+    $dictionary = @{ };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -261,7 +226,7 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\Platforms\Android\MainActivity.cs"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\MainActivity.cs"))
     
-    $dictionary = @{  };
+    $dictionary = @{ };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
@@ -272,25 +237,13 @@ Function ConfigureApplications
     # $configFile = $pwd.Path + "\..\appsettings.json"
     $configFile = $(Resolve-Path ($pwd.Path + "\..\appsettings.json"))
     
-    $dictionary = @{ "[Enter the Client Id of the service (Application ID obtained from the Azure portal), e.g. ba74781c2-53c2-442a-97c2-3d60re42f403]" = $clientAadApplication.AppId };
+    $dictionary = @{ "TenantId" = $tenantId;"ClientId" = $clientAadApplication.AppId };
 
     Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
     $dictionary
     Write-Host "-----------------"
 
-    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
-    
-    # Update config file for 'client'
-    # $configFile = $pwd.Path + "\..\appsettings.json"
-    $configFile = $(Resolve-Path ($pwd.Path + "\..\appsettings.json"))
-    
-    $dictionary = @{ "[Enter 'common', or 'organizations' or the Tenant Id (Obtained from the Azure portal. Select 'Endpoints' from the 'App registrations' blade and use the GUID in any of the URLs), e.g. da41245a5-11b3-996c-00a8-4d99re19f292]" = $tenantId };
-
-    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
-    $dictionary
-    Write-Host "-----------------"
-
-    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
+    UpdateTextFile -configFilePath $configFile -dictionary $dictionary
 
 if($isOpenSSL -eq 'Y')
 {

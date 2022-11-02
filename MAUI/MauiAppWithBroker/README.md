@@ -1,8 +1,8 @@
 ﻿---
 page_type: sample
-name: A .NET MAUI MAUI using MSAL.NET and a broker to acquire an access token and call Microsoft Graph API
-description: A .NET MAUI app using MSAL.NET to sign-in users using a broker and acquiring a token to call Microsoft Graph Api
-- languages:
+name: A .NET MAUI app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph
+description: A .NET MAUI app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph
+languages:
     -  csharp
 products:
     - maui
@@ -17,9 +17,7 @@ extensions:
 - service: Microsoft Graph
 ---
 
-# A .NET MAUI MAUI using MSAL.NET and a broker to acquire an access token and call Microsoft Graph API
-
-[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=XXX)
+# A .NET MAUI app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph
 
 * [Overview](#overview)
 * [Scenario](#scenario)
@@ -34,30 +32,28 @@ extensions:
 
 ## Overview
 
-This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) .NET app that signs-in users using the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker and acquires token to call Microsoft Graph.
 
-Users are authenticated with a broker.
-
-> :information_source: See the community call: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
+> :information_source: To learn how applications integrate with [Microsoft Graph](https://aka.ms/graph), consider going through the recorded session:: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
 
 ## Scenario
 
-This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) .NET app that signs-in users using the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker and acquires token to call Microsoft Graph.
 
-1. The client MAUI (iOS, Android, UWP) uses the [Microsoft Graph](https://aka.ms/graph) to sign-in a user and obtain a JWT [Access Token](https://aka.ms/access-tokens) from **Azure AD**.
+1. The client MAUI (iOS, Android, UWP) uses [MSAL.NET](https://aka.ms/msal-net) to activate the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) from **Azure AD**.
+1. The **ID Token** proves that the user has successfully authenticated against **Azure AD**.
+1. It then proceeds to also obtain a JWT [Access Token](https://aka.ms/access-tokens) from **Azure AD** for Microsoft Graph.
 1. The access token is used as a *bearer* token to authorize the user to call the Microsoft Graph protected by **Azure AD**.
-1. The service uses the [Microsoft.Identity.Web](https://aka.ms/microsoft-identity-web) to protect the Web api, check permissions and validate tokens.
 
 ![Scenario Image](./ReadmeFiles/topology.png)
 
 ## Prerequisites
 
-* [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
-    - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
-    - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
+* [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload installed:
+  - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
+  - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
 
-* For **Android** and/or **iOS** devices the [Microsoft Authenticator app](https://www.microsoft.com/security/mobile-authenticator-app)
-
+* For **Android** and/or **iOS** devices the [Microsoft Authenticator app](https://www.microsoft.com/security/mobile-authenticator-app) is used as the Broker app.
 * An **Azure AD** tenant. For more information, see: [How to get an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/test-setup-environment#get-a-test-tenant)
 * A user account in your **Azure AD** tenant. This sample will not work with a **personal Microsoft account**. If you're signed in to the [Azure portal](https://portal.azure.com) with a personal Microsoft account and have not created a user account in your directory before, you will need to create one before proceeding.
 
@@ -138,8 +134,8 @@ To manually register the apps, as a first step you'll need to:
 
         The **ClientId** is the Id of the App Registration and can be found under **Overview/Application (client) ID**
 
-1. Select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI.
-1. Select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI.
+1. If you plan to use the app on an `Android` device, select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI.
+1. If you plan to use the app on an **iOS / macOS** device, select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI.
   1. Click **Save** to save your changes.
 1. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
     1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:
@@ -162,33 +158,49 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Open the `Platforms\Android\MainActivity.cs` file.
 1. Find the key `msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=` and replace the existing value with the Android redirect URI for your application. You can read more about Android redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
 
-1. Open the `MSALClient\AppConstants.cs` file.
-1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-with-broker-v2` app copied from the Azure portal.
-
-1. Open the `MSALClient\AppConstants.cs` file.
-1. Find the key `[REPLACE THIS WITH YOUR TENANT ID]` and replace the existing value with your Azure AD tenant/directory ID.
-
-1. Open the `Platforms\Windows\App.xaml.cs` file.
-1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-with-broker-v2` app copied from the Azure portal.
+1. Open the `appsettings.json` file.
+1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
+1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-with-broker-v2` app copied from the Azure portal.
 
 ### Step 4: Running the sample
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
-- Click the sign-in button at the bottom of the application screen.
-- You will be redirected to a broker to sign in to your application. After successful authentication you will be redirected to main page of the application.
-- Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-- Sign out by clicking the sign out button.
 
-#### Using the Windows Web Account Manager
+### Explore the sample
 
-This application is be able to authenticate users with the **Windows Web Account Manager** on machines using Windows 10 and above and does so by default. More information can be found [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/scenario-desktop-acquire-token-wam)
+1. Click the sign-in button at the bottom of the application screen.
+1. You will be redirected to a broker to sign in to your application. After successful authentication you will be redirected to main page of the application.
+1. Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
+1. Sign out by clicking the sign out button.
+
+> :information_source: Did the sample not work for you as expected? Then please reach out to us using the [GitHub Issues](../../../../issues) page.
+
+## We'd love your feedback!
+
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
+
+## Troubleshooting
+
+### Some projects don't load in Visual Studio
+
+This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
+
+### The project you want is not built
+
+you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
+
+#### Using the Windows Web Account Manager (WAM)
+
+This application is be able to authenticate users with the **Windows Web Account Manager** on machines using Windows 10 and above and does so by default. More information can be found [here](https://learn.microsoft.com/azure/active-directory/develop/scenario-desktop-acquire-token-wam)
+
 #### Using the Microsoft Authenticator app on iOS
 
-This application is be able to authenticate users with the **Microsoft Authenticator** for **iOS** which can be downloaded from the [App Store](https://apps.apple.com/ca/app/microsoft-authenticator/id983156458). When the user clicks sign in button they will be redirected to the **Microsoft Authenticator** application to provide their credentials. After this is succesful they will be redirected to the main application.
+This application is be able to authenticate users with the **Microsoft Authenticator** for **iOS** which can be downloaded from the [App Store](https://apps.apple.com/ca/app/microsoft-authenticator/id983156458). When the user clicks sign in button they will be redirected to the **Microsoft Authenticator** application to provide their credentials. After this is successful they will be redirected to the main application.
+
 #### Using the Microsoft Authenticator app on Android
 
-This application is be able to authenticate users with the **Microsoft Authenticator** for **Android** which can be downloaded from the [Google Play Store](https://play.google.com/store/apps/details?id=com.azure.authenticator&gl=US). When the user clicks sign in button they will be redirected to the **Microsoft Authenticator** application to provide their credentials. After this is succesful they will be redirected to the main application.
+This application is be able to authenticate users with the **Microsoft Authenticator** for **Android** which can be downloaded from the [Google Play Store](https://play.google.com/store/apps/details?id=com.azure.authenticator&gl=US). When the user clicks sign in button they will be redirected to the **Microsoft Authenticator** application to provide their credentials. After this is successful they will be redirected to the main application.
 
 ## About the code
 
@@ -287,7 +299,8 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
 1. When signing a certificate, make sure XCode uses the same Apple Id.
 
-#### Enable broker support
+#### Enable broker 
+
 Broker support is enabled on a per-PublicClientApplication basis. It is disabled by default. You must use the `WithBroker()` parameter (set to true by default) when creating the PublicClientApplication through the PublicClientApplicationBuilder.
 
 ```CSharp
@@ -304,6 +317,7 @@ PCA = PublicClientApplicationBuilder
 ```
 
 #### Configure application to handle the authentication callback
+
 When MSAL.NET calls the broker on iOS, the broker will, in turn, call back to your application through the `OpenUrl` method of the `AppDelegate` class. Since MSAL will wait for the response from the broker, your application needs to cooperate to call MSAL.NET back. You do this by updating the `AppDelegate.cs` file to override the below method. This step is already completed in the `Platforms\iOS\AppDelegate.cs` file.
 
 ```CSharp
@@ -338,7 +352,8 @@ protected override void OnActivityResult(int requestCode, Result resultCode, Int
 
 This method is invoked every time the application is launched and is used as an opportunity to process the response from the broker and complete the authentication process initiated by MSAL.NET.
 
-#### [iOS only] Register a URL Scheme
+#### [iOS only] Register a URL
+
 MSAL.NET uses URLs to invoke the broker and then return the broker response back to your app. To finish the round trip, you need to register a URL scheme for your app in the `Info.plist` file.
 
 The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by your `CFBundleURLName`.
@@ -369,11 +384,12 @@ The `CFBundleURLSchemes` name must include `msauth.` as a prefix, followed by yo
 ```
 
 #### [iOS only] LSApplicationQueriesSchemes
+
 MSAL uses `canOpenURL:` to check if the broker is installed on the device. In iOS 9, Apple locked down what schemes an application can query for.
 
 **Add** **`msauthv2`** to the `LSApplicationQueriesSchemes` section of the `Info.plist` file.
 
-```CSharp 
+```CSharp
 <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>msauthv2</string>
@@ -385,7 +401,7 @@ MSAL uses `canOpenURL:` to check if the broker is installed on the device. In iO
 
 If you are using the system browser for interactive authentication, it is possible you will have configured your application to use brokered authentication when the device does not have broker installed. In this scenario, MSAL will try to authenticate using the default system browser in the device. This will fail out of the box because the redirect URI is configured for broker and the system browser would know how to use it to navigate back to MSAL. To resolve this, you can configure what is known as an intent filter with the broker redirect URI that you used in step four. You will need to modify your application's manifest to add the intent filter as shown below.
 
-```
+```xml
 //NOTE: the slash before your signature value added to the path attribute
 //This uses the base64 encoded signature produced above.
       <intent-filter>
@@ -399,9 +415,9 @@ If you are using the system browser for interactive authentication, it is possib
       </intent-filter>
 ```
 
-for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testApp/hgbUYHVBYUTvuvT&Y6tr554365466=` and a client id of `76hdu2l6-df67-49d0-2d0b-cd95kjny6592` your manifest should look something like 
+for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testApp/hgbUYHVBYUTvuvT&Y6tr554365466=` and a client id of `76hdu2l6-df67-49d0-2d0b-cd95kjny6592` your manifest should look something like
 
-```
+```xml
 //NOTE: the slash before your signature value added to the path attribute
 //This uses the base64 encoded signature produced above.
       <intent-filter>
@@ -414,20 +430,8 @@ for example, if you have a redirect URI of `msauth://com.microsoft.xforms.testAp
                     android:path="/hgbUYHVBYUTvuvT&Y6tr554365466="/>
       </intent-filter>
 ```
-**Please be sure to add a / in front of the signature in the "android:path" value**
 
-
-## Next Steps
-
-- For more information on acquiring tokens with MSAL.NET, please visit [MSAL.NET's conceptual documentation](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki), in particular:
-  - [iOS Broker](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS)
-  - [How to migrate ADAL broker apps to MSAL broker apps on iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/How-to-migrate-from-using-iOS-Broker-on-ADAL.NET-to-MSAL.NET)
-  - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
-  - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
-  - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
-- To understand more about the AAD V2 endpoint see http://aka.ms/aaddevv2
-- For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
-- For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)
+>Please be sure to add a / in front of the signature in the "android:path" value
 
 ## Contributing
 
@@ -435,23 +439,17 @@ If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Troubleshooting
-
-### Some projects don't load in Visual Studio
-
-This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
-
-### The project you want is not built
-
-you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
-
-## We'd love your feedback!
-
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
-
-
 ## Learn More
 
+*  For more information on acquiring tokens with MSAL.NET, please visit [MSAL.NET's conceptual documentation](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki), in particular:
+  * [iOS Broker](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS)
+  * [How to migrate ADAL broker apps to MSAL broker apps on iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/How-to-migrate-from-using-iOS-Broker-on-ADAL.NET-to-MSAL.NET)
+  * [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
+  * [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
+  * [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
+* To understand more about the AAD V2 endpoint see https://aka.ms/aaddevv2
+* For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
+* For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/)
 * [Microsoft identity platform (Azure Active Directory for developers)](https://docs.microsoft.com/azure/active-directory/develop/)
 * [Azure AD code samples](https://docs.microsoft.com/azure/active-directory/develop/sample-v2-code)
 * [Overview of Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)
@@ -463,5 +461,3 @@ Were we successful in addressing your learning objective? Consider taking a mome
 * [Authentication Scenarios for Azure AD](https://docs.microsoft.com/azure/active-directory/develop/authentication-flows-app-scenarios)
 * [Building Zero Trust ready apps](https://aka.ms/ztdevsession)
 * [National Clouds](https://docs.microsoft.com/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints)
-
-

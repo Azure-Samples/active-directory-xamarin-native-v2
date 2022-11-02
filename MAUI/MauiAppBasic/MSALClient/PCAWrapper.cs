@@ -44,9 +44,10 @@ namespace MauiAppBasic.MSALClient
                 .Build();
 
             // Create PCA once. Make sure that all the config parameters below are passed
-            PCA = PublicClientApplicationBuilder.Create(AppConfiguration["AzureAd:ClientId"])
-                                        .WithTenantId(AppConfiguration["AzureAd:TenantId"])
-                                        .WithExperimentalFeatures() // this is for the upcoming logger
+            PCA = PublicClientApplicationBuilder
+                                        .Create(AppConfiguration["AzureAd:ClientId"])
+                                        .WithAuthority($"{AppConfiguration["AzureAd:Instance"]}{AppConfiguration["AzureAd:TenantId"]}")
+                                        .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")

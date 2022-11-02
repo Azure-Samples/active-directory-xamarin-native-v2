@@ -47,7 +47,7 @@ namespace MauiAppWithBroker.MSALClient
             // Create PublicClientApplication once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(AppConfiguration["AzureAd:ClientId"])
-                                        .WithTenantId(AppConfiguration["AzureAd:TenantId"])
+                                        .WithAuthority($"{AppConfiguration["AzureAd:Instance"]}{AppConfiguration["AzureAd:TenantId"]}")
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
                                         .WithBroker()

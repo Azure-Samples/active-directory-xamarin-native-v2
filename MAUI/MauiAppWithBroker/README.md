@@ -132,7 +132,7 @@ To manually register the apps, as a first step you'll need to:
         The **ClientId** is the Id of the App Registration and can be found under **Overview/Application (client) ID**
 > If you plan to use the app on an `Android` device, select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app configuration.
 
-> If you plan to use the app on an **iOS / macOS** device, select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app configuration.
+> If you plan to use the app on an **iOS / macOS** device, select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app 
   1. Click **Save** to save your changes.
 1. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
     1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:

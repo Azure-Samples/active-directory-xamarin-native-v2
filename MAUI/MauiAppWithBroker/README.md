@@ -1,7 +1,7 @@
 ﻿---
 page_type: sample
 name: A .NET MAUI app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph
-description: A .NET MAUI app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph
+description: A a MAUI (iOS, Android, UWP) .NET app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph on their behalf
 languages:
     -  csharp
 products:
@@ -79,8 +79,6 @@ cd MAUI/MauiAppWithBroker
 
 ### Step 3: Register the sample application(s) in your tenant
 
-> :information_source: While there are multiple projects in this sample, we'd register just one app with Azure AD and use the registered app's *client id* in both apps. This reuse of app ids (client ids) is used when the apps themselves are just components of one larger app topology.  
-
 There is one project in this sample. To register it, you can:
 
 - follow the steps below for manually register your apps
@@ -131,11 +129,10 @@ To manually register the apps, as a first step you'll need to:
 1. In the app's registration screen, select the **Authentication** blade to the left.
 1. If you don't have a platform added, select **Add a platform** and select the **Public client (mobile & desktop)** option.
     1. In the **Redirect URIs** section, add **ms-appx-web://microsoft.aad.brokerplugin/{ClientId}**.
-
         The **ClientId** is the Id of the App Registration and can be found under **Overview/Application (client) ID**
+> If you plan to use the app on an `Android` device, select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app configuration.
 
-1. If you plan to use the app on an `Android` device, select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI.
-1. If you plan to use the app on an **iOS / macOS** device, select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI.
+> If you plan to use the app on an **iOS / macOS** device, select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app configuration.
   1. Click **Save** to save your changes.
 1. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
     1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:
@@ -152,15 +149,11 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-1. Open the `Platforms\iOS\AppDelegate.cs` file.
-1. Find the key `msauth.com.companyname.mauiappwithbroker://auth` and replace the existing value with the iOS redirect URI for your application. You can read more about iOS redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
-
-1. Open the `Platforms\Android\MainActivity.cs` file.
-1. Find the key `msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=` and replace the existing value with the Android redirect URI for your application. You can read more about Android redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
-
 1. Open the `appsettings.json` file.
 1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
 1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-with-broker-v2` app copied from the Azure portal.
+1. Find the key `AndroidReplyUrl` and replace the existing value with the Android redirect URI for your application, if you created one during app registration. You can read more about Android redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
+1. Find the key `iOSReplyUrl` and replace the existing value with the iOS redirect URI for your application, if you created one during app registration. You can read more about iOS redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
 
 ### Step 4: Running the sample
 
@@ -184,11 +177,18 @@ Were we successful in addressing your learning objective? Consider taking a mome
 
 ### Some projects don't load in Visual Studio
 
-This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
+This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Multi-platform App UI development** [workload](https://learn.microsoft.com/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
 
 ### The project you want is not built
 
 you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
+
+
+> Use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) to get support from the community.
+Ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
+Make sure that your questions or comments are tagged with [`azure-active-directory` `msal-net` `maui` `ms-identity` `msal`].
+
+If you find a bug in the sample, raise the issue on [GitHub Issues](../../../issues)
 
 #### Using the Windows Web Account Manager (WAM)
 

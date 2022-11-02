@@ -2,7 +2,7 @@
 
 ### Some projects don't load in Visual Studio
 
-This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/visualstudio/install/modify-visual-studio), in the Visual Studio Installer.
+This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Multi-platform App UI development** [workload](https://learn.microsoft.com/visualstudio/install/modify-visual-studio), in the Visual Studio Installer.
 
 ### The project you want is not built
 

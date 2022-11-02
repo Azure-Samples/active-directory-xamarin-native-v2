@@ -1,3 +1,15 @@
+#### Using the Windows Web Account Manager (WAM)
+
+This application is be able to authenticate users with the **Windows Web Account Manager** on machines using Windows 10 and above and does so by default. More information can be found [here](https://learn.microsoft.com/azure/active-directory/develop/scenario-desktop-acquire-token-wam)
+
+#### Using the Microsoft Authenticator app on iOS
+
+This application is be able to authenticate users with the **Microsoft Authenticator** for **iOS** which can be downloaded from the [App Store](https://apps.apple.com/ca/app/microsoft-authenticator/id983156458). When the user clicks sign in button they will be redirected to the **Microsoft Authenticator** application to provide their credentials. After this is successful they will be redirected to the main application.
+
+#### Using the Microsoft Authenticator app on Android
+
+This application is be able to authenticate users with the **Microsoft Authenticator** for **Android** which can be downloaded from the [Google Play Store](https://play.google.com/store/apps/details?id=com.azure.authenticator&gl=US). When the user clicks sign in button they will be redirected to the **Microsoft Authenticator** application to provide their credentials. After this is successful they will be redirected to the main application.
+
 ## About the code
 
 The structure of the solution is straightforward. All the application logic and UX reside in `MSALClient` folder.

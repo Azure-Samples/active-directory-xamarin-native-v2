@@ -168,7 +168,7 @@ Function ConfigureApplications
     $currentAppId = $clientAadApplication.AppId
     $currentAppObjectId = $clientAadApplication.Id
 
-    $replyUrlsForApp = "ms-appx-web://microsoft.aad.brokerplugin/" + $currentAppId + ""
+    $replyUrlsForApp = "ms-appx-web://microsoft.aad.brokerplugin/{ClientId}"
     Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}
     $tenantName = (Get-MgApplication -ApplicationId $currentAppObjectId).PublisherDomain
     #Update-MgApplication -ApplicationId $currentAppObjectId -IdentifierUris @("https://$tenantName/active-directory-maui-with-broker-v2")
@@ -210,28 +210,6 @@ Function ConfigureApplications
 
     # print the registered app portal URL for any further navigation
     Write-Host "Successfully registered and configured that app registration for 'active-directory-maui-with-broker-v2' at `n $clientPortalUrl" -ForegroundColor Green 
-    
-    # Update config file for 'client'
-    # $configFile = $pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"
-    $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\iOS\AppDelegate.cs"))
-    
-    $dictionary = @{ };
-
-    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
-    $dictionary
-    Write-Host "-----------------"
-
-    
-    # Update config file for 'client'
-    # $configFile = $pwd.Path + "\..\Platforms\Android\MainActivity.cs"
-    $configFile = $(Resolve-Path ($pwd.Path + "\..\Platforms\Android\MainActivity.cs"))
-    
-    $dictionary = @{ };
-
-    Write-Host "Updating the sample config '$configFile' with the following config values:" -ForegroundColor Yellow 
-    $dictionary
-    Write-Host "-----------------"
-
     
     # Update config file for 'client'
     # $configFile = $pwd.Path + "\..\appsettings.json"

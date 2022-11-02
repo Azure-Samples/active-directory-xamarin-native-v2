@@ -1,11 +1,11 @@
 {
   "Sample": {
-    "Title": "A .NET MAUI app using MSAL.NET and the WAM broker to sign-in a user and acquire an access token and call Microsoft Graph API",
+    "Title": "A .NET MAUI app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph",
     "Level": 200,
     "Client": "MAUI (iOS, Android, UWP)",
     "RepositoryUrl": "active-directory-xamarin-native-v2",
     "Endpoint": "AAD v2.0",
-    "Description": "A .NET MAUI app using MSAL.NET and a the WAM broker to sign-in a user and acquire an access token and call Microsoft Graph API",
+    "Description": "A a MAUI (iOS, Android, UWP) .NET app using the WAM broker via MSAL.NET to sign-in a user with Azure AD and acquire an access token to call Microsoft Graph on their behalf",
     "Service": "Microsoft Graph",
     "Languages": [
       "csharp"
@@ -64,28 +64,6 @@
   "CodeConfiguration": [
     {
       "App": "client",
-      "SettingKind": "iOSReplyUrl",
-      "SettingFile": "\\..\\Platforms\\iOS\\AppDelegate.cs",
-      "Mappings": [
-        {
-          "key": "msauth.com.companyname.mauiappwithbroker://auth",
-          "value": "iOSReplyUrl"
-        }
-      ]
-    },
-    {
-      "App": "client",
-      "SettingKind": "AndroidReplyUrl",
-      "SettingFile": "\\..\\Platforms\\Android\\MainActivity.cs",
-      "Mappings": [
-        {
-          "key": "msauth://com.companyname.mauiappwithbroker/ZibsxQEZJWrFF+/959iv+aoQdpU=",
-          "value": "AndroidReplyUrl"
-        }
-      ]
-    },
-    {
-      "App": "client",
       "SettingKind": "Text",
       "SettingFile": "\\..\\appsettings.json",
       "Mappings": [
@@ -96,6 +74,14 @@
         {
           "key": "ClientId",
           "value": ".AppId"
+        }, 
+        {
+          "key": "AndroidReplyUrl",
+          "value": "NotAutoPopulated"
+        },
+        {
+          "key": "iOSReplyUrl",
+          "value": "NotAutoPopulated"
         }
       ]
     }

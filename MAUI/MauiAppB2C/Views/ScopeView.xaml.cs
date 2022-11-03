@@ -16,7 +16,7 @@ public partial class ScopeView : ContentPage
     {
         try
         {
-            AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync(PCAWrapperB2C.Instance.GetScopes());
+            AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync();
 
             var name = result.ClaimsPrincipal.FindFirst("name");
             var trustFrameworkPolicy = result.ClaimsPrincipal.FindFirst("tfp");

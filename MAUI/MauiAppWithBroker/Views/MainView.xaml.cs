@@ -24,12 +24,12 @@ namespace MauiAppWithBroker.Views
         {
             try
             {
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(PCAWrapper.Instance.GetScopes());
+                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync();
             }
             catch (MsalUiRequiredException)
             {
                 // This executes UI interaction to obtain token
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(PCAWrapper.Instance.GetScopes());
+                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync();
             }
             catch (Exception ex)
             {

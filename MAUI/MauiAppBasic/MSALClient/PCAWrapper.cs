@@ -65,8 +65,10 @@ namespace MauiAppBasic.MSALClient
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns>Authentication result</returns>
-        internal async Task<AuthenticationResult> AcquireTokenSilentAsync(string[] scopes)
+        internal async Task<AuthenticationResult> AcquireTokenSilentAsync()
         {
+            var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+
             var accts = await PCA.GetAccountsAsync().ConfigureAwait(false);
             var acct = accts.FirstOrDefault();
 
@@ -81,8 +83,10 @@ namespace MauiAppBasic.MSALClient
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns></returns>
-        internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync(string[] scopes)
+        internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync()
         {
+            var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+
             if (UseEmbedded)
             {
 
@@ -137,15 +141,6 @@ namespace MauiAppBasic.MSALClient
             MsalCacheHelper.RegisterCache(PCAWrapper.Instance.PCA.UserTokenCache);
 
             return true;
-        }
-
-        /// <summary>
-        /// Gets scopes for the application
-        /// </summary>
-        /// <returns>An array of all scopes</returns>
-        internal string[] GetScopes()
-        {
-            return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
         }
 
         // Custom logger for sample

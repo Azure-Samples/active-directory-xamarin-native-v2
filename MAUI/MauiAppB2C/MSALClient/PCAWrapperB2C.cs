@@ -62,8 +62,10 @@ namespace MauiB2C.MSALClient
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns>Authentication result</returns>
-        public async Task<AuthenticationResult> AcquireTokenSilentAsync(string[] scopes)
+        public async Task<AuthenticationResult> AcquireTokenSilentAsync()
         {
+            var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+
             // Get accounts by policy
             IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync(PCAWrapperB2C.AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]).ConfigureAwait(false);
 
@@ -80,9 +82,11 @@ namespace MauiB2C.MSALClient
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns></returns>
-        internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync(string[] scopes)
+        internal async Task<AuthenticationResult> AcquireTokenInteractiveAsync()
         {
-            return await PCA.AcquireTokenInteractive(GetScopes())
+            var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+
+            return await PCA.AcquireTokenInteractive(scopes)
                                                         .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                                                         .ExecuteAsync()
                                                         .ConfigureAwait(false);
@@ -119,15 +123,6 @@ namespace MauiB2C.MSALClient
             MsalCacheHelper.RegisterCache(PCAWrapperB2C.Instance.PCA.UserTokenCache);
 
             return true;
-        }
-
-        /// <summary>
-        /// Gets scopes for the application
-        /// </summary>
-        /// <returns>An array of all scopes</returns>
-        internal string[] GetScopes()
-        {
-            return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
         }
 
         // Custom logger for sample

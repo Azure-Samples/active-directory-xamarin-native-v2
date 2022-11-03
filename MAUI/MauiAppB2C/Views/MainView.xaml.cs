@@ -23,12 +23,12 @@ namespace MauiB2C.Views
         {
             try
             {
-                AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync(PCAWrapperB2C.Instance.GetScopes());
+                AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync();
             }
             catch (MsalUiRequiredException)
             {
                 // This executes UI interaction to obtain token
-                AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenInteractiveAsync(PCAWrapperB2C.Instance.GetScopes());
+                AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenInteractiveAsync();
             }
             catch (Exception ex)
             {

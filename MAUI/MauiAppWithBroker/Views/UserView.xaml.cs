@@ -20,7 +20,7 @@ public partial class UserView : ContentPage
         try
         {
             // call Web API to get the data
-            AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(PCAWrapper.Instance.GetScopes());
+            AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync();
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);

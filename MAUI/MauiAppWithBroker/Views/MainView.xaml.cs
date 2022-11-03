@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using MauiAppWithBroker.MSALClient;
+using MauiAppWithBroker.ViewModels;
 using Microsoft.Identity.Client;
 
 namespace MauiAppWithBroker.Views
@@ -10,6 +11,12 @@ namespace MauiAppWithBroker.Views
     {
         public MainView()
         {
+
+            _ = Application.Current.Dispatcher.Dispatch(async () =>
+            {
+                SignInButton.IsEnabled = await PCAWrapper.Instance.InitializCache();
+            });
+
             InitializeComponent();
         }
 

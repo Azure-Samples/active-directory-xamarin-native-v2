@@ -34,6 +34,11 @@ namespace MauiAppBasic.MSALClient
         /// </summary>
         internal bool UseEmbedded { get; set; } = false;
 
+        /// <summary>
+        /// Cache helper for WinUI applications.
+        /// </summary>
+        private MsalCacheHelper MsalCacheHelper { get; set; }
+
         // private constructor for singleton
         private PCAWrapper()
         {
@@ -53,13 +58,6 @@ namespace MauiAppBasic.MSALClient
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
 
-            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            {
-                //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
-                var storageProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
-                MsalCacheHelper.CreateAsync(storageProperties)
-                    .ContinueWith(async msalCacheHelper => (await msalCacheHelper).RegisterCache(PCA.UserTokenCache));
-            }
         }
 
         /// <summary>
@@ -119,6 +117,26 @@ namespace MauiAppBasic.MSALClient
             {
                 await PCA.RemoveAsync(acct).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Ensure the cache is intialized. Only relevant for WinUI applications.
+        /// </summary>
+        /// <returns>Task resolving to 'true' if this is a non WinUI application otherwise 'true' after the cahce is initalized</returns>
+        internal async Task<bool> InitializCache()
+        {
+            if (DeviceInfo.Current.Platform != DevicePlatform.WinUI || MsalCacheHelper is not null)
+            {
+                return true;
+            }
+
+            //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
+            var storageCreationProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
+
+            MsalCacheHelper = await MsalCacheHelper.CreateAsync(storageCreationProperties);
+            MsalCacheHelper.RegisterCache(PCAWrapper.Instance.PCA.UserTokenCache);
+
+            return true;
         }
 
         /// <summary>

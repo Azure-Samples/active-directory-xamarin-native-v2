@@ -8,10 +8,8 @@ namespace MauiAppWithBroker.Views;
 
 public partial class UserView : ContentPage
 {
-    private UserViewModel _userViewModel = new UserViewModel();
     public UserView()
     {
-        BindingContext = _userViewModel;
         _ = GetUserInformationAsync();
 
         InitializeComponent();
@@ -31,9 +29,9 @@ public partial class UserView : ContentPage
 
             var user = await graphServiceClient.Me.GetAsync();
 
-            _userViewModel.UserImage = ImageSource.FromStream(async _ => await graphServiceClient.Me.Photo.Content.GetAsync());
-            _userViewModel.DisplayName = user.DisplayName;
-            _userViewModel.Email = user.Mail;
+            UserImage.Source = ImageSource.FromStream(async _ => await graphServiceClient.Me.Photo.Content.GetAsync());
+            DisplayName.Text = user.DisplayName;
+            Email.Text = user.Mail;
         }
         catch (MsalUiRequiredException)
         {

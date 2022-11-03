@@ -36,7 +36,8 @@
                 Text="Sign In"
                 SemanticProperties.Hint="Sign In"
                 Clicked="OnSignInClicked"
-                HorizontalOptions="Center"/>
+                HorizontalOptions="Center"
+                IsEnabled="False"/>
 
         </VerticalStackLayout>
     </ScrollView>

@@ -11,6 +11,12 @@ namespace MauiB2C.Views
         public MainView()
         {
             InitializeComponent();
+
+            _ = Dispatcher.DispatchAsync(async () =>
+            {
+                SignInButton.IsEnabled = await PCAWrapperB2C.Instance.InitializCache();
+            });
+
         }
 
         private async void OnSignInClicked(object sender, EventArgs e)

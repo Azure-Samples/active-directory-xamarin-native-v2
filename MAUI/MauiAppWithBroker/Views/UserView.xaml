@@ -22,18 +22,18 @@
             SemanticProperties.HeadingLevel="Level1"
             HorizontalOptions="Center" />
         <Image
-            Source="{Binding UserImage}"
+            x:Name="UserImage"
             MaximumWidthRequest="200"
             />
         <Label 
-            Text="{Binding DisplayName}"
+            x:Name="DisplayName"
             Padding="0,20,0,20"
             VerticalOptions="Center" 
             HorizontalOptions="Center" 
             FontSize="22"
             />
         <Label 
-            Text="{Binding Email}"
+            x:Name="Email"
             Padding="20,0,0,20"
             VerticalOptions="Center" 
             HorizontalOptions="Center"

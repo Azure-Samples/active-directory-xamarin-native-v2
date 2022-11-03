@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiB2C.Views.MainView"
-             xmlns:viewmodel="clr-namespace:MauiB2C.ViewModels"
              Title="Login Screen"
              >
     <Shell.BackButtonBehavior>
@@ -38,7 +37,8 @@
                 Text="Sign In"
                 SemanticProperties.Hint="Sign In"
                 Clicked="OnSignInClicked"
-                HorizontalOptions="Center"/>
+                HorizontalOptions="Center"
+                IsEnabled="False"/>
 
         </VerticalStackLayout>
     </ScrollView>

@@ -2,10 +2,7 @@
 // Licensed under the MIT License.
 
 using MauiAppBasic.MSALClient;
-using MauiAppBasic.ViewModels;
-using Microsoft.Graph;
 using Microsoft.Identity.Client;
-using System.Net.Http.Headers;
 
 namespace MauiAppBasic.Views
 {
@@ -14,6 +11,12 @@ namespace MauiAppBasic.Views
         public MainView()
         {
             InitializeComponent();
+
+            _ = Dispatcher.DispatchAsync(async () =>
+            {
+                //SignInButton.IsEnabled = await PCAWrapper.Instance.InitializCache();
+                SignInButton.IsEnabled = true;//await PCAWrapper.Instance.InitializCache();
+            });
         }
 
         private async void OnSignInClicked(object sender, EventArgs e)

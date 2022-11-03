@@ -2,8 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppBasic.Views.UserView"
-             xmlns:viewmodel="clr-namespace:MauiAppBasic.ViewModels"
-             x:DataType="viewmodel:UserViewModel"
              Title="User View"
              NavigationPage.HasBackButton="False">
     <Shell.BackButtonBehavior>
@@ -22,18 +20,18 @@
             SemanticProperties.HeadingLevel="Level1"
             HorizontalOptions="Center" />
         <Image
-            Source="{Binding UserImage}"
+            x:Name="UserImage"
             MaximumWidthRequest="200"
             />
         <Label 
-            Text="{Binding DisplayName}"
+            x:Name="DisplayName"
             Padding="0,20,0,20"
             VerticalOptions="Center" 
             HorizontalOptions="Center" 
             FontSize="22"
             />
         <Label 
-            Text="{Binding Email}"
+            x:Name="Email"
             Padding="20,0,0,20"
             VerticalOptions="Center" 
             HorizontalOptions="Center"

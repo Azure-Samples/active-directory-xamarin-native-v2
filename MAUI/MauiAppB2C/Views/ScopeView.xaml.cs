@@ -16,7 +16,7 @@ public partial class ScopeView : ContentPage
     {
         try
         {
-            AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync();
+            AuthenticationResult result = await PublicClientWrapperB2C.Instance.AcquireTokenSilentAsync();
 
             var name = result.ClaimsPrincipal.FindFirst("name");
             var trustFrameworkPolicy = result.ClaimsPrincipal.FindFirst("tfp");
@@ -46,7 +46,7 @@ public partial class ScopeView : ContentPage
 
     private async void SignOutButton_Clicked(object sender, EventArgs e)
     {
-        await PCAWrapperB2C.Instance.SignOutAsync().ContinueWith((t) =>
+        await PublicClientWrapperB2C.Instance.SignOutAsync().ContinueWith((t) =>
         {
             return Task.CompletedTask;
         });

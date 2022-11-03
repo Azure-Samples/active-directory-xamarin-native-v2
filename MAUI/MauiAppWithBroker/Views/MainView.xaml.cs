@@ -14,7 +14,7 @@ namespace MauiAppWithBroker.Views
 
             _ = Application.Current.Dispatcher.Dispatch(async () =>
             {
-                SignInButton.IsEnabled = await PCAWrapper.Instance.InitializCache();
+                SignInButton.IsEnabled = await PublicClientWrapper.Instance.InitializCache();
             });
 
             InitializeComponent();
@@ -24,12 +24,12 @@ namespace MauiAppWithBroker.Views
         {
             try
             {
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync();
+                AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
             }
             catch (MsalUiRequiredException)
             {
                 // This executes UI interaction to obtain token
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync();
+                AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenInteractiveAsync();
             }
             catch (Exception ex)
             {

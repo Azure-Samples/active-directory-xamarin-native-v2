@@ -16,7 +16,7 @@ namespace MauiAppWithBroker
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = PCAWrapper.AppConfiguration["iOSRedirectUri"];
+            PlatformConfig.Instance.RedirectUri = PublicClientWrapper.AppConfiguration["iOSRedirectUri"];
             PlatformConfig.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
 
             return base.FinishedLaunching(application, launchOptions);

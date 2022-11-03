@@ -30,7 +30,7 @@ namespace MauiAppWithBroker.WinUI
             base.OnLaunched(args);
 
             // configure redirect URI for your application
-            PlatformConfig.Instance.RedirectUri = $"ms-appx-web://microsoft.aad.brokerplugin/{PCAWrapper.AppConfiguration["ClientId"]}";
+            PlatformConfig.Instance.RedirectUri = $"ms-appx-web://microsoft.aad.brokerplugin/{PublicClientWrapper.AppConfiguration["ClientId"]}";
             var app = MauiAppWithBroker.App.Current;
             PlatformConfig.Instance.ParentWindow = ((MauiWinUIWindow)app.Windows[0].Handler.PlatformView).WindowHandle;
         }

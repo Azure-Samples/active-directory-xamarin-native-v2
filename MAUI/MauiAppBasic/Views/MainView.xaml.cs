@@ -23,14 +23,14 @@ namespace MauiAppBasic.Views
         {
             try
             {
-                PCAWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
+                PublicClientWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
 
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync();
+                AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
             }
             catch (MsalUiRequiredException)
             {
                 // This executes UI interaction to obtain token
-                AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync();
+                AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenInteractiveAsync();
             }
             catch (Exception ex)
             {

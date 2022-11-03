@@ -3,27 +3,23 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
 
-namespace MauiAppWithBroker.MSALClient
+namespace MauiB2C.MSALClient
 {
     /// <summary>
     /// This is a wrapper for PublicClientApplication. It is singleton.
-    /// </summary>
-    public class PCAWrapper
+    /// </summary>    
+    public class PublicClientWrapperB2C
     {
-
         /// <summary>
         /// This is the singleton used by ux. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
         /// </summary>
-        public static PCAWrapper Instance { get; } = new PCAWrapper();
+        public static PublicClientWrapperB2C Instance { get; private set; } = new PublicClientWrapperB2C();
 
         /// <summary>
         /// This is the configuration for the application found within the 'appsettings.json' file.
@@ -41,23 +37,23 @@ namespace MauiAppWithBroker.MSALClient
         private MsalCacheHelper MsalCacheHelper { get; set; }
 
         // private constructor for singleton
-        private PCAWrapper()
+        private PublicClientWrapperB2C()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
+            using var stream = assembly.GetManifestResourceStream("MauiB2C.appsettings.json");
+
             AppConfiguration  = new ConfigurationBuilder()
                 .AddJsonStream(stream)
                 .Build();
 
-            // Create PublicClientApplication once. Make sure that all the config parameters below are passed
+            // Create PCA once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
-                                        .Create(AppConfiguration["AzureAd:ClientId"])
-                                        .WithAuthority($"{AppConfiguration["AzureAd:Instance"]}{AppConfiguration["AzureAd:TenantId"]}")
+                                        .Create(AppConfiguration["AzureAdB2C:ClientId"])
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
-                                        .WithBroker()
-                                        .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
-                                        .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
+                                        .WithB2CAuthority($"{AppConfiguration["AzureAdB2C:Instance"]}/tfp/{AppConfiguration["AzureAdB2C:Domain"]}/{AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]}")
+                                        .WithIosKeychainSecurityGroup(AppConfiguration["iOSKeyChainGroup"])
+                                        .WithRedirectUri($"msal{AppConfiguration["AzureAdB2C:ClientId"]}://auth")
                                         .Build();
         }
 
@@ -66,18 +62,19 @@ namespace MauiAppWithBroker.MSALClient
         /// </summary>
         /// <param name="scopes">desired scopes</param>
         /// <returns>Authentication result</returns>
-        internal async Task<AuthenticationResult> AcquireTokenSilentAsync()
+        public async Task<AuthenticationResult> AcquireTokenSilentAsync()
         {
             var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
 
-            var accts = await PCA.GetAccountsAsync().ConfigureAwait(false);
-            var acct = accts.FirstOrDefault();
+            // Get accounts by policy
+            IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync(PublicClientWrapperB2C.AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]).ConfigureAwait(false);
 
-            var silentParamBuilder = PCA.AcquireTokenSilent(scopes, acct);
-            var authResult = await silentParamBuilder
-                                        .ExecuteAsync().ConfigureAwait(false);
+            AuthenticationResult authResult = await PCA.AcquireTokenSilent(scopes, accounts.FirstOrDefault())
+               .WithB2CAuthority($"{AppConfiguration["AzureAdB2C:Instance"]}/tfp/{AppConfiguration["AzureAdB2C:Domain"]}/{AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]}")
+               .ExecuteAsync()
+               .ConfigureAwait(false);
+
             return authResult;
-
         }
 
         /// <summary>
@@ -90,19 +87,13 @@ namespace MauiAppWithBroker.MSALClient
             var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
 
             return await PCA.AcquireTokenInteractive(scopes)
-                                    .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
-                                    .ExecuteAsync()
-                                    .ConfigureAwait(false);
-
-            //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
-            var storageProperties = new StorageCreationPropertiesBuilder("netcore_winui_cache.txt", "C:\\temp").Build();
-            var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
-            msalcachehelper.RegisterCache(PCA.UserTokenCache);
+                                                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+                                                        .ExecuteAsync()
+                                                        .ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Signout may not perform the complete signout as company portal may hold
-        /// the token.
+        /// It will sign out the user.
         /// </summary>
         /// <returns></returns>
         internal async Task SignOutAsync()
@@ -129,7 +120,7 @@ namespace MauiAppWithBroker.MSALClient
             var storageCreationProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
 
             MsalCacheHelper = await MsalCacheHelper.CreateAsync(storageCreationProperties);
-            MsalCacheHelper.RegisterCache(PCAWrapper.Instance.PCA.UserTokenCache);
+            MsalCacheHelper.RegisterCache(PublicClientWrapperB2C.Instance.PCA.UserTokenCache);
 
             return true;
         }

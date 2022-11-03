@@ -18,7 +18,7 @@ namespace MauiAppBasic
         {
             base.OnCreate(savedInstanceState);
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = $"msal{PCAWrapper.AppConfiguration["ClientId"]}://auth";
+            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientWrapper.AppConfiguration["ClientId"]}://auth";
             PlatformConfig.Instance.ParentWindow = this;
         }
 

@@ -19,7 +19,7 @@ public partial class UserView : ContentPage
         try
         {
             // call Web API to get the data
-            AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync();
+            AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
@@ -34,7 +34,7 @@ public partial class UserView : ContentPage
         }
         catch (MsalUiRequiredException)
         {
-            await PCAWrapper.Instance.SignOutAsync().ContinueWith((t) =>
+            await PublicClientWrapper.Instance.SignOutAsync().ContinueWith((t) =>
             {
                 return Task.CompletedTask;
             });
@@ -47,7 +47,7 @@ public partial class UserView : ContentPage
 
     private async void SignOutButton_Clicked(object sender, EventArgs e)
     {
-        await PCAWrapper.Instance.SignOutAsync().ContinueWith((t) =>
+        await PublicClientWrapper.Instance.SignOutAsync().ContinueWith((t) =>
         {
             return Task.CompletedTask;
         });

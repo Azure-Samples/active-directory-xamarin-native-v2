@@ -1,23 +1,29 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
-using System.Reflection;
 
-namespace MauiAppBasic.MSALClient
+namespace MauiAppWithBroker.MSALClient
 {
     /// <summary>
     /// This is a wrapper for PublicClientApplication. It is singleton.
     /// </summary>
-    public class PCAWrapper
+    public class PublicClientWrapper
     {
+
         /// <summary>
-        /// This is the singleton used by Ux. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
+        /// This is the singleton used by ux. Since PCAWrapper constructor does not have perf or memory issue, it is instantiated directly.
         /// </summary>
-        public static PCAWrapper Instance { get; private set; } = new PCAWrapper();
+        public static PublicClientWrapper Instance { get; } = new PublicClientWrapper();
 
         /// <summary>
         /// This is the configuration for the application found within the 'appsettings.json' file.
@@ -30,34 +36,29 @@ namespace MauiAppBasic.MSALClient
         internal IPublicClientApplication PCA { get; }
 
         /// <summary>
-        /// This will determine if the Interactive Authentication should be Embedded or System view
-        /// </summary>
-        internal bool UseEmbedded { get; set; } = false;
-
-        /// <summary>
         /// Cache helper for WinUI applications.
         /// </summary>
         private MsalCacheHelper MsalCacheHelper { get; set; }
 
         // private constructor for singleton
-        private PCAWrapper()
+        private PublicClientWrapper()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
-            AppConfiguration = new ConfigurationBuilder()
+            using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
+            AppConfiguration  = new ConfigurationBuilder()
                 .AddJsonStream(stream)
                 .Build();
 
-            // Create PCA once. Make sure that all the config parameters below are passed
+            // Create PublicClientApplication once. Make sure that all the config parameters below are passed
             PCA = PublicClientApplicationBuilder
                                         .Create(AppConfiguration["AzureAd:ClientId"])
                                         .WithAuthority($"{AppConfiguration["AzureAd:Instance"]}{AppConfiguration["AzureAd:TenantId"]}")
                                         .WithExperimentalFeatures() // this is for upcoming logger
                                         .WithLogging(_logger)
+                                        .WithBroker()
                                         .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
                                         .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
                                         .Build();
-
         }
 
         /// <summary>
@@ -72,9 +73,11 @@ namespace MauiAppBasic.MSALClient
             var accts = await PCA.GetAccountsAsync().ConfigureAwait(false);
             var acct = accts.FirstOrDefault();
 
-            var authResult = await PCA.AcquireTokenSilent(scopes, acct)
-                                      .ExecuteAsync().ConfigureAwait(false);
+            var silentParamBuilder = PCA.AcquireTokenSilent(scopes, acct);
+            var authResult = await silentParamBuilder
+                                        .ExecuteAsync().ConfigureAwait(false);
             return authResult;
+
         }
 
         /// <summary>
@@ -86,30 +89,20 @@ namespace MauiAppBasic.MSALClient
         {
             var scopes = AppConfiguration["DownstreamApi:Scopes"].Split(" ");
 
-            if (UseEmbedded)
-            {
-                return await PCA.AcquireTokenInteractive(scopes)
-                                        .WithUseEmbeddedWebView(true)
-                                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
-                                        .ExecuteAsync()
-                                        .ConfigureAwait(false);
-            }
-
-            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
-#if IOS
-            // Hide the privacy prompt in iOS
-            systemWebViewOptions.iOSHidePrivacyPrompt = true;
-#endif
-
             return await PCA.AcquireTokenInteractive(scopes)
-                                    .WithSystemWebViewOptions(systemWebViewOptions)
                                     .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                                     .ExecuteAsync()
                                     .ConfigureAwait(false);
+
+            //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
+            var storageProperties = new StorageCreationPropertiesBuilder("netcore_winui_cache.txt", "C:\\temp").Build();
+            var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
+            msalcachehelper.RegisterCache(PCA.UserTokenCache);
         }
 
         /// <summary>
-        /// It will sign out the user.
+        /// Signout may not perform the complete signout as company portal may hold
+        /// the token.
         /// </summary>
         /// <returns></returns>
         internal async Task SignOutAsync()
@@ -136,13 +129,13 @@ namespace MauiAppBasic.MSALClient
             var storageCreationProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
 
             MsalCacheHelper = await MsalCacheHelper.CreateAsync(storageCreationProperties);
-            MsalCacheHelper.RegisterCache(PCAWrapper.Instance.PCA.UserTokenCache);
+            MsalCacheHelper.RegisterCache(PublicClientWrapper.Instance.PCA.UserTokenCache);
 
             return true;
         }
 
         // Custom logger for sample
-        private readonly MyLogger _logger = new MyLogger();
+        private MyLogger _logger = new MyLogger();
 
         // Custom logger class
         private class MyLogger : IIdentityLogger
@@ -172,5 +165,6 @@ namespace MauiAppBasic.MSALClient
                 Console.WriteLine(entry.Message);
             }
         }
+
     }
 }

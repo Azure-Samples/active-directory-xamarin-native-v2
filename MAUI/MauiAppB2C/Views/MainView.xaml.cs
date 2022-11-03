@@ -14,7 +14,7 @@ namespace MauiB2C.Views
 
             _ = Dispatcher.DispatchAsync(async () =>
             {
-                SignInButton.IsEnabled = await PCAWrapperB2C.Instance.InitializCache();
+                SignInButton.IsEnabled = await PublicClientWrapperB2C.Instance.InitializCache();
             });
 
         }
@@ -23,12 +23,12 @@ namespace MauiB2C.Views
         {
             try
             {
-                AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync();
+                AuthenticationResult result = await PublicClientWrapperB2C.Instance.AcquireTokenSilentAsync();
             }
             catch (MsalUiRequiredException)
             {
                 // This executes UI interaction to obtain token
-                AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenInteractiveAsync();
+                AuthenticationResult result = await PublicClientWrapperB2C.Instance.AcquireTokenInteractiveAsync();
             }
             catch (Exception ex)
             {

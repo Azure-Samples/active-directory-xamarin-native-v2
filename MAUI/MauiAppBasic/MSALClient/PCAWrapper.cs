@@ -75,7 +75,6 @@ namespace MauiAppBasic.MSALClient
             var authResult = await PCA.AcquireTokenSilent(scopes, acct)
                                       .ExecuteAsync().ConfigureAwait(false);
             return authResult;
-
         }
 
         /// <summary>
@@ -89,7 +88,6 @@ namespace MauiAppBasic.MSALClient
 
             if (UseEmbedded)
             {
-
                 return await PCA.AcquireTokenInteractive(scopes)
                                         .WithUseEmbeddedWebView(true)
                                         .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)

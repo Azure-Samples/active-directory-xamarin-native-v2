@@ -2,7 +2,7 @@
 page_type: sample
 name: A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
 description: A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api
-- languages:
+languages:
     -  csharp
 products:
     - maui
@@ -19,8 +19,6 @@ extensions:
 
 # A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
 
-[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=XXX)
-
 * [Overview](#overview)
 * [Scenario](#scenario)
 * [Prerequisites](#prerequisites)
@@ -34,25 +32,25 @@ extensions:
 
 ## Overview
 
-This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) app using [MSAL.NET](https://aka.ms/msal-net) to sign-in a user and calling Microsoft Graph on their behalf.
 
-> :information_source: See the community call: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
+> :information_source: To learn how applications integrate with [Microsoft Graph](https://aka.ms/graph), consider going through the recorded session:: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
 
 ## Scenario
 
-This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) app using [MSAL.NET](https://aka.ms/msal-net) to sign-in a user and calling Microsoft Graph on their behalf.
 
-1. The client MAUI (iOS, Android, UWP) uses the [Microsoft Graph](https://aka.ms/graph) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) from **Azure AD**.
+1. The client MAUI (iOS, Android, UWP) uses the [MSAL.NET](https://aka.ms/msal-net) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) and an [Access Token](https://aka.ms/access-tokens) from **Azure AD**.
 1. The **ID Token** proves that the user has successfully authenticated against **Azure AD**.
+1. The **access token** is used as a *bearer* token to authorize the user to call the Microsoft Graph.
 
 ![Scenario Image](./ReadmeFiles/topology.png)
 
 ## Prerequisites
 
 * [Visual Studios](https://aka.ms/vsdownload) with the **MAUI** workload:
-    - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
-    - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
-
+  - [Instructions for Windows](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vswin)
+  - [Instructions for MacOS](https://learn.microsoft.com/dotnet/maui/get-started/installation?tabs=vsma)
 * An **Azure AD** tenant. For more information, see: [How to get an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/test-setup-environment#get-a-test-tenant)
 * A user account in your **Azure AD** tenant. This sample will not work with a **personal Microsoft account**. If you're signed in to the [Azure portal](https://portal.azure.com) with a personal Microsoft account and have not created a user account in your directory before, you will need to create one before proceeding.
 
@@ -148,11 +146,9 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-1. Open the `MSALClient\AppConstants.cs` file.
-1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
-
-1. Open the `MSALClient\AppConstants.cs` file.
-1. Find the key `[REPLACE THIS WITH YOUR TENANT ID]` and replace the existing value with your Azure AD tenant/directory ID.
+1. Open the `appsettings.json` file.
+1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
+1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
 
 1. Open the `Platforms\Android\MsalActivity.cs` file.
 1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
@@ -164,11 +160,44 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
 Clean the solution, rebuild the solution, and run it:
+
+## Explore the sample
+
 - Click the sign-in button at the bottom of the application screen.
 - On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
 - Upon successful sign in and consent, the application screen will display the main page.
 - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
 - Sign out by clicking the sign out button.
+
+> :information_source: Did the sample not work for you as expected? Then please reach out to us using the [GitHub Issues](../../../../issues) page.
+
+## We'd love your feedback!
+
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
+
+## Troubleshooting
+
+### Some projects don't load in Visual Studio
+
+This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/visualstudio/install/modify-visual-studio), in the Visual Studio Installer.
+
+### The project you want is not built
+
+you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
+
+## Moving from sample to production
+
+Samples favor simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
+
+- Consider using [dependency injection](https://medium.com/syncfusion/learn-how-to-use-dependency-injection-in-net-maui-800f1bf9bc4d) for the `IPublicClientApplication`.
+- Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
+- MSAL will generally let HTTP exceptions propagate. Consider using [Maui.Networking.Connectivity](https://learn.microsoft.com/dotnet/maui/platform-integration/communication/networking?tabs=windows) to detect situations where the network is down in order to provide a better error message to the user.
+
+> Use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) to get support from the community.
+Ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
+Make sure that your questions or comments are tagged with [`azure-active-directory` `msal-net` `maui` `ms-identity` `msal`].
+
+If you find a bug in the sample, raise the issue on [GitHub Issues](../../../issues)
 
 ## About the code
 
@@ -210,6 +239,7 @@ catch (Exception ex)
     return;
 }
 ```
+
 - If the attempt to obtain a token silently fails a sign-in screen will appear.
     * Using the 'Embedded' login screen will prompt your user to login from a desktop screen
     * Default login behavior will use the devices embedded browser to prompt a login with the authorization host. By default this application uses 'login.microsoft.com'    
@@ -274,45 +304,21 @@ On Android and iOS, brokers enable:
 
 You can learn how to have your application support the broker on iOS in [Leveraging the broker on iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS)
 
-
-- For more information on acquiring tokens with MSAL.NET, please visit [MSAL.NET's conceptual documentation](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki), in particular:
-  - [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
-  - [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
-  - [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
-- To understand more about the Microsoft identity platform endpoint see http://aka.ms/aaddevv2
-- For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Microsoft identity platform](http://go.microsoft.com/fwlink/?LinkId=394414).
-- For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)
-
 ## Contributing
 
 If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.md).
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Troubleshooting
-
-### Some projects don't load in Visual Studio
-
-This might be because you have not installed all the required components from Visual Studio. You need to add the **.NET Mutli-platform App UI development** [workload](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022), in the Visual Studio Installer.
-
-### The project you want is not built
-
-you need to right click on the visual studio solution, choose **Configuration Properties** > **Configuration** and make sure that you check the projects and configuration you want to build (and deploy)
-
-## Moving from sample to production
-
-Samples favor simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
-
-- Consider using [dependency injection](https://medium.com/syncfusion/learn-how-to-use-dependency-injection-in-net-maui-800f1bf9bc4d) for the `IPublicClientApplication` 
-- Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
-- MSAL will generally let HTTP exceptions propagate. Consider using [Maui.Networking.Connectivity](https://learn.microsoft.com/en-us/dotnet/maui/platform-integration/communication/networking?tabs=windows) to detect situations where the network is down in order to provide a better error message to the user. 
-
-## We'd love your feedback!
-
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
-
 ## Learn More
 
+* For more information on acquiring tokens with MSAL.NET, please visit [MSAL.NET's conceptual documentation](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki), in particular:
+  * [PublicClientApplication](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications#publicclientapplication)
+  * [Recommended call pattern in public client applications](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-call-pattern-in-public-client-applications)
+  * [Acquiring tokens interactively in public client application flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Acquiring-tokens-interactively)
+* To understand more about the Microsoft identity platform endpoint see http://aka.ms/aaddevv2
+* For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Microsoft identity platform](http://go.microsoft.com/fwlink/?LinkId=394414).
+* For more information about Microsoft Graph, please visit [the Microsoft Graph homepage](https://graph.microsoft.io/en-us/)
 * [Microsoft identity platform (Azure Active Directory for developers)](https://docs.microsoft.com/azure/active-directory/develop/)
 * [Azure AD code samples](https://docs.microsoft.com/azure/active-directory/develop/sample-v2-code)
 * [Overview of Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)

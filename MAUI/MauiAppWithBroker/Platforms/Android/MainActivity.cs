@@ -6,7 +6,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
-using MauiAppWithBroker.MSALClient;
+using MAUI.MSALClient;
 using Microsoft.Identity.Client;
 
 namespace MauiAppWithBroker
@@ -18,7 +18,7 @@ namespace MauiAppWithBroker
         {
             base.OnCreate(savedInstanceState);
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = PublicClientWrapper.AppConfiguration["AndroidRedirectUri"];
+            PlatformConfig.Instance.RedirectUri = MSALClientHelper.AzureADConfig.AndroidRedirectUri;
             PlatformConfig.Instance.ParentWindow = this;
         }
 

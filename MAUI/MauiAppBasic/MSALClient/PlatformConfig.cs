@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace MauiAppBasic.MSALClient
+namespace MAUI.MSALClient
 {
     /// <summary>
     /// Platform specific configuration.

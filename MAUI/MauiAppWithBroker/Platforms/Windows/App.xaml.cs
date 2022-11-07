@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml;
-using MauiAppWithBroker.MSALClient;
+using MAUI.MSALClient;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,7 +30,7 @@ namespace MauiAppWithBroker.WinUI
             base.OnLaunched(args);
 
             // configure redirect URI for your application
-            PlatformConfig.Instance.RedirectUri = $"ms-appx-web://microsoft.aad.brokerplugin/{PublicClientWrapper.AppConfiguration["ClientId"]}";
+            PlatformConfig.Instance.RedirectUri = string.Format(MSALClientHelper.AzureADConfig.RedirectURI, MSALClientHelper.AzureADConfig.ClientId);
             var app = MauiAppWithBroker.App.Current;
             PlatformConfig.Instance.ParentWindow = ((MauiWinUIWindow)app.Windows[0].Handler.PlatformView).WindowHandle;
         }

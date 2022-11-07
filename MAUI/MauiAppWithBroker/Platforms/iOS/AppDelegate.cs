@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using Foundation;
-using MauiAppWithBroker.MSALClient;
+using MAUI.MSALClient;
 using Microsoft.Identity.Client;
 using UIKit;
 
@@ -16,7 +16,7 @@ namespace MauiAppWithBroker
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = PublicClientWrapper.AppConfiguration["iOSRedirectUri"];
+            PlatformConfig.Instance.RedirectUri = MSALClientHelper.AzureADConfig.iOSRedirectUri;
             PlatformConfig.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
 
             return base.FinishedLaunching(application, launchOptions);

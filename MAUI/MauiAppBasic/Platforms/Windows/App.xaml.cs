@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using MauiAppBasic.MSALClient;
+using MAUI.MSALClient;
 using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -20,7 +20,7 @@ namespace MauiAppBasic.Platforms.Android.Resources
     [IntentFilter(new[] { Intent.ActionView },
         Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
         DataHost = "auth",
-        DataScheme = "msal[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]")]
+        DataScheme = "msale45db3d0-2f9c-4f85-906c-6903d397011a")]
     public class MsalActivity : BrowserTabActivity
     {
     }

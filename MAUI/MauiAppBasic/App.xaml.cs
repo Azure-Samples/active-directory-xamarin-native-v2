@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using MauiAppBasic.ViewModels;
+using MauiAppBasic.Views;
 
 namespace MauiAppBasic
 {

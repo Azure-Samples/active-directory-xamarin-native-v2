@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiAppWithBroker.MSALClient
+namespace MAUI.MSALClient
 {
     /// <summary>
     /// Platform specific configuration.

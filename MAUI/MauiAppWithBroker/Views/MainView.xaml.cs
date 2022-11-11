@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using MAUI.MSALClient;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
 namespace MauiAppWithBroker.Views
 {
@@ -12,7 +14,16 @@ namespace MauiAppWithBroker.Views
         public MainView()
         {
 
-            this.MSALClientHelper = new MSALClientHelper();
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
+            IConfiguration AppConfiguration = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+
+            AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+            this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+
+
             // Initializes the Public Client app and loads any already signed in user from the token cache
             var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;
 

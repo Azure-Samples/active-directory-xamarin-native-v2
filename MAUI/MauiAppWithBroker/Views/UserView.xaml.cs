@@ -1,8 +1,10 @@
 using MAUI.MSALClient;
+using Microsoft.Extensions.Configuration;
 //using MauiAppWithBroker.ViewModels;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace MauiAppWithBroker.Views;
 
@@ -13,8 +15,16 @@ public partial class UserView : ContentPage
 
     public UserView()
     {
-        this.MSALClientHelper = new MSALClientHelper();
-        this.MSGraphHelper = new MSGraphHelper(this.MSALClientHelper);
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
+        IConfiguration AppConfiguration = new ConfigurationBuilder()
+            .AddJsonStream(stream)
+            .Build();
+
+        AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+        this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+        MSGraphApiConfig graphApiConfig = AppConfiguration.GetSection("MSGraphApi").Get<MSGraphApiConfig>();
+        this.MSGraphHelper = new MSGraphHelper(graphApiConfig, this.MSALClientHelper);
 
         // Initializes the Public Client app and loads any already signed in user from the token cache
         var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;

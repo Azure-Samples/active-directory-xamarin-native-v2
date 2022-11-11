@@ -1,7 +1,9 @@
 using MAUI.MSALClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace MauiAppBasic.Views;
 
@@ -15,8 +17,17 @@ public partial class UserView : ContentPage
     {
         InitializeComponent();
 
-        this.MSALClientHelper = new MSALClientHelper(embeddedConfigFile);
-        this.MSGraphHelper = new MSGraphHelper(this.MSALClientHelper, embeddedConfigFile);
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
+        IConfiguration AppConfiguration = new ConfigurationBuilder()
+            .AddJsonStream(stream)
+            .Build();
+
+        AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+        this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+
+        MSGraphApiConfig graphApiConfig = AppConfiguration.GetSection("MSGraphApi").Get<MSGraphApiConfig>();
+        this.MSGraphHelper = new MSGraphHelper(graphApiConfig, this.MSALClientHelper);
 
         // Initializes the Public Client app and loads any already signed in user from the token cache
         var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppAsync()).Result;

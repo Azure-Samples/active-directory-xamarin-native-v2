@@ -3,6 +3,9 @@
 
 using MAUI.MSALClient;
 using Microsoft.Identity.Client;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Reflection;
 
 namespace MauiAppBasic.Views
 {
@@ -14,7 +17,16 @@ namespace MauiAppBasic.Views
         {
             InitializeComponent();
 
-            this.MSALClientHelper = new MSALClientHelper("MauiAppBasic.appsettings.json");
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
+            IConfiguration AppConfiguration = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+
+            AzureADConfig azureADConfig  = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+
+            this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+
             // Initializes the Public Client app and loads any already signed in user from the token cache
             var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;
 

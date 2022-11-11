@@ -25,20 +25,13 @@ namespace MAUI.MSALClient
         private string[] GraphScopes;
         private string MSGraphBaseUrl = "https://graph.microsoft.com/v1.0";
 
-        public MSGraphHelper(MSALClientHelper msalClientHelper, string embeddedConfigFileName = "MauiAppWithBroker.appsettings.json")
+        public MSGraphHelper(MSGraphApiConfig graphApiConfig, MSALClientHelper msalClientHelper)
         {
             if (msalClientHelper == null)
             {
                 throw new ArgumentNullException(nameof(msalClientHelper));
             }
-
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream(embeddedConfigFileName);
-            IConfiguration AppConfiguration = new ConfigurationBuilder()
-                .AddJsonStream(stream)
-                .Build();
-
-            this.MSGraphApiConfig = AppConfiguration.GetSection("MSGraphApi").Get<MSGraphApiConfig>();
+            this.MSGraphApiConfig = graphApiConfig;
 
             this.MSALClient = msalClientHelper;
             this.GraphScopes = this.MSGraphApiConfig.ScopesArray;

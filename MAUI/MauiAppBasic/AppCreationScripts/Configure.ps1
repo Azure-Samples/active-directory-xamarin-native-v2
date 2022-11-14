@@ -207,7 +207,7 @@ Function ConfigureApplications
     $currentAppId = $clientAadApplication.AppId
     $currentAppObjectId = $clientAadApplication.Id
 
-    $replyUrlsForApp = "https://login.microsoftonline.com/common/oauth2/nativeclient", "msal$currentAppId`://auth", "http://localhost"
+    $replyUrlsForApp = "http://localhost", "https://login.microsoftonline.com/common/oauth2/nativeclient", "msal$currentAppId`://auth"
     Update-MgApplication -ApplicationId $currentAppObjectId -PublicClient @{RedirectUris=$replyUrlsForApp}
     $tenantName = (Get-MgApplication -ApplicationId $currentAppObjectId).PublisherDomain
     #Update-MgApplication -ApplicationId $currentAppObjectId -IdentifierUris @("https://$tenantName/active-directory-maui-v2")
@@ -226,7 +226,7 @@ Function ConfigureApplications
 
     # URL of the AAD application in the Azure portal
     # Future? $clientPortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/"+$currentAppId+"/objectId/"+$currentAppObjectId+"/isMSAApp/"
-    $clientPortalUrl = "https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/"+$currentAppId+"/objectId/"+$currentAppObjectId+"/isMSAApp/"
+    $clientPortalUrl = "https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/"+$currentAppId+"/isMSAApp~/false"
 
     Add-Content -Value "<tr><td>client</td><td>$currentAppId</td><td><a href='$clientPortalUrl'>active-directory-maui-v2</a></td></tr>" -Path createdApps.html
     # Declare a list to hold RRA items    

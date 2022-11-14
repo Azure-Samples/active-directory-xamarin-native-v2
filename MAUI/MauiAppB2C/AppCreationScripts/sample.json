@@ -5,7 +5,7 @@
     "Client": "MAUI (iOS, Android, UWP)",
     "RepositoryUrl": "active-directory-xamarin-native-v2",
     "Endpoint": "AAD v2.0",
-    "Description": "A .NET MAUI app using MSAL.NET to sign-in users and acquiring a token to call Microsoft Graph Api",
+    "Description": "Integrate Microsoft identity, the Microsoft Authenticator B2C App (broker), and Microsoft Graph into a MAUI app using MSAL",
     "Languages": [ "csharp" ],
     "Products": [ "maui", "azure-active-directory-b2c" ],
     "Library": [ "MSAL.NET" ],

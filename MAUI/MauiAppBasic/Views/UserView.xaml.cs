@@ -9,28 +9,33 @@ namespace MauiAppBasic.Views;
 
 public partial class UserView : ContentPage
 {
-    private MSALClientHelper MSALClientHelper;
-    private MSGraphHelper MSGraphHelper;
-    private const string embeddedConfigFile = "MauiAppBasic.appsettings.json";
+    //private MSALClientHelper MSALClientHelper;
+    //private MSGraphHelper MSGraphHelper;
+    //private const string embeddedConfigFile = "MauiAppBasic.appsettings.json";
 
     public UserView()
     {
         InitializeComponent();
 
-        var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
-        IConfiguration AppConfiguration = new ConfigurationBuilder()
-            .AddJsonStream(stream)
-            .Build();
+        //var cachedUserAccount = PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync();
 
-        AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
-        this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+        // Sign-in the user 
+        //var token = PublicClientWrapper.Instance.AcquireTokenSilentAsync();
 
-        MSGraphApiConfig graphApiConfig = AppConfiguration.GetSection("MSGraphApi").Get<MSGraphApiConfig>();
-        this.MSGraphHelper = new MSGraphHelper(graphApiConfig, this.MSALClientHelper);
+        //var assembly = Assembly.GetExecutingAssembly();
+        //using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
+        //IConfiguration AppConfiguration = new ConfigurationBuilder()
+        //    .AddJsonStream(stream)
+        //    .Build();
 
-        // Initializes the Public Client app and loads any already signed in user from the token cache
-        var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppAsync()).Result;
+        //AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+        //this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+
+        //MSGraphApiConfig graphApiConfig = AppConfiguration.GetSection("MSGraphApi").Get<MSGraphApiConfig>();
+        //this.MSGraphHelper = new MSGraphHelper(graphApiConfig, this.MSALClientHelper);
+
+        //// Initializes the Public Client app and loads any already signed in user from the token cache
+        //var cachedUserAccount = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.FetchSignedInUserFromCache()).Result;
 
         _ = GetUserInformationAsync();
     }
@@ -39,8 +44,8 @@ public partial class UserView : ContentPage
     {
         try
         {
-            var user = await this.MSGraphHelper.GetMeAsync();
-            UserImage.Source = ImageSource.FromStream(async _ => await this.MSGraphHelper.GetMyPhotoAsync());
+            var user = await PublicClientWrapper.Instance.MSGraphHelper.GetMeAsync();
+            UserImage.Source = ImageSource.FromStream(async _ => await PublicClientWrapper.Instance.MSGraphHelper.GetMyPhotoAsync());
 
             //// call Web API to get the data
             //AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
@@ -58,7 +63,7 @@ public partial class UserView : ContentPage
         }
         catch (MsalUiRequiredException)
         {
-            this.MSALClientHelper.SignOutUser();
+            await PublicClientWrapper.Instance.SignOutAsync();
             //await PublicClientWrapper.Instance.SignOutAsync().ContinueWith((t) =>
             //{
             //    return Task.CompletedTask;
@@ -72,7 +77,7 @@ public partial class UserView : ContentPage
 
     private async void SignOutButton_Clicked(object sender, EventArgs e)
     {
-        this.MSALClientHelper.SignOutUser();
+        await PublicClientWrapper.Instance.SignOutAsync();
         //await PublicClientWrapper.Instance.SignOutAsync().ContinueWith((t) =>
         //{
         //    return Task.CompletedTask;

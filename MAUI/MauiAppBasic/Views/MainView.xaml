@@ -44,6 +44,7 @@
                 Clicked="OnSignInClicked"
                 HorizontalOptions="Center"
                 IsEnabled="False"/>
+            
 
         </VerticalStackLayout>
     </ScrollView>

@@ -1,5 +1,7 @@
-﻿
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 using Microsoft.Identity.Client;
+
 //using Microsoft.Identity.Client.Broker;
 using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
@@ -15,8 +17,7 @@ namespace MAUI.MSALClient
         /// <summary>
         /// As for the Tenant, you can use a name as obtained from the azure portal, e.g. kko365.onmicrosoft.com"
         /// </summary>
-
-        public static AzureADConfig AzureADConfig;
+        public AzureADConfig AzureADConfig;
 
         /// <summary>
         /// Gets the authentication result (if available) from MSAL's various operations.
@@ -43,21 +44,30 @@ namespace MAUI.MSALClient
         public IPublicClientApplication PublicClientApplication { get; private set; }
 
         /// <summary>
-        /// The PublicClientApplication builder used internally 
+        /// This will determine if the Interactive Authentication should be Embedded or System view
+        /// </summary>
+        public bool UseEmbedded { get; set; } = false;
+
+        /// <summary>
+        /// The PublicClientApplication builder used internally
         /// </summary>
         private PublicClientApplicationBuilder PublicClientApplicationBuilder;
 
         // Token Caching setup - Mac
         public static readonly string KeyChainServiceName = "Contoso.MyProduct";
+
         public static readonly string KeyChainAccountName = "MSALCache";
 
         // Token Caching setup - Linux
         public static readonly string LinuxKeyRingSchema = "com.contoso.msaltokencache";
+
         public static readonly string LinuxKeyRingCollection = MsalCacheHelper.LinuxKeyRingDefaultCollection;
         public static readonly string LinuxKeyRingLabel = "MSAL token cache for Contoso.";
 
         public static readonly KeyValuePair<string, string> LinuxKeyRingAttr1 = new KeyValuePair<string, string>("Version", "1");
         public static readonly KeyValuePair<string, string> LinuxKeyRingAttr2 = new KeyValuePair<string, string>("ProductGroup", "Contoso");
+
+        private static string PCANotInitializedExceptionMessage = "The PublicClientApplication needs to be initialized before calling this method. Use InitializePublicClientAppAsync() or InitializePublicClientAppForWAMBrokerAsync() to initialize.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MSALClientHelper"/> class.
@@ -80,7 +90,7 @@ namespace MAUI.MSALClient
                 .WithExperimentalFeatures() // this is for upcoming logger
                 .WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
                 .WithClientCapabilities(new string[] { "cp1" })                                     // declare this client app capable of receiving CAE events- https://aka.ms/clientcae
-                .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
+
                 .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
         }
 
@@ -91,7 +101,9 @@ namespace MAUI.MSALClient
         public async Task<IAccount> InitializePublicClientAppAsync()
         {
             // Initialize the MSAL library by building a public client application
-            this.PublicClientApplication = this.PublicClientApplicationBuilder.Build();
+            this.PublicClientApplication = this.PublicClientApplicationBuilder
+                .WithRedirectUri(PlatformConfig.Instance.RedirectUri)   // redirect URI is set later in PlatformConfig when the platform has been decided
+                .Build();
 
             await AttachTokenCache();
             return await FetchSignedInUserFromCache().ConfigureAwait(false);
@@ -105,8 +117,9 @@ namespace MAUI.MSALClient
         {
             // Initialize the MSAL library by building a public client application
             this.PublicClientApplication = this.PublicClientApplicationBuilder
+                .WithRedirectUri(PlatformConfig.Instance.RedirectUri)   // redirect URI is set later in PlatformConfig when the platform is decided
                 .WithBroker()
-                .WithParentActivityOrWindow(() => PlatformConfig.Instance.ParentWindow)   // This is required when using the WAM broker
+                .WithParentActivityOrWindow(() => PlatformConfig.Instance.ParentWindow)   // This is required when using the WAM broker and is set later in PlatformConfig when the platform has been decided
                 .Build();
 
             this.IsBrokerInitialized = true;
@@ -128,21 +141,12 @@ namespace MAUI.MSALClient
 
             // Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
             var storageProperties = new StorageCreationPropertiesBuilder(AzureADConfig.CacheFileName, AzureADConfig.CacheDir)
-                .WithLinuxKeyring(
-                     LinuxKeyRingSchema,
-                     LinuxKeyRingCollection,
-                     LinuxKeyRingLabel,
-                     LinuxKeyRingAttr1,
-                     LinuxKeyRingAttr2)
-                 .WithMacKeyChain(
-                     KeyChainServiceName,
-                     KeyChainAccountName)
                  .Build();
 
             var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
             msalcachehelper.RegisterCache(PublicClientApplication.UserTokenCache);
 
-            // If the cache file is being reused, we'd find some already-signed-in accounts 
+            // If the cache file is being reused, we'd find some already-signed-in accounts
             return await PublicClientApplication.GetAccountsAsync().ConfigureAwait(false);
         }
 
@@ -153,6 +157,8 @@ namespace MAUI.MSALClient
         /// <returns> Access Token</returns>
         public async Task<string> SignInUserAndAcquireAccessToken(string[] scopes)
         {
+            Exception<NullReferenceException>.ThrowOn(() => this.PublicClientApplication == null, PCANotInitializedExceptionMessage);
+
             var existingUser = await FetchSignedInUserFromCache().ConfigureAwait(false);
 
             try
@@ -192,7 +198,6 @@ namespace MAUI.MSALClient
                     .WithLoginHint(existingUser?.Username ?? String.Empty)
                     .ExecuteAsync()
                     .ConfigureAwait(false);
-
             }
             catch (MsalException msalEx)
             {
@@ -206,14 +211,15 @@ namespace MAUI.MSALClient
         /// Signs the in user and acquire access token for a provided set of scopes.
         /// </summary>
         /// <param name="scopes">The scopes.</param>
-        /// <param name="extraclaims">The extra claims, usually from CAE. We basically handle CAE by sending the user back to Azure AD for 
+        /// <param name="extraclaims">The extra claims, usually from CAE. We basically handle CAE by sending the user back to Azure AD for
         /// additional processing and requesting a new access token for Graph</param>
         /// <returns></returns>
         public async Task<String> SignInUserAndAcquireAccessToken(string[] scopes, string extraclaims)
         {
+            Exception<NullReferenceException>.ThrowOn(() => this.PublicClientApplication == null, PCANotInitializedExceptionMessage);
+
             try
             {
-
                 // Send the user to Azure AD for re-authentication as a silent acquisition wont resolve any CAE scenarios like an extra claims request
                 this.AuthResult = await this.PublicClientApplication.AcquireTokenInteractive(scopes)
                         .WithClaims(extraclaims)
@@ -234,16 +240,39 @@ namespace MAUI.MSALClient
         /// <param name="scopes">The scopes.</param>
         /// <param name="existingAccount">The existing account.</param>
         /// <returns></returns>
-        private async Task<AuthenticationResult> SignInUserInteractivelyAsync(string[] scopes, IAccount existingAccount = null)
+        public async Task<AuthenticationResult> SignInUserInteractivelyAsync(string[] scopes, IAccount existingAccount = null)
         {
+            Exception<NullReferenceException>.ThrowOn(() => this.PublicClientApplication == null, PCANotInitializedExceptionMessage);
+
+            if (this.PublicClientApplication == null)
+                throw new NullReferenceException();
+
             // If the operating system has UI
             if (this.PublicClientApplication.IsUserInteractive())
             {
-                return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
-                    .WithLoginHint(existingAccount?.Username ?? String.Empty)
-                    .WithParentActivityOrWindow(WindowsHelper.GetConsoleOrTerminalWindow()) 
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
+                if (UseEmbedded)
+                {
+                    return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+                        .WithLoginHint(existingAccount?.Username ?? String.Empty)
+                        .WithUseEmbeddedWebView(true)
+                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
+#if IOS
+                    // Hide the privacy prompt in iOS
+                    systemWebViewOptions.iOSHidePrivacyPrompt = true;
+#endif
+                    return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+                        .WithLoginHint(existingAccount?.Username ?? String.Empty)
+                        .WithSystemWebViewOptions(systemWebViewOptions)
+                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+                }
             }
 
             // If the operating system does not have UI (e.g. SSH into Linux), you can fallback to device code, however this
@@ -258,18 +287,20 @@ namespace MAUI.MSALClient
         /// <summary>
         /// Removes the first signed-in user's record from token cache
         /// </summary>
-        public async void SignOutUser()
+        public async Task SignOutUserAsync()
         {
             var existingUser = await FetchSignedInUserFromCache().ConfigureAwait(false);
-            this.SignOutUser(existingUser);
+            await this.SignOutUserAsync(existingUser).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Removes a given user's record from token cache
         /// </summary>
         /// <param name="user">The user.</param>
-        public async void SignOutUser(IAccount user)
+        public async Task SignOutUserAsync(IAccount user)
         {
+            if (this.PublicClientApplication == null) return;
+
             await this.PublicClientApplication.RemoveAsync(user).ConfigureAwait(false);
         }
 
@@ -279,6 +310,9 @@ namespace MAUI.MSALClient
         /// <returns></returns>
         public async Task<IAccount> FetchSignedInUserFromCache()
         {
+            //Exception<NullReferenceException>.ThrowOn(() => this.PublicClientApplication == null, PCANotInitializedExceptionMessage);
+            if (this.PublicClientApplication == null) return null;
+
             // get accounts from cache
             IEnumerable<IAccount> accounts = await this.PublicClientApplication.GetAccountsAsync().ConfigureAwait(false);
 

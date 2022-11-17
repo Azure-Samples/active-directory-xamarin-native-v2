@@ -47,7 +47,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="MSALClient\PublicClientWrapper.cs" />
+	  <Compile Remove="MSALClient\PublicClientWrapper1.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

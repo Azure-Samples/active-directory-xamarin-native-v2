@@ -3,37 +3,30 @@
 
 using MAUI.MSALClient;
 using Microsoft.Identity.Client;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Reflection;
 
 namespace MauiAppBasic.Views
 {
     public partial class MainView : ContentPage
     {
-        private MSALClientHelper MSALClientHelper;
-
         public MainView()
         {
             InitializeComponent();
 
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
-            IConfiguration AppConfiguration = new ConfigurationBuilder()
-                .AddJsonStream(stream)
-                .Build();
+            //var assembly = Assembly.GetExecutingAssembly();
+            //using var stream = assembly.GetManifestResourceStream("MauiAppBasic.appsettings.json");
+            //IConfiguration AppConfiguration = new ConfigurationBuilder()
+            //    .AddJsonStream(stream)
+            //    .Build();
 
-            AzureADConfig azureADConfig  = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+            //AzureADConfig azureADConfig  = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
 
-            this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+            //this.MSALClientHelper = new MSALClientHelper(azureADConfig);
 
             // Initializes the Public Client app and loads any already signed in user from the token cache
-            var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;
+            IAccount cachedUserAccount = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.FetchSignedInUserFromCache()).Result;
 
             _ = Dispatcher.DispatchAsync(async () =>
             {
-                //SignInButton.IsEnabled = await PCAWrapper.Instance.InitializCache();
-                //SignInButton.IsEnabled = true;//await PCAWrapper.Instance.InitializCache();
                 if (cachedUserAccount == null)
                 {
                     SignInButton.IsEnabled = true;
@@ -43,6 +36,10 @@ namespace MauiAppBasic.Views
 
         private async void OnSignInClicked(object sender, EventArgs e)
         {
+            // Sign-in the user
+            PublicClientWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
+            await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
+
             //try
             //{
             //    PublicClientWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
@@ -62,7 +59,8 @@ namespace MauiAppBasic.Views
 
             await Shell.Current.GoToAsync("userview");
         }
-        protected override bool OnBackButtonPressed() { return true; }
 
+        protected override bool OnBackButtonPressed()
+        { return true; }
     }
 }

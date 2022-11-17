@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using Foundation;
-using MauiAppBasic.MSALClient;
+using MAUI.MSALClient;
 using UIKit;
 
 namespace MauiAppBasic
@@ -17,6 +17,9 @@ namespace MauiAppBasic
         {
             // configure platform specific params
             PlatformConfig.Instance.RedirectUri = iOSRedirectURI;
+
+            // Initialize MSAL and platformConfig is set
+            var existinguser = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
 
             return base.FinishedLaunching(application, launchOptions);
         }

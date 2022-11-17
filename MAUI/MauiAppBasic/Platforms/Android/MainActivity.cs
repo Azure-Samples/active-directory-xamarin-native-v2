@@ -6,7 +6,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
-using MauiAppBasic.MSALClient;
+using MAUI.MSALClient;
 using Microsoft.Identity.Client;
 
 namespace MauiAppBasic
@@ -18,8 +18,11 @@ namespace MauiAppBasic
         {
             base.OnCreate(savedInstanceState);
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientWrapper.AppConfiguration["ClientId"]}://auth";
+            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientWrapper.Instance.MSALClientHelper.AzureADConfig.ClientId}://auth";
             PlatformConfig.Instance.ParentWindow = this;
+
+            // Initialize MSAL and platformConfig is set
+            var existinguser = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
         }
 
         /// <summary>

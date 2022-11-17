@@ -15,6 +15,7 @@ namespace MauiAppBasic.WinUI
     public partial class App : MauiWinUIApplication
     {
         private const string RedirectURIWindows = "http://localhost";
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -22,6 +23,12 @@ namespace MauiAppBasic.WinUI
         public App()
         {
             this.InitializeComponent();
+
+            // configure redirect URI for your application
+            PlatformConfig.Instance.RedirectUri = RedirectURIWindows;
+
+            // Initialize MSAL
+            var existinguser = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
         }
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
@@ -29,9 +36,6 @@ namespace MauiAppBasic.WinUI
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             base.OnLaunched(args);
-            
-            // configure redirect URI for your application
-            PlatformConfig.Instance.RedirectUri = RedirectURIWindows;
         }
     }
 }

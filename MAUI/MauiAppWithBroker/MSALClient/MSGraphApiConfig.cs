@@ -1,4 +1,6 @@
-﻿namespace MAUI.MSALClient
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+namespace MAUI.MSALClient
 {
     public class MSGraphApiConfig
     {

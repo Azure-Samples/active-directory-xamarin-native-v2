@@ -4,6 +4,7 @@
 using MAUI.MSALClient;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 
 namespace MauiAppWithBroker.Views
 {
@@ -13,19 +14,19 @@ namespace MauiAppWithBroker.Views
 
         public MainView()
         {
+            InitializeComponent();
 
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
-            IConfiguration AppConfiguration = new ConfigurationBuilder()
-                .AddJsonStream(stream)
-                .Build();
+            //var assembly = Assembly.GetExecutingAssembly();
+            //using var stream = assembly.GetManifestResourceStream("MauiAppWithBroker.appsettings.json");
+            //IConfiguration AppConfiguration = new ConfigurationBuilder()
+            //    .AddJsonStream(stream)
+            //    .Build();
 
-            AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
-            this.MSALClientHelper = new MSALClientHelper(azureADConfig);
-
+            //AzureADConfig azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureADConfig>();
+            //this.MSALClientHelper = new MSALClientHelper(azureADConfig);
 
             // Initializes the Public Client app and loads any already signed in user from the token cache
-            var cachedUserAccount = Task.Run(async () => await MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;
+            IAccount cachedUserAccount = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.FetchSignedInUserFromCache()).Result;
 
             _ = Application.Current.Dispatcher.Dispatch(async () =>
             {
@@ -33,13 +34,19 @@ namespace MauiAppWithBroker.Views
                 {
                     SignInButton.IsEnabled = true;
                 }
+                else
+                {
+                    await Shell.Current.GoToAsync("userview");
+                }
             });
-
-            InitializeComponent();
+  
         }
 
         private async void OnSignInClicked(object sender, EventArgs e)
         {
+            // Activate the sign-in dialog, if necessary
+            await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
+
             //try
             //{
             //    AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenSilentAsync();

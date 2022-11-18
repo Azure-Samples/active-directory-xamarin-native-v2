@@ -16,8 +16,11 @@ namespace MauiAppWithBroker
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = MSALClientHelper.AzureADConfig.iOSRedirectUri;
+            PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.iOSRedirectUri;
             PlatformConfig.Instance.ParentWindow = new UIViewController(); // iOS broker requires a view controller
+
+            // Initialize MSAL after platformConfig is set
+            IAccount existinguser = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;
 
             return base.FinishedLaunching(application, launchOptions);
         }

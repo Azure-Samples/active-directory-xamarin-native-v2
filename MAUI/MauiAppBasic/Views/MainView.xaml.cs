@@ -23,7 +23,7 @@ namespace MauiAppBasic.Views
             //this.MSALClientHelper = new MSALClientHelper(azureADConfig);
 
             // Initializes the Public Client app and loads any already signed in user from the token cache
-            IAccount cachedUserAccount = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.FetchSignedInUserFromCache()).Result;
+            IAccount cachedUserAccount = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.FetchSignedInUserFromCache()).Result;
 
             _ = Dispatcher.DispatchAsync(async () =>
             {
@@ -31,14 +31,18 @@ namespace MauiAppBasic.Views
                 {
                     SignInButton.IsEnabled = true;
                 }
+                else
+                {
+                    await Shell.Current.GoToAsync("userview");
+                }
             });
         }
 
         private async void OnSignInClicked(object sender, EventArgs e)
         {
             // Sign-in the user
-            PublicClientWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
-            await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
+            PublicClientSingleton.Instance.UseEmbedded = this.useEmbedded.IsChecked;
+            await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
 
             //try
             //{

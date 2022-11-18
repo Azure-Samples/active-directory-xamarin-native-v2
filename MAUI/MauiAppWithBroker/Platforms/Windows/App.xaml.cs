@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml;
 using MAUI.MSALClient;
+using Microsoft.Identity.Client;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,6 +22,9 @@ namespace MauiAppWithBroker.WinUI
         public App()
         {
             this.InitializeComponent();
+
+            // configure redirect URI for your application
+            PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.RedirectURI;
         }
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
@@ -29,10 +33,13 @@ namespace MauiAppWithBroker.WinUI
         {
             base.OnLaunched(args);
 
-            // configure redirect URI for your application
-            PlatformConfig.Instance.RedirectUri = string.Format(MSALClientHelper.AzureADConfig.RedirectURI, MSALClientHelper.AzureADConfig.ClientId);
+
+            // 
             var app = MauiAppWithBroker.App.Current;
             PlatformConfig.Instance.ParentWindow = ((MauiWinUIWindow)app.Windows[0].Handler.PlatformView).WindowHandle;
+
+            // Initialize MSAL after platform config is set
+            IAccount existinguser = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppForWAMBrokerAsync()).Result;
         }
     }
 }

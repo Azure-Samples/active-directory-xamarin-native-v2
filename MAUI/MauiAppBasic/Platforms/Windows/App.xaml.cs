@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using MAUI.MSALClient;
+using Microsoft.Identity.Client;
 using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -25,10 +26,10 @@ namespace MauiAppBasic.WinUI
             this.InitializeComponent();
 
             // configure redirect URI for your application
-            PlatformConfig.Instance.RedirectUri = RedirectURIWindows;
+            PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.RedirectURI;
 
             // Initialize MSAL
-            var existinguser = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
+            IAccount existinguser = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
         }
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();

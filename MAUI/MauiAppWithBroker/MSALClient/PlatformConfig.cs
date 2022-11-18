@@ -1,21 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace MAUI.MSALClient
 {
     /// <summary>
-    /// Platform specific configuration.
+    /// Platform specific configuration holder.
     /// </summary>
     public class PlatformConfig
     {
         /// <summary>
-        /// Instance to store data
+        /// The singleton instance to hold data per platform
         /// </summary>
         public static PlatformConfig Instance { get; } = new PlatformConfig();
 

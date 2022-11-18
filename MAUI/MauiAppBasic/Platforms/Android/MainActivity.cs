@@ -18,11 +18,11 @@ namespace MauiAppBasic
         {
             base.OnCreate(savedInstanceState);
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientWrapper.Instance.MSALClientHelper.AzureADConfig.ClientId}://auth";
+            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.ClientId}://auth";
             PlatformConfig.Instance.ParentWindow = this;
 
             // Initialize MSAL and platformConfig is set
-            var existinguser = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
+            IAccount existinguser = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace MauiAppBasic
         /// </summary>
         /// <param name="requestCode">request code </param>
         /// <param name="resultCode">result code</param>
-        /// <param name="data">intent of the actvity</param>
+        /// <param name="data">intent of the activity</param>
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);

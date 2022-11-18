@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using Microsoft.Identity.Client;
 
-//using Microsoft.Identity.Client.Broker;
+using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Abstractions;
 using System.Diagnostics;
@@ -63,7 +62,6 @@ namespace MAUI.MSALClient
 
         public static readonly string LinuxKeyRingCollection = MsalCacheHelper.LinuxKeyRingDefaultCollection;
         public static readonly string LinuxKeyRingLabel = "MSAL token cache for Contoso.";
-
         public static readonly KeyValuePair<string, string> LinuxKeyRingAttr1 = new KeyValuePair<string, string>("Version", "1");
         public static readonly KeyValuePair<string, string> LinuxKeyRingAttr2 = new KeyValuePair<string, string>("ProductGroup", "Contoso");
 
@@ -141,7 +139,16 @@ namespace MAUI.MSALClient
 
             // Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
             var storageProperties = new StorageCreationPropertiesBuilder(AzureADConfig.CacheFileName, AzureADConfig.CacheDir)
-                 .Build();
+                     .WithLinuxKeyring(
+                         LinuxKeyRingSchema,
+                         LinuxKeyRingCollection,
+                         LinuxKeyRingLabel,
+                         LinuxKeyRingAttr1,
+                         LinuxKeyRingAttr2)
+                     .WithMacKeyChain(
+                         KeyChainServiceName,
+                         KeyChainAccountName)
+                    .Build();
 
             var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
             msalcachehelper.RegisterCache(PublicClientApplication.UserTokenCache);

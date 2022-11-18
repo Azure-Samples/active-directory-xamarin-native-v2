@@ -66,7 +66,7 @@
 	  <Compile Include="..\MauiAppWithBroker\MSALClient\MSGraphApiConfig.cs" Link="MSALClient\MSGraphApiConfig.cs" />
 	  <Compile Include="..\MauiAppWithBroker\MSALClient\MSGraphHelper.cs" Link="MSALClient\MSGraphHelper.cs" />
 	  <Compile Include="..\MauiAppWithBroker\MSALClient\PlatformConfig.cs" Link="MSALClient\PlatformConfig.cs" />
-	  <Compile Include="..\MauiAppWithBroker\MSALClient\PublicClientWrapper.cs" Link="MSALClient\PublicClientWrapper.cs" />
+	  <Compile Include="..\MauiAppWithBroker\MSALClient\PublicClientSingleton.cs" Link="MSALClient\PublicClientSingleton.cs" />
 	  <Compile Include="..\MauiAppWithBroker\MSALClient\WindowsHelper.cs" Link="MSALClient\WindowsHelper.cs" />
 	</ItemGroup>
 

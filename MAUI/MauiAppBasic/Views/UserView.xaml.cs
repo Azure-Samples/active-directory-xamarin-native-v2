@@ -44,8 +44,8 @@ public partial class UserView : ContentPage
     {
         try
         {
-            var user = await PublicClientWrapper.Instance.MSGraphHelper.GetMeAsync();
-            UserImage.Source = ImageSource.FromStream(async _ => await PublicClientWrapper.Instance.MSGraphHelper.GetMyPhotoAsync());
+            var user = await PublicClientSingleton.Instance.MSGraphHelper.GetMeAsync();
+            UserImage.Source = ImageSource.FromStream(async _ => await PublicClientSingleton.Instance.MSGraphHelper.GetMyPhotoAsync());
 
             //// call Web API to get the data
             //AuthenticationResult result = await PublicClientWrapper.Instance.AcquireTokenSilentAsync();
@@ -63,7 +63,7 @@ public partial class UserView : ContentPage
         }
         catch (MsalUiRequiredException)
         {
-            await PublicClientWrapper.Instance.SignOutAsync();
+            await PublicClientSingleton.Instance.SignOutAsync();
             //await PublicClientWrapper.Instance.SignOutAsync().ContinueWith((t) =>
             //{
             //    return Task.CompletedTask;
@@ -77,7 +77,7 @@ public partial class UserView : ContentPage
 
     private async void SignOutButton_Clicked(object sender, EventArgs e)
     {
-        await PublicClientWrapper.Instance.SignOutAsync();
+        await PublicClientSingleton.Instance.SignOutAsync();
         //await PublicClientWrapper.Instance.SignOutAsync().ContinueWith((t) =>
         //{
         //    return Task.CompletedTask;

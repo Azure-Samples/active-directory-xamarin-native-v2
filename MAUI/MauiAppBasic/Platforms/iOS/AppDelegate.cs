@@ -3,6 +3,7 @@
 
 using Foundation;
 using MAUI.MSALClient;
+using Microsoft.Identity.Client;
 using UIKit;
 
 namespace MauiAppBasic
@@ -16,10 +17,10 @@ namespace MauiAppBasic
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = iOSRedirectURI;
+            PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.iOSRedirectUri;
 
             // Initialize MSAL and platformConfig is set
-            var existinguser = Task.Run(async () => await PublicClientWrapper.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
+            IAccount existinguser = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
 
             return base.FinishedLaunching(application, launchOptions);
         }

@@ -34,7 +34,7 @@ namespace MauiAppWithBroker.WinUI
             base.OnLaunched(args);
 
 
-            // 
+            // The brokers need the window handle specifically to operate and this event is earliest instance we have one provided. 
             var app = MauiAppWithBroker.App.Current;
             PlatformConfig.Instance.ParentWindow = ((MauiWinUIWindow)app.Windows[0].Handler.PlatformView).WindowHandle;
 

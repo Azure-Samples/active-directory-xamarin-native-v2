@@ -19,7 +19,7 @@ namespace MauiAppWithBroker
             base.OnCreate(savedInstanceState);
 
             // configure platform specific params
-            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.ClientId}://auth";
+            PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureADConfig.AndroidRedirectUri;
             PlatformConfig.Instance.ParentWindow = this;
 
             // Initialize MSAL and platformConfig is set

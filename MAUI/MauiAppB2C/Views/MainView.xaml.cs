@@ -12,23 +12,23 @@ namespace MauiB2C.Views
         {
             InitializeComponent();
 
+            IAccount cachedUserAccount = PublicClientSingleton.Instance.MSALClientHelper.FetchSignedInUserFromCache().Result;
+
             _ = Dispatcher.DispatchAsync(async () =>
             {
-                IAccount cachedUserAccount = await PublicClientSingleton.Instance.MSALClientHelper.FetchSignedInUserFromCache();
                 if (cachedUserAccount == null)
                 {
                     SignInButton.IsEnabled = true;
                 }
                 else
                 {
-                    await Shell.Current.GoToAsync("userview");
+                    await Shell.Current.GoToAsync("scopeview");
                 }
             });
         }
 
         private async void OnSignInClicked(object sender, EventArgs e)
         {
-
             await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
             await Shell.Current.GoToAsync("scopeview");
         }

@@ -158,10 +158,7 @@ namespace MAUIB2C.MSALClient
         /// <returns>An array of all scopes</returns>
         internal string[] GetScopes()
         {
-            return new string[] { "https://kkmsftadb2c.onmicrosoft.com/b3f9beff-55ba-4620-a43d-9ee6118aecf9/OtherScope", "https://kkmsftadb2c.onmicrosoft.com/b3f9beff-55ba-4620-a43d-9ee6118aecf9/TestScope" };
-            //return this.MSGraphHelper.MSGraphApiConfig.ScopesArray;
-
-            //return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+            return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
         }
 
         //// Custom logger for sample

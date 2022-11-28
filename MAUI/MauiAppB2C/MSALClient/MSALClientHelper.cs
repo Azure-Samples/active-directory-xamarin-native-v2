@@ -116,8 +116,7 @@ namespace MAUIB2C.MSALClient
             }
 
             // Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
-            //var storageProperties = new StorageCreationPropertiesBuilder(AzureADB2CConfig.CacheFileName, AzureADB2CConfig.CacheDir)
-            var storageProperties = new StorageCreationPropertiesBuilder("cache.txt", "C:\\temp")
+            var storageProperties = new StorageCreationPropertiesBuilder(AzureADB2CConfig.CacheFileName, AzureADB2CConfig.CacheDir)
                      .WithLinuxKeyring(
                          LinuxKeyRingSchema,
                          LinuxKeyRingCollection,

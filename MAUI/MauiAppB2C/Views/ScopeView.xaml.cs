@@ -1,41 +1,32 @@
-using MauiB2C.MSALClient;
+using MAUIB2C.MSALClient;
 using Microsoft.Identity.Client;
 
 namespace MauiB2C.Views;
 
 public partial class ScopeView : ContentPage
 {
+    public IEnumerable<string> AccessTokenScopes { get; set; } = new string[] {"No scopes found in access token"};
     public ScopeView()
     {
+        BindingContext = this;
         InitializeComponent();
 
-        _ = SetClaimsAsync();
+        _ = SetViewDataAsync();
     }
 
-    private async Task SetClaimsAsync()
+    private async Task SetViewDataAsync()
     {
         try
         {
-            AuthenticationResult result = await PublicClientWrapperB2C.Instance.AcquireTokenSilentAsync();
+            _ = await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
 
-            var name = result.ClaimsPrincipal.FindFirst("name");
-            var trustFrameworkPolicy = result.ClaimsPrincipal.FindFirst("tfp");
-            var issuedAt = result.ClaimsPrincipal.FindFirst("iat");
-            var expiresAt = result.ClaimsPrincipal.FindFirst("exp");
+            ExpiresAt.Text = PublicClientSingleton.Instance.MSALClientHelper.AuthResult.ExpiresOn.ToLocalTime().ToString();
+            AccessTokenScopes = PublicClientSingleton.Instance.MSALClientHelper.AuthResult.Scopes
+                .Select(s => s.Split("/").Last());
 
-            UserName.Text = name.Value;
-            TrustFrameworkPolicy.Text = trustFrameworkPolicy.Value;
-
-            IssuedAt.Text = DateTimeOffset.FromUnixTimeSeconds((long)Convert.ToDouble(issuedAt.Value))
-                .DateTime
-                .ToLocalTime()
-                .ToString();
-
-            ExpiresAt.Text = DateTimeOffset.FromUnixTimeSeconds((long)Convert.ToDouble(expiresAt.Value))
-                .DateTime
-                .ToLocalTime()
-                .ToString();
+            Scopes.ItemsSource = AccessTokenScopes;
         }
+
         catch (MsalUiRequiredException)
         {
             await Shell.Current.GoToAsync("scopeview");
@@ -46,7 +37,7 @@ public partial class ScopeView : ContentPage
 
     private async void SignOutButton_Clicked(object sender, EventArgs e)
     {
-        await PublicClientWrapperB2C.Instance.SignOutAsync().ContinueWith((t) =>
+        await PublicClientSingleton.Instance.SignOutAsync().ContinueWith((t) =>
         {
             return Task.CompletedTask;
         });

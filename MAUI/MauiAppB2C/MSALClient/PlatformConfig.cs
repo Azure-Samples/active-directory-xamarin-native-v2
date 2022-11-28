@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiB2C.MSALClient
+namespace MAUIB2C.MSALClient
 {
     /// <summary>
     /// Platform specific configuration.
@@ -22,7 +22,7 @@ namespace MauiB2C.MSALClient
         /// <summary>
         /// Platform specific Redirect URI
         /// </summary>
-        public string RedirectUri { get; set; } = $"msal{PublicClientWrapperB2C.AppConfiguration["AzureAdB2C:ClientId"]}://auth";
+        public string RedirectUri { get; set; } = $"msalb3f9beff-55ba-4620-a43d-9ee6118aecf9://auth";
 
         /// <summary>
         /// Platform specific parent window

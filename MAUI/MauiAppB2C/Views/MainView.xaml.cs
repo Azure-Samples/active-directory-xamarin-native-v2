@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using MauiB2C.MSALClient;
+using MAUIB2C.MSALClient;
 using Microsoft.Identity.Client;
 
 namespace MauiB2C.Views
@@ -14,28 +14,22 @@ namespace MauiB2C.Views
 
             _ = Dispatcher.DispatchAsync(async () =>
             {
-                SignInButton.IsEnabled = await PublicClientWrapperB2C.Instance.InitializCache();
+                IAccount cachedUserAccount = await PublicClientSingleton.Instance.MSALClientHelper.FetchSignedInUserFromCache();
+                if (cachedUserAccount == null)
+                {
+                    SignInButton.IsEnabled = true;
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync("userview");
+                }
             });
-
         }
 
         private async void OnSignInClicked(object sender, EventArgs e)
         {
-            try
-            {
-                AuthenticationResult result = await PublicClientWrapperB2C.Instance.AcquireTokenSilentAsync();
-            }
-            catch (MsalUiRequiredException)
-            {
-                // This executes UI interaction to obtain token
-                AuthenticationResult result = await PublicClientWrapperB2C.Instance.AcquireTokenInteractiveAsync();
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Exception during signin", ex.Message, "OK").ConfigureAwait(false);
-                return;
-            }
 
+            await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
             await Shell.Current.GoToAsync("scopeview");
         }
         protected override bool OnBackButtonPressed() { return true; }

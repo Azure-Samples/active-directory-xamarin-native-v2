@@ -20,7 +20,7 @@ namespace MauiAppBasic.Platforms.Android.Resources
     [IntentFilter(new[] { Intent.ActionView },
         Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
         DataHost = "auth",
-        DataScheme = "msal[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]")]
+        DataScheme = "msalb3f9beff-55ba-4620-a43d-9ee6118aecf9")]
     public class MsalActivity : BrowserTabActivity
     {
     }

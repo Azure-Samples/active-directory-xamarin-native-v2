@@ -1,4 +1,5 @@
-﻿using MauiB2C.MSALClient;
+﻿using MAUIB2C.MSALClient;
+using Microsoft.Identity.Client;
 using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -18,7 +19,14 @@ public partial class App : MauiWinUIApplication
     public App()
 	{
 		this.InitializeComponent();
-	}
+
+        // configure redirect URI for your application
+        PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureADB2CConfig.ClientId}://auth";
+
+        // Initialize MSAL
+        IAccount existinguser = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
+
+    }
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 

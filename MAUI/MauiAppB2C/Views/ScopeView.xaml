@@ -17,33 +17,41 @@
             Padding="0,0,0,20"
             HorizontalOptions="Center" />
         <Label 
-            x:Name="UserName"
             Padding="0,20,0,20"
             VerticalOptions="Center" 
-            HorizontalOptions="Center" 
-            FontSize="22"
-            />
-        <Label 
-            x:Name="TrustFrameworkPolicy"
-            Padding="20,0,0,20"
-            VerticalOptions="Center" 
             HorizontalOptions="Center"
             FontSize="18"
-            />
-        <Label 
-            x:Name="IssuedAt"
-            Padding="20,0,0,20"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center"
-            FontSize="18"
+            Text="Token expires on"
             />
         <Label 
             x:Name="ExpiresAt"
-            Padding="20,0,0,20"
+            Padding="0,0,0,20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="16"
+            />
+
+        <Label 
+            Padding="0,20,0,0"
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             FontSize="18"
+            Text="Scopes found in access token"
             />
+        <ListView ItemsSource="{Binding AccessTokenScopes}"
+                  x:Name="Scopes">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="0, 0, 0, 0">
+                            <Label Grid.Column="1" 
+                                   Text="{Binding}" 
+                                   HorizontalOptions="Center" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <Button
             x:Name="SignOutButton"
             Text="Sign Out"

@@ -4,7 +4,7 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using MauiB2C.MSALClient;
+using MAUIB2C.MSALClient;
 using Microsoft.Identity.Client;
 
 namespace MauiB2C;
@@ -16,7 +16,11 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnCreate(savedInstanceState);
         // configure platform specific params
+        PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureADB2CConfig.ClientId}://auth";
         PlatformConfig.Instance.ParentWindow = this;
+
+        // Initialize MSAL and platformConfig is set
+        _ = Task.Run(async () => await PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync()).Result;
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

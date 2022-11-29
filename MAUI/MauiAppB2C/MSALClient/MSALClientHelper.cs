@@ -80,13 +80,6 @@ namespace MAUIB2C.MSALClient
                 .WithB2CAuthority($"{AzureADB2CConfig.Instance}/tfp/{AzureADB2CConfig.Domain}/{AzureADB2CConfig.SignUpSignInPolicyid}")
                 .WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
                 .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
-
-            //.WithAuthority(string.Format(AzureADConfig.Authority, AzureADConfig.TenantId))
-            //.WithExperimentalFeatures() // this is for upcoming logger
-            //.WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false)    // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
-            //.WithClientCapabilities(new string[] { "cp1" })                                     // declare this client app capable of receiving CAE events- https://aka.ms/clientcae
-
-            //.WithIosKeychainSecurityGroup("com.microsoft.adalcache");
         }
 
         /// <summary>
@@ -117,15 +110,6 @@ namespace MAUIB2C.MSALClient
 
             // Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
             var storageProperties = new StorageCreationPropertiesBuilder(AzureADB2CConfig.CacheFileName, AzureADB2CConfig.CacheDir)
-                     .WithLinuxKeyring(
-                         LinuxKeyRingSchema,
-                         LinuxKeyRingCollection,
-                         LinuxKeyRingLabel,
-                         LinuxKeyRingAttr1,
-                         LinuxKeyRingAttr2)
-                     .WithMacKeyChain(
-                         KeyChainServiceName,
-                         KeyChainAccountName)
                     .Build();
 
             var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);

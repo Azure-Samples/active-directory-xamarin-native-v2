@@ -28,11 +28,6 @@ namespace MAUIB2C.MSALClient
         /// </summary>
         public MSALClientHelper MSALClientHelper { get; }
 
-        ///// <summary>
-        ///// Instance of PublicClientApplication. It is provided, if App wants more customization.
-        ///// </summary>
-        //internal IPublicClientApplication PCA { get; }
-
         /// <summary>
         /// This will determine if the Interactive Authentication should be Embedded or System view
         /// </summary>
@@ -57,24 +52,6 @@ namespace MAUIB2C.MSALClient
 
             AzureADB2CConfig azureADConfig = AppConfiguration.GetSection("AzureAdB2C").Get<AzureADB2CConfig>();
             this.MSALClientHelper = new MSALClientHelper(azureADConfig);
-
-            //// Create PCA once. Make sure that all the config parameters below are passed
-            //PCA = PublicClientApplicationBuilder
-            //                            .Create(AppConfiguration["AzureAd:ClientId"])
-            //                            .WithTenantId(AppConfiguration["AzureAd:TenantId"])
-            //                            .WithExperimentalFeatures() // this is for upcoming logger
-            //                            .WithLogging(_logger)
-            //                            .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
-            //                            .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-            //                            .Build();
-
-            //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            //{
-            //    //Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
-            //    var storageProperties = new StorageCreationPropertiesBuilder(AppConfiguration["CacheFileName"], AppConfiguration["CacheDir"]).Build();
-            //    MsalCacheHelper.CreateAsync(storageProperties)
-            //        .ContinueWith(async msalCacheHelper => (await msalCacheHelper).RegisterCache(PCA.UserTokenCache));
-            //}
         }
 
         /// <summary>
@@ -84,7 +61,6 @@ namespace MAUIB2C.MSALClient
         public async Task<string> AcquireTokenSilentAsync()
         {
             // Get accounts by policy
-            //IEnumerable<IAccount> accounts = await PCA.GetAccountsAsync(PublicClientWrapperB2C.AppConfiguration["AzureAdB2C:SignUpSignInPolicyId"]).ConfigureAwait(false);
             return await this.AcquireTokenSilentAsync(this.GetScopes()).ConfigureAwait(false);
         }
 
@@ -96,13 +72,6 @@ namespace MAUIB2C.MSALClient
         public async Task<string> AcquireTokenSilentAsync(string[] scopes)
         {
             return await this.MSALClientHelper.SignInUserAndAcquireAccessToken(scopes).ConfigureAwait(false);
-
-            //var accts = await PCA.GetAccountsAsync().ConfigureAwait(false);
-            //var acct = accts.FirstOrDefault();
-
-            //var authResult = await PCA.AcquireTokenSilent(scopes, acct)
-            //                          .ExecuteAsync().ConfigureAwait(false);
-            //return authResult;
         }
 
         /// <summary>
@@ -114,27 +83,6 @@ namespace MAUIB2C.MSALClient
         {
             this.MSALClientHelper.UseEmbedded = this.UseEmbedded;
             return await this.MSALClientHelper.SignInUserInteractivelyAsync(scopes).ConfigureAwait(false);
-
-            //            if (UseEmbedded)
-            //            {
-            //                return await PCA.AcquireTokenInteractive(scopes)
-            //                                        .WithUseEmbeddedWebView(true)
-            //                                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
-            //                                        .ExecuteAsync()
-            //                                        .ConfigureAwait(false);
-            //            }
-
-            //            SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
-            //#if IOS
-            //            // Hide the privacy prompt in iOS
-            //            systemWebViewOptions.iOSHidePrivacyPrompt = true;
-            //#endif
-
-            //            return await PCA.AcquireTokenInteractive(scopes)
-            //                                    .WithSystemWebViewOptions(systemWebViewOptions)
-            //                                    .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
-            //                                    .ExecuteAsync()
-            //                                    .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -144,12 +92,6 @@ namespace MAUIB2C.MSALClient
         internal async Task SignOutAsync()
         {
             await this.MSALClientHelper.SignOutUserAsync().ConfigureAwait(false);
-
-            //var accounts = await PCA.GetAccountsAsync().ConfigureAwait(false);
-            //foreach (var acct in accounts)
-            //{
-            //    await PCA.RemoveAsync(acct).ConfigureAwait(false);
-            //}
         }
 
         /// <summary>
@@ -160,37 +102,5 @@ namespace MAUIB2C.MSALClient
         {
             return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
         }
-
-        //// Custom logger for sample
-        //private readonly MyLogger _logger = new MyLogger();
-
-        //// Custom logger class
-        //private class MyLogger : IIdentityLogger
-        //{
-        //    /// <summary>
-        //    /// Checks if log is enabled or not based on the Entry level
-        //    /// </summary>
-        //    /// <param name="eventLogLevel"></param>
-        //    /// <returns></returns>
-        //    public bool IsEnabled(EventLogLevel eventLogLevel)
-        //    {
-        //        //Try to pull the log level from an environment variable
-        //        var msalEnvLogLevel = Environment.GetEnvironmentVariable("MSAL_LOG_LEVEL");
-
-        //        EventLogLevel envLogLevel = EventLogLevel.Informational;
-        //        Enum.TryParse<EventLogLevel>(msalEnvLogLevel, out envLogLevel);
-
-        //        return envLogLevel <= eventLogLevel;
-        //    }
-
-        //    /// <summary>
-        //    /// Log to console for demo purpose
-        //    /// </summary>
-        //    /// <param name="entry">Log Entry values</param>
-        //    public void Log(LogEntry entry)
-        //    {
-        //        Console.WriteLine(entry.Message);
-        //    }
-        //}
     }
 }

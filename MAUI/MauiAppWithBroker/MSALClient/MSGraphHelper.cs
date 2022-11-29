@@ -93,31 +93,6 @@ namespace MAUI.MSALClient
             return userPhoto;
         }
 
-        //public async Task<T> CallMSGraph<T>(IBaseRequestBuilder baseRequestBuilder)
-        //{
-        //    if (this._graphServiceClient == null)
-        //    {
-        //        await SignInAndInitializeGraphServiceClient();
-        //    }
-
-        //    T dataToReturn = null;
-
-        //    // Call /me Api
-
-        //    try
-        //    {
-        //        dataToReturn = await baseRequestBuilder.GetAsync();
-        //    }
-        //    catch (ServiceException ex) when (ex.Message.Contains("Continuous access evaluation resulted in claims challenge"))
-        //    {
-        //        this._graphServiceClient = await SignInAndInitializeGraphServiceClientPostCAE(ex);
-
-        //        // Call the /me endpoint of Graph again with a fresh token
-        //        dataToReturn = await baseRequestBuilder.GetAsync();
-        //    }
-        //    return dataToReturn;
-        //}
-
         /// <summary>
         /// Sign in user using MSAL and obtain a token for MS Graph
         /// </summary>

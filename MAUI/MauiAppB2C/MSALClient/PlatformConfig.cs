@@ -22,7 +22,7 @@ namespace MAUIB2C.MSALClient
         /// <summary>
         /// Platform specific Redirect URI
         /// </summary>
-        public string RedirectUri { get; set; } = $"msalb3f9beff-55ba-4620-a43d-9ee6118aecf9://auth";
+        public string RedirectUri { get; set; } = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureADB2CConfig.ClientId}://auth";
 
         /// <summary>
         /// Platform specific parent window

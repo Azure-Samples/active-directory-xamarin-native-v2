@@ -139,15 +139,6 @@ namespace MAUI.MSALClient
 
             // Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
             var storageProperties = new StorageCreationPropertiesBuilder(AzureADConfig.CacheFileName, AzureADConfig.CacheDir)
-                     .WithLinuxKeyring(
-                         LinuxKeyRingSchema,
-                         LinuxKeyRingCollection,
-                         LinuxKeyRingLabel,
-                         LinuxKeyRingAttr1,
-                         LinuxKeyRingAttr2)
-                     .WithMacKeyChain(
-                         KeyChainServiceName,
-                         KeyChainAccountName)
                     .Build();
 
             var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
@@ -317,8 +308,7 @@ namespace MAUI.MSALClient
         /// <returns></returns>
         public async Task<IAccount> FetchSignedInUserFromCache()
         {
-            //Exception<NullReferenceException>.ThrowOn(() => this.PublicClientApplication == null, PCANotInitializedExceptionMessage);
-            if (this.PublicClientApplication == null) return null;
+            Exception<NullReferenceException>.ThrowOn(() => this.PublicClientApplication == null, PCANotInitializedExceptionMessage);
 
             // get accounts from cache
             IEnumerable<IAccount> accounts = await this.PublicClientApplication.GetAccountsAsync().ConfigureAwait(false);

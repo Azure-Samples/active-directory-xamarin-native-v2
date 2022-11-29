@@ -45,7 +45,7 @@ This sample demonstrates a MAUI (iOS, Android, UWP) calling Microsoft Graph.
 1. The client MAUI (iOS, Android, UWP) uses the [MSAL.NET](https://aka.ms/msal-net) to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) and an [Access Token](https://aka.ms/access-tokens) from **Azure AD B2C**.
 1. The **access token** is used as a *bearer* token to authorize the user to call the Microsoft Graph protected by **Azure AD B2C**.
 
-![Topology](./ReadmeFiles/Topology.png)
+![Topology](./ReadmeFiles/topology.png)
 
 ## How To Run this Sample
 

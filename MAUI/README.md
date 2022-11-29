@@ -26,8 +26,8 @@ This repository contains a three-part tutorial - a basic scenario, a more advanc
 Sub folder                    | Description
 ----------------------------- | -----------
 [MauiAppBasic](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/MAUI/MauiAppBasic) | This sample app shows how to use the Microsoft identity platform endpoint to sign-in a user interactively and display their profile </p> ![Topology](./MauiAppBasic/ReadmeFiles/topology.png)
-[MauiAppWithBroker](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/MAUI/MauiAppWithBroker)  | This chapter adds additional support for the broker (Microsoft Authenticator), which enables more complex scenarios, like device related conditional access and SSO. </p>  ![Topology](./MauiAppWithBroker/ReadmeFiles/Topology.png)
-[MauiAppB2C](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/MAUI/MauiAppB2C)  | This sample app shows how to use the Microsoft identity platform endpoint to sign-in a user interactively with Azure Active Directory B2C and display their access permissions </p>  ![Topology](./MauiAppB2C/ReadmeFiles/Topology.png)
+[MauiAppWithBroker](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/MAUI/MauiAppWithBroker)  | This chapter adds additional support for the broker (Microsoft Authenticator), which enables more complex scenarios, like device related conditional access and SSO. </p>  ![Topology](./MauiAppWithBroker/ReadmeFiles/topology.png)
+[MauiAppB2C](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/tree/master/MAUI/MauiAppB2C)  | This sample app shows how to use the Microsoft identity platform endpoint to sign-in a user interactively with Azure Active Directory B2C and display their access permissions </p>  ![Topology](./MauiAppB2C/ReadmeFiles/topology.png)
 
 ## How to run this sample for MAUI
 

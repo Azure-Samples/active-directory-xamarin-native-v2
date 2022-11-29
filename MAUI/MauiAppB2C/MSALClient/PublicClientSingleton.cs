@@ -26,6 +26,11 @@ namespace MAUIB2C.MSALClient
         /// <summary>
         /// Gets the instance of MSALClientHelper.
         /// </summary>
+        public DownstreamApiHelper DownstreamApiHelper { get; }
+
+        /// <summary>
+        /// Gets the instance of MSALClientHelper.
+        /// </summary>
         public MSALClientHelper MSALClientHelper { get; }
 
         /// <summary>
@@ -52,6 +57,9 @@ namespace MAUIB2C.MSALClient
 
             AzureADB2CConfig azureADConfig = AppConfiguration.GetSection("AzureAdB2C").Get<AzureADB2CConfig>();
             this.MSALClientHelper = new MSALClientHelper(azureADConfig);
+
+            DownStreamApiConfig downStreamApiConfig = AppConfiguration.GetSection("DownstreamApi").Get<DownStreamApiConfig>();
+            this.DownstreamApiHelper = new DownstreamApiHelper(downStreamApiConfig, this.MSALClientHelper);
         }
 
         /// <summary>
@@ -100,7 +108,7 @@ namespace MAUIB2C.MSALClient
         /// <returns>An array of all scopes</returns>
         internal string[] GetScopes()
         {
-            return AppConfiguration["DownstreamApi:Scopes"].Split(" ");
+            return this.DownstreamApiHelper.DownstreamApiConfig.ScopesArray;
         }
     }
 }

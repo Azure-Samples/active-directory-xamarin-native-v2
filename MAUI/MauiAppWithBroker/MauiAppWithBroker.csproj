@@ -53,6 +53,7 @@
 	<ItemGroup>
 	  <None Remove="appsettings.json" />
 	  <None Remove="Resources\Images\azure_active_directory.jpg" />
+	  <None Remove="Resources\Images\no_profile_image.png" />
 	</ItemGroup>
 
 	<ItemGroup>

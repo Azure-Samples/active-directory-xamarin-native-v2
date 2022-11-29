@@ -14,7 +14,7 @@
             VerticalOptions="Center">
 
             <Image
-                Source="azure_active_directory.jpg"
+                Source="azure_active_directory.png"
                 SemanticProperties.Description="Azure Active Directory Logo"
                 HeightRequest="200"
                 HorizontalOptions="Center" />

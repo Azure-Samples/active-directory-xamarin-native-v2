@@ -2,57 +2,34 @@
 
 The structure of the solution is straightforward. All the application logic and UX reside in `MSALClient` folder.
 
-- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `PCAWrapper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
-
-```CSharp
-// Create PCA once. Make sure that all the config parameters below are passed
-PCA = PublicClientApplicationBuilder
-                            .Create(B2CConstants.ClientID)
-                            .WithExperimentalFeatures() // this is for upcoming logger
-                            .WithLogging(_logger)
-                            .WithB2CAuthority(B2CConstants.AuthoritySignInSignUp)
-                            .WithIosKeychainSecurityGroup(B2CConstants.IOSKeyChainGroup)
-                            .WithRedirectUri(B2CConstants.RedirectUri)
-                            .Build();
-```
+- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `MSALClientHelper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
 - When the app tries to get an access token to make an API call after the sign in button is clicked (`MainPage.xaml.cs`) it will attempt to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
 ```CSharp
-try
+private async void OnSignInClicked(object sender, EventArgs e)
 {
-    AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync(B2CConstants.Scopes);
-}
-catch (MsalUiRequiredException)
-{
-    // This executes UI interaction to obtain token
-    AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenInteractiveAsync(B2CConstants.Scopes);
-}
-catch (Exception ex)
-{
-    await DisplayAlert("Exception during signin", ex.Message, "OK").ConfigureAwait(false);
-    return;
+    await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
+    await Shell.Current.GoToAsync("scopeview");
 }
 ```
 
-- If the attempt to obtain a token silently fails, we display a screen with the sign in button (at the bottom of the application).
+- If the attempt to obtain a token silently fails, a screen with the sign in button (at the bottom of the application) is displayed.
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
-  ```CSharp
-  AuthenticationResult result = await PCA.AcquireTokenInteractive(B2CConstants.Scopes);
-  ```
+```CSharp
+return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+    .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+    .ExecuteAsync()
+    .ConfigureAwait(false);
+```
 
 - The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call.
 
 - The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.
 
 ```CSharp
-var accounts = await App.PCA.GetAccountsAsync();
-while (accounts.Any())
-{
-   await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-   accounts = await App.PCA.GetAccountsAsync();
-}
+await this.PublicClientApplication.RemoveAsync(user).ConfigureAwait(false);
 ```
 
 ### iOS specific considerations

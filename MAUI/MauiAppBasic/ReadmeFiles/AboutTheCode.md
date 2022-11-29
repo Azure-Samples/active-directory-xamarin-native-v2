@@ -2,19 +2,7 @@
 
 The structure of the solution is straightforward. All the application logic and UX reside in ``UserDetailsClient (portable)`` project.
 
-- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `MSALClient\PCAWrapper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
-
-```CSharp
-// Create PCA once. Make sure that all the config parameters below are passed
-PCA = PublicClientApplicationBuilder
-                            .Create(AppConstants.ClientId)
-                            .WithTenantId(AppConstants.TenantId)
-                            .WithExperimentalFeatures() // this is for upcoming logger
-                            .WithLogging(_logger)
-                            .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
-                            .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-                            .Build();
-  ```
+- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `MauiAppWithBroker\MSALClient\MSALClientHelper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
 - For single-tenant apps, you must include `.WithTenantId(<tenantId>)` in the application builder.
 
@@ -22,31 +10,48 @@ PCA = PublicClientApplicationBuilder
 
 ```CSharp
 try
+private async void OnSignInClicked(object sender, EventArgs e)
 {
-    PCAWrapper.Instance.UseEmbedded = this.useEmbedded.IsChecked;
+    // Sign-in the user
+    PublicClientSingleton.Instance.UseEmbedded = this.useEmbedded.IsChecked;
+    await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
 
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes);
-}
-catch (MsalUiRequiredException)
-{
-    // This executes UI interaction to obtain token
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes);
-}
-catch (Exception ex)
-{
-    await DisplayAlert("Exception during signin", ex.Message, "OK").ConfigureAwait(false);
-    return;
+    await Shell.Current.GoToAsync("userview");
 }
 ```
 
 - If the attempt to obtain a token silently fails a sign-in screen will appear.
     * Using the 'Embedded' login screen will prompt your user to login from a desktop screen
-    * Default login behavior will use the devices embedded browser to prompt a login with the authorization host. By default this application uses 'login.microsoft.com'    
+    * Default login behavior will use the devices embedded browser to prompt a login with the authorization host. By default this application uses 'login.microsoft.com'
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
 ```CSharp
-// This executes UI interaction to obtain token
-AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes).ConfigureAwait(false);
+            if (this.PublicClientApplication.IsUserInteractive())
+            {
+                if (UseEmbedded)
+                {
+                    return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+                        .WithLoginHint(existingAccount?.Username ?? String.Empty)
+                        .WithUseEmbeddedWebView(true)
+                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
+#if IOS
+                    // Hide the privacy prompt in iOS
+                    systemWebViewOptions.iOSHidePrivacyPrompt = true;
+#endif
+                    return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+                        .WithLoginHint(existingAccount?.Username ?? String.Empty)
+                        .WithSystemWebViewOptions(systemWebViewOptions)
+                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+                }
+            }
   ```
 
 - The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call.

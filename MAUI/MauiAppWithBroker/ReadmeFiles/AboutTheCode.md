@@ -14,48 +14,34 @@ This application is be able to authenticate users with the **Microsoft Authentic
 
 The structure of the solution is straightforward. All the application logic and UX reside in `MSALClient` folder.
 
-- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `PCAWrapper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
-
-```CSharp
-// Create PublicClientApplication once. Make sure that all the config parameters below are passed
-PCA = PublicClientApplicationBuilder
-                            .Create(AppConstants.ClientId)
-                            .WithTenantId(AppConstants.TenantId)
-                            .WithExperimentalFeatures() // this is for upcoming logger
-                            .WithLogging(_logger)
-                            .WithBroker()
-                            .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
-                            .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-                            .Build();
-```
-
-- For single-tenant apps, you must include `.WithTenantId(<tenantId>)` in the application builder.
+- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `MSALClientHelper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
 - When the app tries to get an access token to make an API call after the sign in button is clicked (`MainPage.xaml.cs`) it will attempt to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
 ```CSharp
-try
+private async void OnSignInClicked(object sender, EventArgs e)
 {
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenSilentAsync(AppConstants.Scopes);
-}
-catch (MsalUiRequiredException)
-{
-    // This executes UI interaction to obtain token
-    AuthenticationResult result = await PCAWrapper.Instance.AcquireTokenInteractiveAsync(AppConstants.Scopes);
-}
-catch (Exception ex)
-{
-    await DisplayAlert("Exception during signin", ex.Message, "OK").ConfigureAwait(false);
-    return;
+    await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
+    await Shell.Current.GoToAsync("scopeview");
 }
 ```
 
 - If the attempt to obtain a token silently fails, we display a screen with the sign in button (at the bottom of the application).
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX from the broker:
 
-  ```CSharp
-  AuthenticationResult result = await PCA.AcquireTokenInteractive(App.Scopes, App.ParentWindow);
-  ```
+```CSharp
+                    SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions();
+#if IOS
+                    // Hide the privacy prompt in iOS
+                    systemWebViewOptions.iOSHidePrivacyPrompt = true;
+#endif
+                    return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+                        .WithLoginHint(existingAccount?.Username ?? String.Empty)
+                        .WithSystemWebViewOptions(systemWebViewOptions)
+                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+```
 
 - The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call.
 
@@ -64,12 +50,7 @@ The `parentWindow` is used in Android to tie the authentication flow to the curr
 - The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.
 
 ```CSharp
-    var accounts = await App.PCA.GetAccountsAsync();
-    while (accounts.Any())
-    {
-     await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-     accounts = await App.PCA.GetAccountsAsync();
-    }
+await this.PublicClientApplication.RemoveAsync(user).ConfigureAwait(false);
 ```
 
 To enable the broker, you need to use the `WithBroker()` parameter when calling the `PublicClientApplicationBuilder.CreateApplication` method. `.WithBroker()` is set to true by default. Developers will also need to follow the steps below for [iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS#brokered-authentication-for-ios) or [Android](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS#brokered-authentication-for-Android) applications.
@@ -106,23 +87,6 @@ Also, in order to make the token cache work and have the `AcquireTokenSilentAsyn
 1. Enable Keychain access in your `Entitlements.plist` file and specify in the **Keychain Groups** your bundle identifier.
 1. In your project options, on iOS **Bundle Signing view**, select your `Entitlements.plist` file for the Custom Entitlements field.
 1. When signing a certificate, make sure XCode uses the same Apple Id.
-
-#### Enable broker 
-
-Broker support is enabled on a per-PublicClientApplication basis. It is disabled by default. You must use the `WithBroker()` parameter (set to true by default) when creating the PublicClientApplication through the PublicClientApplicationBuilder.
-
-```CSharp
-// Create PublicClientApplication once. Make sure that all the config parameters below are passed
-PCA = PublicClientApplicationBuilder
-                            .Create(AppConstants.ClientId)
-                            .WithTenantId(AppConstants.TenantId)
-                            .WithExperimentalFeatures() // this is for upcoming logger
-                            .WithLogging(_logger)
-                            .WithBroker()
-                            .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
-                            .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-                            .Build();
-```
 
 #### Configure application to handle the authentication callback
 

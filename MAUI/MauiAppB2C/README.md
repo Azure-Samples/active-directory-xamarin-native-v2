@@ -164,76 +164,35 @@ Were we successful in addressing your learning objective? Consider taking a mome
 
 The structure of the solution is straightforward. All the application logic and UX reside in `MSALClient` folder.
 
-- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `PCAWrapper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
-
-```CSharp
-// Create PublicClientApplication once. Make sure that all the config parameters below are passed
-PCA = PublicClientApplicationBuilder
-                            .Create(AppConstants.ClientId)
-                            .WithTenantId(AppConstants.TenantId)
-                            .WithExperimentalFeatures() // this is for upcoming logger
-                            .WithLogging(_logger)
-                            .WithBroker()
-                            .WithRedirectUri(PlatformConfig.Instance.RedirectUri)
-                            .WithIosKeychainSecurityGroup("com.microsoft.adalcache")
-                            .Build();
-```
-
-- For single-tenant apps, you must include `.WithTenantId(<tenantId>)` in the application builder.
+- MSAL's main primitive for native clients, `PublicClientApplication`, is initialized as a static variable in `MSALClientHelper.cs` (For details see [Client applications in MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Client-Applications))
 
 - When the app tries to get an access token to make an API call after the sign in button is clicked (`MainPage.xaml.cs`) it will attempt to get a token without showing any UX - just in case a suitable token is already present in the cache from previous sessions. This is the code performing that logic:
 
 ```CSharp
-try
+private async void OnSignInClicked(object sender, EventArgs e)
 {
-    // First attempt silent login, which checks the cache for an existing valid token.
-    // If this is very first time or user has signed out, it will throw MsalUiRequiredException
-    AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenSilentAsync(B2CConstants.Scopes).ConfigureAwait(false);
-
-    string claims = GetClaims(result);
-
-    // show the claims
-    await ShowMessage("AcquireTokenTokenSilent call Claims", claims).ConfigureAwait(false);
-}
-catch (MsalUiRequiredException)
-{
-    // This executes UI interaction to obtain token
-    AuthenticationResult result = await PCAWrapperB2C.Instance.AcquireTokenInteractiveAsync(B2CConstants.Scopes).ConfigureAwait(false);
-
-    string claims = GetClaims(result);
-
-    // show the Claims
-    await ShowMessage("AcquireTokenInteractive call Claims", claims).ConfigureAwait(false);
-}
-catch (Exception ex)
-{
-    await ShowMessage("Exception in AcquireTokenTokenSilent", ex.Message).ConfigureAwait(false);
+    await PublicClientSingleton.Instance.AcquireTokenSilentAsync();
+    await Shell.Current.GoToAsync("scopeview");
 }
 ```
 
-- If the attempt to obtain a token silently fails, we display a screen with the sign in button (at the bottom of the application).
+- If the attempt to obtain a token silently fails, a screen with the sign in button (at the bottom of the application) is displayed.
 - When the sign in button is pressed, we execute the same logic - but using a method that shows interactive UX:
 
-  ```CSharp
-  AuthenticationResult result = await PCA.AcquireTokenInteractive(App.Scopes, App.ParentWindow);
-  ```
+```CSharp
+return await this.PublicClientApplication.AcquireTokenInteractive(scopes)
+    .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
+    .ExecuteAsync()
+    .ConfigureAwait(false);
+```
 
-- The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call (in this sample, encapsulated in `RefreshUserData`).
-
-The `parentWindow` is used in Android to tie the authentication flow to the current activity, and in UWP to center the window. It is ignored on iOS. For more platform specific considerations, please see below.
+- The `Scopes` parameter indicates the permissions the application needs to gain access to the data requested through subsequent web API call.
 
 - The sign out logic is very simple. In this sample we have just one user, however we are demonstrating a more generic sign out logic that you can apply if you have multiple concurrent users and you want to clear up the entire cache.
 
-    ```CSharp
-    var accounts = await App.PCA.GetAccountsAsync();
-    while (accounts.Any())
-    {
-     await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-     accounts = await App.PCA.GetAccountsAsync();
-    }
-    ```
-
-To enable the broker, you need to use the `WithBroker()` parameter when calling the `PublicClientApplicationBuilder.CreateApplication` method. `.WithBroker()` is set to true by default. Developers will also need to follow the steps below for [iOS](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS#brokered-authentication-for-ios) or [Android](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Leveraging-the-broker-on-iOS#brokered-authentication-for-Android) applications.
+```CSharp
+await this.PublicClientApplication.RemoveAsync(user).ConfigureAwait(false);
+```
 
 ### iOS specific considerations
 
@@ -260,7 +219,7 @@ public override bool OpenUrl(UIApplication application, NSUrl url, NSDictionary 
 }
 ```
 
-Once again, this logic is meant to ensure that once the interactive portion of the authentication flow is concluded by the Authenticator app, the flow goes back to MSAL.
+This logic is meant to ensure that once the interactive portion of the authentication flow is concluded by the Authenticator app, the flow goes back to MSAL.
 
 Also, in order to make the token cache work and have the `AcquireTokenSilentAsync` work multiple steps must be followed :
 

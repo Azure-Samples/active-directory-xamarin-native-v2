@@ -2,10 +2,10 @@
   "Sample": {
     "Title": "A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api",
     "Level": 200,
-    "Client": "MAUI (iOS, Android, UWP)",
+    "Client": "MAUI (iOS, Android, WinUI)",
     "RepositoryUrl": "active-directory-xamarin-native-v2",
     "Endpoint": "AAD v2.0",
-    "Description": "Integrate Microsoft identity, the Microsoft Authenticator B2C App (broker), and Microsoft Graph into a MAUI app using MSAL",
+    "Description": "Integrate Microsoft identity for a B2C tenant into a MAUI app using MSAL",
     "Languages": [ "csharp" ],
     "Products": [ "maui", "azure-active-directory-b2c" ],
     "Library": [ "MSAL.NET" ],
@@ -50,55 +50,47 @@
     {
       "App": "client",
       "SettingKind": "Replace",
-      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
+      "SettingFile": "\\..\\appsettings.json",
       "Mappings": [
         {
-          "key": "fabrikamb2c.onmicrosoft.com",
+          "key": "Instance",
+          "value": "the instance url of your B2C tenant"
+        },
+        {
+          "key": "Domain",
+          "value": "the domain of your B2C tenant"
+        },
+        {
+          "key": "TenantId",
           "value": "$tenantId"
-        }
-      ]
-    },
-    {
-      "App": "client",
-      "SettingKind": "Replace",
-      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
-      "Mappings": [
+        },
         {
-          "key": "fabrikamb2c.b2clogin.com",
-          "value": "the login URL for your tenant"
-        }
-      ]
-    },
-    {
-      "App": "client",
-      "SettingKind": "Replace",
-      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
-      "Mappings": [
-        {
-          "key": "e5737214-6372-472c-a85a-68e8fbe6cf3c",
+          "key": "ClientId",
           "value": ".AppId"
-        }
-      ]
-    },
-    {
-      "App": "client",
-      "SettingKind": "Replace",
-      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
-      "Mappings": [
+        },
         {
-          "key": "b2c_1_susi",
+          "key": "SignUpSignInPolicyId",
           "value": "the sign-in/sign-up policy you wish to use"
-        }
-      ]
-    },
-    {
-      "App": "client",
-      "SettingKind": "Replace",
-      "SettingFile": "\\..\\MSALClient\\B2CConstants.cs",
-      "Mappings": [
+        },
         {
-          "key": "https://fabrikamb2c.onmicrosoft.com/helloapi/demo.read",
-          "value": "the scope you wish to use in your application"
+          "key": "ResetPasswordPolicyId",
+          "value": "the password reset policy you wish to use (optional)"
+        },
+        {
+          "key": "EditProfilePolicyId",
+          "value": "the edit profile policy you wish to use (optional)"
+        },
+        {
+          "key": "CacheFileName",
+          "value": "the name of the cache file you wish to use with WinUI caching (not used in Android nor iOS)"
+        },
+        {
+          "key": "CacheDir",
+          "value": "the directory path storing cache file you wish to use with WinUI caching (not used in Android nor iOS)"
+        },
+        {
+          "key": "Scopes",
+          "value": "the scopes (space separated) you wish to use in your application"
         }
       ]
     },
@@ -108,7 +100,7 @@
       "SettingFile": "\\..\\Platforms\\Android\\MsalActivity.cs",
       "Mappings": [
         {
-          "key": "e5737214-6372-472c-a85a-68e8fbe6cf3c",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]
@@ -119,7 +111,18 @@
       "SettingFile": "\\..\\Platforms\\Android\\AndroidManifest.xml",
       "Mappings": [
         {
-          "key": "e5737214-6372-472c-a85a-68e8fbe6cf3c",
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
+          "value": ".AppId"
+        }
+      ]
+    },
+    {
+      "App": "client",
+      "SettingKind": "Replace",
+      "SettingFile": "\\..\\Platforms\\iOS\\AppDelegate.cs",
+      "Mappings": [
+        {
+          "key": "[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]",
           "value": ".AppId"
         }
       ]

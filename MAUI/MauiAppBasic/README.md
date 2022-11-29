@@ -127,18 +127,17 @@ To manually register the apps, as a first step you'll need to:
 1. In the **Overview** blade, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. In the app's registration screen, select the **Authentication** blade to the left.
 1. If you don't have a platform added, select **Add a platform** and select the **Public client (mobile & desktop)** option.
-    1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, select **https://login.microsoftonline.com/common/oauth2/nativeclient**
-    1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** type in the value **http://localhost**
-    1. In the **Redirect URI** section enter the following redirect URI `http://localhost`.
+    1. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** section, select **msal{YOUR_CLIENT_ID}://auth** where **{YOUR_CLIENT_ID}** will match the client ID of your application
+    2. In the **Redirect URIs** | **Suggested Redirect URIs for public clients (mobile, desktop)** type in the value **http://localhost**
   1. Click **Save** to save your changes.
-1. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
+2. Since this app signs-in users, we will now proceed to select **delegated permissions**, which is is required by apps signing-in users.
     1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs:
-    1. Select the **Add a permission** button and then:
-    1. Ensure that the **Microsoft APIs** tab is selected.
-    1. In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
+    2. Select the **Add a permission** button and then:
+    3. Ensure that the **Microsoft APIs** tab is selected.
+    4. In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
       * Since this app signs-in users, we will now proceed to select **delegated permissions**, which is requested by apps that signs-in users.
       * In the **Delegated permissions** section, select **User.Read** in the list. Use the search box if necessary.
-    1. Select the **Add permissions** button at the bottom.
+    5. Select the **Add permissions** button at the bottom.
 
 ##### Configure the client app (active-directory-maui-v2) to use your app registration
 
@@ -149,6 +148,8 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Open the `appsettings.json` file.
 1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
 1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
+1. Find the key `CacheFileName` and replace the existing value with the name of the cache file you wish to use with WinUI caching (not used in Android nor iOS).
+1. Find the key `CacheDir` and replace the existing value with the directory path storing cache file you wish to use with WinUI caching (not used in Android nor iOS).
 
 1. Open the `Platforms\Android\MsalActivity.cs` file.
 1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-v2` app copied from the Azure portal.
@@ -166,14 +167,14 @@ Clean the solution, rebuild the solution, and run it:
 - Click the sign-in button at the bottom of the application screen.
 - On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
 - Upon successful sign in and consent, the application screen will display the main page.
-- Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
+- On WinUI close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
 - Sign out by clicking the sign out button.
 
 > :information_source: Did the sample not work for you as expected? Then please reach out to us using the [GitHub Issues](../../../../issues) page.
 
 ## We'd love your feedback!
 
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](https://forms.microsoft.com/Pages/DesignPageV2.aspx?subpage=design&m2=1&id=v4j5cvGGr0GRqy180BHbR9p5WmglDttMunCjrD00y3NUMzI1MkdXUUMwNVBVREpRNzIyOUtTTUE4My4u).
 
 ## Troubleshooting
 
@@ -189,7 +190,6 @@ you need to right click on the visual studio solution, choose **Configuration Pr
 
 Samples favor simple code structures that show you how to use MSAL. Samples do not showcase best practices and patterns, nor do they make use of other libraries.
 
-- Consider using [dependency injection](https://medium.com/syncfusion/learn-how-to-use-dependency-injection-in-net-maui-800f1bf9bc4d) for the `IPublicClientApplication`.
 - Consider wrapping the construction of the `IPublicClientApplication` and `AcquireToken*` in another class to make testing possible. Mocking the existing builder pattern for creating `IPublicClientApplication` and `AcquireTokenInteractiveParameterBuilder` is not possible (we've tried).
 - MSAL will generally let HTTP exceptions propagate. Consider using [Maui.Networking.Connectivity](https://learn.microsoft.com/dotnet/maui/platform-integration/communication/networking?tabs=windows) to detect situations where the network is down in order to provide a better error message to the user.
 

@@ -1,7 +1,7 @@
 ﻿---
 page_type: sample
 name: A .NET MAUI app using MSAL.NET to sign-in users and calling MS Graph Api
-description: Integrate Microsoft identity, the Microsoft Authenticator B2C App (broker), and Microsoft Graph into a MAUI app using MSAL
+description: Integrate Microsoft Identity for a B2C tenant into a MAUI app using MSAL
 languages:
  -  csharp
 products:
@@ -13,11 +13,11 @@ extensions:
 - platform: MAUI
 - endpoint: AAD v2.0
 - level: 200
-- client: MAUI (iOS, Android, UWP)
+- client: MAUI (iOS, Android, WinUI)
 - service: Microsoft Graph
 ---
 
-# Integrate Microsoft identity, the Microsoft Authenticator B2C App (broker), and Microsoft Graph into a MAUI app using MSAL
+# Integrate Microsoft Identity for a B2C tenant into a MAUI app using MSAL
 
 [![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/CI%20of%20Azure-Samples%20--%20xamarin-native-v2)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=32)
 
@@ -75,11 +75,13 @@ or download and extract the repository *.zip* file.
 
 > Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
+### Step 2: Navigate to project folder
+
+```console
+cd MAUI/MauiAppB2C
+```
+
 ### Step 3: Register the sample application(s) in your tenant
-
-> :warning: This sample comes with a pre-registered application for demo purposes. If you would like to use your own **Azure AD B2C** tenant and application, follow the steps below to register and configure the application on **Azure portal**. Otherwise, continue with the steps for [Running the sample](#running-the-sample).
-
-- follow the steps below for manually register your apps
 
 #### Choose the Azure AD B2C tenant where you want to create your applications
 
@@ -118,56 +120,45 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-In the steps below, "ClientID" is the same as "Application ID" or "AppId". 
-1. Open the solution in Visual Studio.
-1. Open the `MSALClient\B2CConstants.cs` file.
-1. Replace the following values as instructed:
-    * Set `Tenant` to be the domain of your tenant.
-    * Set `AzureADB2CHostname` to be the domain of your login. This should usually be the first part of your tenant domain followed by `b2clogin.com`. E.g. `mytenant.b2clogin.com` 
-    * Set `ClientID` to be the same as the `Application ID`
-    * Set `PolicySignUpSignIn` to be the sign in/sign out policy used on your tenant
+In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-#### [OPTIONAL] Step 3a: Configure the iOS project with your apps' return URI
-
-1. Open the `Platforms/iOS/AppDelegate.cs` file.
-1. replace the `iOSRedirectURI` with the redirect URI of your application:
-
-```CSharp
-private const string iOSRedirectURI = "msauth.com.companyname.mauiappbasic://auth"; // TODO - Replace with your redirectURI
-```
-
-where `[ClientID]` is the identifier you copied in step 2. Save the file.
-
-#### [Android specific] Step 3b: Configure the Android project with your return URI
+1. Open the `appsettings.json` file.
+1. Find the key `Instance` and replace the existing value with the instance url of your B2C tenant.
+1. Find the key `Domain` and replace the existing value with the domain of your B2C tenant.
+1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
+1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-b2c-v2` app copied from the Azure portal.
+1. Find the key `SignUpSignInPolicyId` and replace the existing value with the sign-in/sign-up policy you wish to use.
+1. Find the key `ResetPasswordPolicyId` and replace the existing value with the password reset policy you wish to use (optional).
+1. Find the key `EditProfilePolicyId` and replace the existing value with the edit profile policy you wish to use (optional).
+1. Find the key `CacheFileName` and replace the existing value with the name of the cache file you wish to use with WinUI caching (not used in Android nor iOS).
+1. Find the key `CacheDir` and replace the existing value with the directory path storing cache file you wish to use with WinUI caching (not used in Android nor iOS).
+1. Find the key `Scopes` and replace the existing value with the scopes (space separated) you wish to use in your application.
 
 1. Open the `Platforms\Android\MsalActivity.cs` file.
-1. Replace `[ClientID]` as noted in the example below with the identifier you copied in step 2.
-1. Save the file.
-```csharp
-  [Activity]
-  [IntentFilter(new[] { Intent.ActionView },
-        Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
-        DataHost = "auth",
-        DataScheme = "msal[ClientID]")]
-  public class MsalActivity : BrowserTabActivity
-  {
-  }
-```
+1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-b2c-v2` app copied from the Azure portal.
 
-### Step 5: Run the sample!
+1. Open the `Platforms\Android\AndroidManifest.xml` file.
+1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-b2c-v2` app copied from the Azure portal.
 
-Make sure the platform you configured is the same one you mark for build and deployment.
+1. Open the `Platforms\iOS\AppDelegate.cs` file.
+1. Find the key `[REPLACE THIS WITH THE CLIENT ID OF YOUR APP]` and replace the existing value with the application ID (clientId) of `active-directory-maui-b2c-v2` app copied from the Azure portal.
 
-Clean the solution, build and run it:
+### Step 4: Running the sample
 
-- Click the sign-in button at the bottom of the application screen. Depending on whether or not there are conditional access policies applied to the user signing in, there will be two different experiences. If there are conditional access policies applied to the user signing in:
-    - The Authenticator App will open, or ask you to install it from the App Store. 
-    - In the Authenticator App, either select an already existing account, or add a new one.
-    - If adding a new one, on the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The authenticator app works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
-    - Upon successful sign in and consent, the application screen will list some basic profile info for the authenticated user. Also, the button at the bottom of the screen will turn into a Sign out button.
-    - Close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
-    - Sign out by clicking the Sign out button and confirm that you lose access to the API until the next interactive sign in.
-- If there are no conditional access policies applied to the user signing in, signing in with a broker is not required, so you will see the typical sign-in UI flow.
+Choose the platform you want to work on by setting the startup project in the Solution Explorer. Make sure that your platform of choice is marked for build and deploy in the Configuration Manager.
+Clean the solution, rebuild the solution, and run it.
+
+## Explore the sample
+
+- Click the sign-in button at the bottom of the application screen.
+- On the sign-in screen, enter the name and password of a personal Microsoft account or a work/school account. The sample works exactly in the same way regardless of the account type you choose, apart from some visual differences in the authentication and consent experience. During the sign in process, you will be prompted to grant various permissions (to allow the application to access your data).
+- Upon successful sign in and consent, the application screen will display the main page.
+- On WinUI you can close the application and reopen it. You will see that the app retains access to the API and retrieves the user info right away, without the need to sign in again.
+- Sign out by clicking the sign out button.
+
+## We'd love your feedback!
+
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](https://forms.microsoft.com/Pages/DesignPageV2.aspx?subpage=design&m2=1&id=v4j5cvGGr0GRqy180BHbR9p5WmglDttMunCjrD00y3NURVlKVzVFTEdPUTVCQThZRlhVUTJDNklYRS4u).
 
 ## About the code
 

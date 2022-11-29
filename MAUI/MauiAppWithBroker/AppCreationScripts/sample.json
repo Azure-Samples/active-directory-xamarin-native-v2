@@ -74,7 +74,15 @@
         {
           "key": "ClientId",
           "value": ".AppId"
-        }, 
+        },
+        {
+          "key": "CacheFileName",
+          "value": "the name of the cache file you wish to use with WinUI caching (not used in Android nor iOS)"
+        },
+        {
+          "key": "CacheDir",
+          "value": "the directory path storing cache file you wish to use with WinUI caching (not used in Android nor iOS)"
+        },
         {
           "key": "AndroidReplyUrl",
           "value": "NotAutoPopulated"

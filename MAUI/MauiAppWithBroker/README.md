@@ -32,13 +32,13 @@ extensions:
 
 ## Overview
 
-This sample demonstrates a MAUI (iOS, Android, UWP) .NET app that signs-in users using the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker and acquires token to call Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) .NET app that signs-in users using the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker or [Microsoft Authenticator application](https://www.microsoft.com/en-ca/p/microsoft-authenticator/9nblgggzmcj6?activetab=pivot:overviewtab) to acquire a token to call Microsoft Graph.
 
 > :information_source: To learn how applications integrate with [Microsoft Graph](https://aka.ms/graph), consider going through the recorded session:: [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A)
 
 ## Scenario
 
-This sample demonstrates a MAUI (iOS, Android, UWP) .NET app that signs-in users using the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker and acquires token to call Microsoft Graph.
+This sample demonstrates a MAUI (iOS, Android, UWP) .NET app that signs-in users using the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker or [Microsoft Authenticator application](https://www.microsoft.com/en-ca/p/microsoft-authenticator/9nblgggzmcj6?activetab=pivot:overviewtab) to acquire a token to call Microsoft Graph.
 
 1. The client MAUI (iOS, Android, UWP) uses [MSAL.NET](https://aka.ms/msal-net) to activate the [Web Account Manager \(WAM\)](https://learn.microsoft.com/windows/uwp/security/web-account-manager) broker to sign-in a user and obtain a JWT [ID Token](https://aka.ms/id-tokens) from **Azure AD**.
 1. The **ID Token** proves that the user has successfully authenticated against **Azure AD**.
@@ -130,7 +130,7 @@ To manually register the apps, as a first step you'll need to:
 1. If you don't have a platform added, select **Add a platform** and select the **Public client (mobile & desktop)** option.
     1. In the **Redirect URIs** section, add **ms-appx-web://microsoft.aad.brokerplugin/{ClientId}**.
         The **ClientId** is the Id of the App Registration and can be found under **Overview/Application (client) ID**
-> If you plan to use the app on an `Android` device, select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app configuration.
+> If you plan to use the app on an **Android** device, select **Add a platform** and select the **Android** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app configuration.
 
 > If you plan to use the app on an **iOS / macOS** device, select **Add a platform** and select the **iOS / macOS** option. Follow the instructions to create a new redirect URI. Note the URI to be used later in the app 
   1. Click **Save** to save your changes.
@@ -152,8 +152,11 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Open the `appsettings.json` file.
 1. Find the key `TenantId` and replace the existing value with your Azure AD tenant/directory ID.
 1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `active-directory-maui-with-broker-v2` app copied from the Azure portal.
+1. Find the key `CacheFileName` and replace the existing value with the name of the cache file you wish to use with WinUI caching (not used in Android nor iOS).
+1. Find the key `CacheDir` and replace the existing value with the directory path storing cache file you wish to use with WinUI caching (not used in Android nor iOS).
 1. Find the key `AndroidReplyUrl` and replace the existing value with the Android redirect URI for your application, if you created one during app registration. You can read more about Android redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
 1. Find the key `iOSReplyUrl` and replace the existing value with the iOS redirect URI for your application, if you created one during app registration. You can read more about iOS redirect URI formats [here](https://learn.microsoft.com/azure/active-directory/develop/redirect-uris-ios).
+
 
 ### Step 4: Running the sample
 
@@ -171,7 +174,7 @@ Clean the solution, rebuild the solution, and run it:
 
 ## We'd love your feedback!
 
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](https://forms.microsoft.com/Pages/DesignPageV2.aspx?subpage=design&m2=1&id=v4j5cvGGr0GRqy180BHbR9p5WmglDttMunCjrD00y3NURVNSNUJCVUVZQ0tHRTBEUkxNMTRYQ0UxOS4u).
 
 ## Troubleshooting
 

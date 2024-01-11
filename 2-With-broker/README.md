@@ -162,7 +162,7 @@ switch (Device.RuntimePlatform)
 var app = PublicClientApplicationBuilder
                 .Create(ClientId)
                 .WithBroker()
-                .WithReplyUri(mobileRedirectURI) 
+                .WithRedirectUri(mobileRedirectURI) 
                 .Build();
 ```
 This step has already been completed in the code [here.](https://github.com/Azure-Samples/active-directory-xamarin-native-v2/blob/3d877ba0ded3e644610654f6ad1ca7abb30f9e5b/2-With-broker/UserDetailsClient/UserDetailsClient/MainPage.xaml.cs#L34)
